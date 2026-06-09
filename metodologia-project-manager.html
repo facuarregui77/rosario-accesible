@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metodología de Gestión de Proyectos</title>
+<style>
+  :root{
+    --bg:#0f1419;
+    --card:#1a2129;
+    --card2:#212b35;
+    --ink:#e8edf2;
+    --muted:#9bacba;
+    --line:#2c3845;
+    --accent:#4ea1ff;
+    --accent2:#39d98a;
+    --warn:#ffb454;
+    --crit:#ff6b6b;
+    --info:#c08cff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;
+    font-size:16px;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:48px 24px 80px;}
+  header.hero{
+    border-bottom:1px solid var(--line);
+    padding-bottom:32px;margin-bottom:40px;
+  }
+  .kicker{
+    color:var(--accent);
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+    margin-bottom:12px;
+  }
+  h1{font-size:38px;line-height:1.15;margin:0 0 14px;font-weight:700;}
+  .lede{font-size:18px;color:var(--muted);max-width:680px;margin:0;}
+  .meta{
+    margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;
+    font-size:13px;color:var(--muted);
+  }
+  .meta span{background:var(--card2);padding:5px 12px;border-radius:20px;border:1px solid var(--line);}
+
+  h2{
+    font-size:25px;margin:52px 0 8px;font-weight:700;
+    display:flex;align-items:center;gap:12px;
+  }
+  h2 .num{
+    color:var(--bg);background:var(--accent);
+    width:34px;height:34px;border-radius:9px;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:17px;font-weight:700;flex-shrink:0;
+  }
+  h3{font-size:19px;margin:30px 0 10px;font-weight:650;color:var(--ink);}
+  p{margin:12px 0;}
+  .section-sub{color:var(--muted);margin-top:0;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:24px 26px;margin:20px 0;
+  }
+  .principle{
+    background:linear-gradient(135deg,rgba(78,161,255,.10),rgba(57,217,138,.06));
+    border:1px solid rgba(78,161,255,.3);
+    border-left:4px solid var(--accent);
+  }
+  .principle strong{color:var(--accent2);}
+
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14.5px;}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{color:var(--muted);font-weight:600;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;}
+  tr:last-child td{border-bottom:none;}
+  td code,p code,li code{
+    background:var(--card2);padding:2px 7px;border-radius:5px;
+    font-family:"SF Mono",Consolas,monospace;font-size:13px;color:#ffd9a0;
+  }
+  .table-card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:20px 0;}
+  .table-card table{margin:0;}
+  .table-card th{background:var(--card2);}
+
+  pre{
+    background:#0a0e12;border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;overflow-x:auto;font-size:13.5px;
+    font-family:"SF Mono",Consolas,monospace;color:#cfe3f5;line-height:1.55;
+  }
+  pre .c{color:#5f7388;}
+  pre .k{color:#ff9d6b;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:20px 0;}
+  .op{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;
+    border-top:3px solid var(--accent);
+  }
+  .op h4{margin:0 0 6px;font-size:17px;}
+  .op .tag{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+  .op p{font-size:14.5px;color:var(--muted);margin:8px 0 0;}
+
+  .badge{display:inline-block;padding:2px 9px;border-radius:6px;font-size:12px;font-weight:600;}
+  .b-crit{background:rgba(255,107,107,.16);color:var(--crit);}
+  .b-warn{background:rgba(255,180,84,.16);color:var(--warn);}
+  .b-info{background:rgba(192,140,255,.16);color:var(--info);}
+  .b-blue{background:rgba(78,161,255,.16);color:var(--accent);}
+  .b-ok{background:rgba(57,217,138,.16);color:var(--accent2);}
+
+  ul.clean{list-style:none;padding:0;margin:14px 0;}
+  ul.clean li{padding:9px 0 9px 28px;position:relative;border-bottom:1px solid var(--line);}
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{content:"→";position:absolute;left:0;color:var(--accent);font-weight:700;}
+
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0;}
+  .flow .step{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;}
+  .flow .arr{color:var(--accent);font-size:20px;}
+
+  .callout{border-radius:12px;padding:16px 20px;margin:18px 0;font-size:14.5px;}
+  .callout.note{background:rgba(78,161,255,.08);border:1px solid rgba(78,161,255,.25);}
+  .callout strong{color:var(--accent);}
+
+  footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;text-align:center;}
+  .field-name{color:#ffd9a0;font-family:"SF Mono",Consolas,monospace;font-size:13.5px;}
+  .req{color:var(--crit);font-size:11px;font-weight:700;}
+  .opt{color:var(--muted);font-size:11px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">Metodología interna · Gestión de Cartera</div>
+    <h1>Cómo gestionamos los proyectos</h1>
+    <p class="lede">El sistema que mantiene cada proyecto vivo, documentado y al día. Una sola forma de trabajar, un solo schema, cero proyectos perdidos en el limbo.</p>
+    <div class="meta">
+      <span>Versión 2.0 · schema v2</span>
+      <span>Actualizado 2026-06-04</span>
+      <span>Para uso compartido — Guille + Facu</span>
+    </div>
+  </header>
+
+  <!-- QUÉ ES -->
+  <h2><span class="num">1</span> Qué es esto</h2>
+  <p class="section-sub">El motor de gestión de toda la cartera de proyectos. Mantiene cada proyecto alineado a un mismo estándar, ejecuta la apertura completa de un proyecto nuevo sin idas y vueltas, y se actualiza solo cuando hay actividad.</p>
+
+  <div class="card principle">
+    <p style="margin-top:0;font-size:17px;"><strong>El principio:</strong> un proyecto no es una carpeta suelta. Es <strong>cuatro cosas a la vez</strong>, siempre, sin excepción:</p>
+    <div class="flow">
+      <div class="step">📁 Ficha (README)</div>
+      <div class="arr">+</div>
+      <div class="step">🗂️ Carpeta wiki</div>
+      <div class="arr">+</div>
+      <div class="step">💻 Carpeta en disco</div>
+      <div class="arr">+</div>
+      <div class="step">🐙 Repo GitHub</div>
+    </div>
+    <p style="margin-bottom:0;">No importa si el proyecto aún no arrancó o si nunca va a tener código. La estructura existe igual, <strong>porque es el sistema de seguimiento</strong>. Y la ficha (el frontmatter) <strong>es la base de datos</strong>: si falta un campo, el seguimiento está roto.</p>
+  </div>
+
+  <div class="callout note">
+    <strong>Regla de oro.</strong> Se pregunta solo lo que no se puede deducir del contexto, todo junto en un único bloque al inicio. Después se ejecuta todo de corrido y se reporta al final. Nada de preguntar de a una cosa.
+  </div>
+
+  <!-- SCHEMA -->
+  <h2><span class="num">2</span> El schema estándar</h2>
+  <p class="section-sub">21 campos organizados en 6 bloques. Esto es lo que define a cada proyecto. Todos los campos van siempre presentes en la ficha — si no aplica, va vacío (<code>""</code>), nunca ausente.</p>
+
+  <h3>🪪 Identidad</h3>
+  <div class="table-card"><table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Qué es</th></tr>
+    <tr><td><span class="field-name">nombre</span></td><td><span class="req">SÍ</span></td><td>Título legible del proyecto.</td></tr>
+    <tr><td><span class="field-name">area</span></td><td><span class="req">SÍ</span></td><td>auckland · asesorias · apps · revolucia-labs · personal</td></tr>
+    <tr><td><span class="field-name">cliente</span></td><td><span class="opt">opc.</span></td><td>Cliente externo si aplica. Vacío = interno.</td></tr>
+  </table></div>
+
+  <h3>👥 Responsabilidad (RACI)</h3>
+  <div class="table-card"><table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Qué es</th></tr>
+    <tr><td><span class="field-name">stakeholder</span></td><td><span class="req">SÍ</span></td><td>De quién es el proyecto. <code>darío</code> (cartera Auckland) o <code>personal</code> (Guille).</td></tr>
+    <tr><td><span class="field-name">responsable</span></td><td><span class="req">SÍ</span></td><td>Quién ejecuta / hace de PM. Default <code>guille</code>. Ampliable al equipo.</td></tr>
+  </table></div>
+
+  <h3>🚦 Estado / Salud</h3>
+  <div class="table-card"><table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Qué es</th></tr>
+    <tr><td><span class="field-name">estado</span></td><td><span class="req">SÍ</span></td><td>activo · pausado · completado · por-lanzar · critico · archivado · evaluando</td></tr>
+    <tr><td><span class="field-name">prioridad</span></td><td><span class="req">SÍ</span></td><td>alta · media · baja</td></tr>
+    <tr><td><span class="field-name">salud</span></td><td><span class="req">SÍ</span></td><td>Semáforo RAG: <span class="b-ok badge">en-tiempo</span> <span class="b-warn badge">en-riesgo</span> <span class="b-crit badge">atrasado</span></td></tr>
+    <tr><td><span class="field-name">progreso</span></td><td><span class="req">SÍ</span></td><td>Avance 0-100. completado = 100.</td></tr>
+  </table></div>
+
+  <h3>📅 Tiempo</h3>
+  <div class="table-card"><table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Qué es</th></tr>
+    <tr><td><span class="field-name">fecha_creacion</span></td><td><span class="req">SÍ</span></td><td>Cuándo nació en el sistema. No cambia.</td></tr>
+    <tr><td><span class="field-name">fecha_inicio</span></td><td><span class="opt">opc.</span></td><td>Cuándo arrancó la ejecución real. Vacío = todavía no arrancó (backlog).</td></tr>
+    <tr><td><span class="field-name">fecha_objetivo</span></td><td><span class="opt">opc.</span></td><td>Deadline de cierre. Vacío = sin fecha definida.</td></tr>
+    <tr><td><span class="field-name">proxima_accion</span></td><td><span class="req">SÍ</span></td><td>El siguiente paso concreto. <strong>Si está activo, no puede estar vacío.</strong></td></tr>
+    <tr><td><span class="field-name">fecha_proxima_accion</span></td><td><span class="opt">opc.</span></td><td>Si ya pasó y el proyecto está activo → está <span class="b-crit badge">vencida</span>.</td></tr>
+    <tr><td><span class="field-name">ultima_actualizacion</span></td><td><span class="req">SÍ</span></td><td>Se actualiza en cada toque. +14 días en activo → stale.</td></tr>
+  </table></div>
+
+  <h3>📝 Contenido</h3>
+  <div class="table-card"><table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Qué es</th></tr>
+    <tr><td><span class="field-name">objetivo</span></td><td><span class="req">SÍ</span></td><td>Definition-of-done en 1 frase: qué significa "terminado".</td></tr>
+    <tr><td><span class="field-name">tags</span></td><td><span class="opt">opc.</span></td><td>Etiquetas para filtrar. Se derivan de área + nombre + cliente.</td></tr>
+  </table></div>
+
+  <h3>🔗 Integración</h3>
+  <div class="table-card"><table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Qué es</th></tr>
+    <tr><td><span class="field-name">url</span></td><td><span class="opt">opc.</span></td><td>URL viva/deploy (app publicada, landing, dominio).</td></tr>
+    <tr><td><span class="field-name">repo</span></td><td><span class="opt">opc.</span></td><td>Repositorio de código en GitHub.</td></tr>
+    <tr><td><span class="field-name">carpeta_disco</span></td><td><span class="opt">opc.</span></td><td>Ruta en disco (ej: <code>C:\Proyectos\X</code>).</td></tr>
+    <tr><td><span class="field-name">notion_id</span></td><td><span class="opt">opc.</span></td><td>Puente de sync con Notion. Vacío = aún no sincronizado.</td></tr>
+  </table></div>
+
+  <!-- LAS 4 OPERACIONES -->
+  <h2><span class="num">3</span> Las cuatro operaciones</h2>
+  <p class="section-sub">Todo lo que hace el sistema cae en una de estas cuatro cosas.</p>
+
+  <div class="grid">
+    <div class="op">
+      <div class="tag">Operación 1</div>
+      <h4>Nuevo</h4>
+      <p>Abrir un proyecto de cero. Naming → preguntar lo mínimo en un bloque → crear las 4 patas → reportar. Sin interrupciones.</p>
+    </div>
+    <div class="op">
+      <div class="tag">Operación 2</div>
+      <h4>Validar</h4>
+      <p>Auditar fichas existentes: detectar campos faltantes, fechas vencidas, proyectos olvidados. Completar lo que se puede y preguntar el resto.</p>
+    </div>
+    <div class="op">
+      <div class="tag">Operación 3</div>
+      <h4>Seguimiento</h4>
+      <p>Actualizar un proyecto cuando hay actividad real (una reunión, un avance, un mail). Recalcula salud, progreso y próxima acción.</p>
+    </div>
+    <div class="op">
+      <div class="tag">Operación 4</div>
+      <h4>Sync Notion</h4>
+      <p>Espejar las fichas a Notion. Preparado pero todavía no activo — la wiki es la fuente, Notion sería el espejo.</p>
+    </div>
+  </div>
+
+  <!-- OP 1 detalle -->
+  <h3>Operación 1 · Crear un proyecto nuevo</h3>
+  <div class="flow">
+    <div class="step">Naming</div><div class="arr">→</div>
+    <div class="step">Preguntar (1 bloque)</div><div class="arr">→</div>
+    <div class="step">Ejecutar todo</div><div class="arr">→</div>
+    <div class="step">Reportar</div>
+  </div>
+
+  <p><strong>Naming primero.</strong> El mismo slug en los cuatro sistemas. Siempre <code>lowercase-con-hyphens</code>, sin acentos, corto y descriptivo, con el año al final si es relevante.</p>
+  <pre><span class="c"># El mismo nombre en todos lados</span>
+wiki/proyectos/<span class="k">[slug]</span>/README.md   <span class="c">← ficha PM</span>
+C:\Proyectos\<span class="k">[slug]</span>\              <span class="c">← carpeta física</span>
+github.com/Gcramirez/<span class="k">[slug]</span>       <span class="c">← repo GitHub</span>
+Google Drive / [área] / <span class="k">[slug]</span>     <span class="c">← carpeta Drive</span></pre>
+
+  <p><strong>Se pregunta solo lo que no se puede inferir</strong>, todo en un bloque: stakeholder, objetivo, área (si no es obvia), prioridad, fecha objetivo, fecha de inicio, próxima acción + fecha, cliente y si el repo ya existe con otro nombre.</p>
+
+  <p><strong>Lo demás se autocompleta sin preguntar:</strong></p>
+  <div class="table-card"><table>
+    <tr><th>Campo</th><th>Valor automático</th></tr>
+    <tr><td><span class="field-name">fecha_creacion</span></td><td>hoy</td></tr>
+    <tr><td><span class="field-name">estado</span></td><td><code>activo</code> si tiene fecha de inicio · <code>evaluando</code> si está en stand-by</td></tr>
+    <tr><td><span class="field-name">salud</span></td><td><code>en-tiempo</code></td></tr>
+    <tr><td><span class="field-name">progreso</span></td><td><code>0</code></td></tr>
+    <tr><td><span class="field-name">responsable</span></td><td><code>guille</code></td></tr>
+    <tr><td><span class="field-name">carpeta_disco</span></td><td><code>C:\Proyectos\[slug]</code></td></tr>
+    <tr><td><span class="field-name">repo</span></td><td><code>github.com/Gcramirez/[slug]</code></td></tr>
+  </table></div>
+
+  <p><strong>Después ejecuta todo de corrido:</strong> crea la carpeta wiki, escribe el README desde el template, crea la carpeta en disco, crea el repo en GitHub (privado por default, público si es un producto/app), lo registra en el log y, si está en <code>evaluando</code>, lo suma al backlog. Recién al final reporta lo hecho.</p>
+
+  <!-- OP 2 detalle -->
+  <h3>Operación 2 · Validar y completar fichas</h3>
+  <p>Se dispara con cosas como "validá la ficha de X", "revisá toda la cartera" o "qué proyectos les falta info". Lee el frontmatter de cada README y corre las reglas de validación, reportando por severidad:</p>
+
+  <ul class="clean">
+    <li><span class="b-crit badge">CRÍTICO</span>&nbsp; Proyecto activo sin próxima acción · fecha de próxima acción vencida</li>
+    <li><span class="b-warn badge">WARNING</span>&nbsp; Stale (+14 días activo sin tocar) · pausado +30 días · salud incoherente con las fechas</li>
+    <li><span class="b-info badge">INFO</span>&nbsp; Campos obligatorios vacíos · completado con progreso ≠ 100</li>
+    <li><span class="b-blue badge">AZUL</span>&nbsp; Sin carpeta de disco · sin repo</li>
+  </ul>
+  <p>Lo que se puede derivar se autocompleta; lo que requiere criterio se pregunta en un único bloque. En cada ficha tocada se refresca la <code>ultima_actualizacion</code> a hoy.</p>
+
+  <!-- OP 3 detalle -->
+  <h3>Operación 3 · Seguimiento</h3>
+  <p>Cuando hay actividad real sobre un proyecto, se actualiza sin preguntar: la próxima acción y su fecha, el estado si cambió, el progreso, la última actualización y una línea nueva en el log del README (<code>| hoy | qué cambió · por qué |</code>).</p>
+
+  <p><strong>El semáforo de salud se recalcula así:</strong></p>
+  <div class="table-card"><table>
+    <tr><th>Situación</th><th>Salud</th></tr>
+    <tr><td>Avanzando, deadline con margen</td><td><span class="b-ok badge">en-tiempo</span></td></tr>
+    <tr><td>Sin avance +7 días, o deadline a menos de 21 días sin progreso</td><td><span class="b-warn badge">en-riesgo</span></td></tr>
+    <tr><td>Próxima acción vencida, o fecha objetivo ya pasada</td><td><span class="b-crit badge">atrasado</span></td></tr>
+  </table></div>
+
+  <p><strong>Al completar:</strong> estado <code>completado</code>, progreso <code>100</code>, fecha de cierre en el log, se saca del backlog.<br>
+  <strong>Al pausar:</strong> estado <code>pausado</code>, próxima acción "Revisar en triaje mensual", y se suma a la lista de pausados para el triaje del día 19 de cada mes. Un proyecto pausado sin acción definida muere en el limbo — por eso el triaje mensual decide: retomar / archivar / mantener / delegar / esperar.</p>
+
+  <!-- REGLAS -->
+  <h2><span class="num">4</span> Las reglas que no se rompen</h2>
+  <ul class="clean">
+    <li><strong>Siempre las cuatro patas.</strong> Carpeta wiki + carpeta disco + repo + README completo. Sin excepción.</li>
+    <li><strong>Ejecutar sin consultas intermedias.</strong> Un bloque de preguntas al inicio, después se ejecuta todo, se reporta al final.</li>
+    <li><strong>Todos los campos presentes.</strong> Vacíos van como <code>""</code>, nunca ausentes.</li>
+    <li><strong>Stakeholder siempre claro.</strong> Si no es obvio, se pregunta.</li>
+    <li><strong>Las fechas se validan contra el sistema.</strong> Nunca se precalcula "hoy" de memoria.</li>
+    <li><strong>No inventar.</strong> Se proponen defaults; lo que requiere criterio se pregunta.</li>
+    <li><strong>El schema es uno solo.</strong> Cualquier cambio se hace en <code>schema.yaml</code> y se registra como decisión.</li>
+    <li><strong>No se borra nada.</strong> Los proyectos muertos pasan a <code>estado: archivado</code>.</li>
+    <li><strong>Todo lo que está en "evaluando" va al backlog.</strong> No se pierde de vista.</li>
+  </ul>
+
+  <!-- TRIGGERS -->
+  <h2><span class="num">5</span> Cómo se dispara cada cosa</h2>
+  <p class="section-sub">No hace falta memorizar comandos. Se le habla en lenguaje natural y el sistema mapea a la operación correcta.</p>
+  <div class="table-card"><table>
+    <tr><th>Lo que decís</th><th>Lo que hace</th></tr>
+    <tr><td>"creá / abrí / anotá el proyecto …"</td><td><span class="b-blue badge">NUEVO</span></td></tr>
+    <tr><td>Llega un mail / reunión con un proyecto nuevo</td><td><span class="b-blue badge">NUEVO</span> (automático)</td></tr>
+    <tr><td>"validá / completá la ficha de …"</td><td><span class="b-ok badge">VALIDAR</span> (uno)</td></tr>
+    <tr><td>"revisá / barré toda la cartera"</td><td><span class="b-ok badge">VALIDAR</span> (todos)</td></tr>
+    <tr><td>"estandarizá los proyectos"</td><td><span class="b-ok badge">VALIDAR</span> (todos, migración v2)</td></tr>
+    <tr><td>"avanzó …", "actualizá el seguimiento de …"</td><td><span class="b-warn badge">SEGUIMIENTO</span></td></tr>
+    <tr><td>Se procesa una reunión / devlog / email</td><td><span class="b-warn badge">SEGUIMIENTO</span> (automático)</td></tr>
+    <tr><td>"sincronizá con Notion"</td><td><span class="b-info badge">SYNC</span> (cuando se active)</td></tr>
+  </table></div>
+
+  <div class="callout note">
+    <strong>La base de PM detrás de esto.</strong> El schema está armado sobre estándares reconocidos: RACI (quién es sponsor vs. quién ejecuta), semáforo RAG de salud (verde/amarillo/rojo), definition-of-done explícita por proyecto, y próxima acción siempre viva. Nada de invento — es PM clásico aplicado a una cartera de muchos proyectos en paralelo.
+  </div>
+
+  <footer>
+    Metodología de Gestión de Proyectos · v2.0 · 2026-06-04<br>
+    Documento de trabajo compartido — pensado para revisar, ajustar y usar en común.
+  </footer>
+
+</div>
+</body>
+</html>
