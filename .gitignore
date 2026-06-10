@@ -10,3 +10,7 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .claude
+
+# Guias personales (no forman parte del proyecto)
+guia-facu-vscode-github-vercel-supabase.html
+metodologia-project-manager.html
