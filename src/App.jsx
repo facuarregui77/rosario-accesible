@@ -269,8 +269,8 @@ export default function App() {
         <div className="-mx-5 -mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white">
-              <Accessibility size={22} />
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white">
+              <Accessibility size={30} />
             </div>
             <div>
               <h1 className="text-xl font-bold leading-tight tracking-tight text-slate-900" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access App</h1>
