@@ -43,6 +43,17 @@ const PLACES = [
   { id: "inmaculada", name: "Colegio Inmaculada Concepción", type: "educativo", lat: -32.9430, lng: -60.6420, gRating: 4.4, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
   { id: "sanbartolome", name: "Colegio San Bartolomé", type: "educativo", lat: -32.9550, lng: -60.6580, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
   { id: "dante", name: "Colegio Dante Alighieri", type: "educativo", lat: -32.9505, lng: -60.6500, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  // Clubes deportivos y gimnasios de Rosario (ubicaciones reales; datos de accesibilidad simulados)
+  { id: "central", name: "Club Atlético Rosario Central", type: "deportivo", lat: -32.9080, lng: -60.6303, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "newells", name: "Club Atlético Newell's Old Boys", type: "deportivo", lat: -32.9582, lng: -60.6655, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "regatas", name: "Club de Regatas Rosario", type: "deportivo", lat: -32.9286, lng: -60.6281, gRating: 4.5, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "gimnasia_ros", name: "Club Gimnasia y Esgrima de Rosario", type: "deportivo", lat: -32.9499, lng: -60.6790, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "provincial", name: "Club Atlético Provincial", type: "deportivo", lat: -32.9618, lng: -60.6520, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
+  { id: "plaza_jewell", name: "Club Atlético del Rosario (Plaza Jewell)", type: "deportivo", lat: -32.9466, lng: -60.6700, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "nautico_ave", name: "Club Náutico Avellaneda", type: "deportivo", lat: -32.8830, lng: -60.6960, gRating: 4.5, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "megatlon", name: "Megatlón Rosario", type: "deportivo", lat: -32.9445, lng: -60.6390, gRating: 4.2, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "sportclub", name: "SportClub Rosario", type: "deportivo", lat: -32.9486, lng: -60.6470, gRating: 4.1, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "always_ready", name: "Always Ready Gym", type: "deportivo", lat: -32.9412, lng: -60.6520, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
 ];
 
 const CRITERIA = [
@@ -53,8 +64,8 @@ const CRITERIA = [
   { key: "senas", label: "Personal con lengua de señas", icon: Hand },
 ];
 
-const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo" };
-const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6" };
+const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo" };
+const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444" };
 
 const isFullyAccessible = (p) => CRITERIA.every((c) => p.a[c.key]);
 const accessScore = (p) => CRITERIA.filter((c) => p.a[c.key]).length;
@@ -122,8 +133,8 @@ function RealMap({ places, selected, onSelect, avgRating }) {
     layerRef.current.clearLayers();
     places.forEach((p) => {
       const full = isFullyAccessible(p);
-      const color = full ? "#10b981" : TYPE_COLORS[p.type];
       const isSel = selected?.id === p.id;
+      const color = isSel ? "#f97316" : full ? "#10b981" : TYPE_COLORS[p.type];
       const size = isSel ? 34 : 26;
       const icon = L.divIcon({
         className: "",
@@ -157,9 +168,9 @@ function RealMap({ places, selected, onSelect, avgRating }) {
   return (
     <>
       <div ref={containerRef} className="absolute inset-0 w-full h-full"
-        style={{ background: "radial-gradient(circle at 30% 20%, #15243b 0%, #0b1220 60%, #070b14 100%)" }} />
+        style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa"
-        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950/80 hover:bg-slate-800 text-xs font-medium text-slate-100 border border-white/10 backdrop-blur shadow-lg transition">
+        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-200 backdrop-blur shadow-lg transition">
         <RotateCcw size={14} /> Volver al inicio
       </button>
     </>
@@ -243,21 +254,21 @@ export default function App() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-slate-950 text-slate-100" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div className="w-full min-h-screen bg-sky-50 text-slate-800" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
       {/* Header */}
-      <div className="sticky top-0 z-[600] backdrop-blur-xl bg-slate-950/70 border-b border-white/10 px-5 py-4">
+      <div className="sticky top-0 z-[600] backdrop-blur-xl bg-white/80 border-b border-sky-200 px-5 py-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 shadow-lg shadow-sky-500/30">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white">
               <Accessibility size={22} />
             </div>
             <div>
-              <h1 className="text-lg font-bold leading-tight">Rosario Access App</h1>
-              <p className="text-xs text-slate-400">Bares, restaurantes, boliches e instituciones educativas inclusivas</p>
+              <h1 className="text-lg font-bold leading-tight text-slate-900">Rosario Access App</h1>
+              <p className="text-xs text-slate-500">Bares, restaurantes, boliches e instituciones educativas inclusivas</p>
             </div>
           </div>
           <button onClick={() => setShowAnalysis(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-sm font-medium border border-white/10">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
             <BarChart3 size={16} /> Análisis
           </button>
         </div>
@@ -265,39 +276,41 @@ export default function App() {
         {/* Filtros */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <span className="text-xs text-slate-500 flex items-center gap-1"><Filter size={13} /> Tipo:</span>
-          {["all", "bar", "restaurant", "boliche", "educativo"].map((t) => (
+          {["all", "bar", "restaurant", "boliche", "educativo", "deportivo"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition ${typeFilter === t ? "bg-sky-500 text-white" : "bg-white/5 text-slate-300 hover:bg-white/10"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
               {t === "all" ? "Todos" : TYPE_LABELS[t] + "s"}
             </button>
           ))}
           <span className="text-xs text-slate-500 ml-2">Acceso:</span>
           {[["all", "Todos"], ["full", "100% apto"], ["partial", "Parcial"], ["none", "Sin acceso"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition ${accessFilter === k ? "bg-emerald-500 text-white" : "bg-white/5 text-slate-300 hover:bg-white/10"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
               {l}
             </button>
           ))}
         </div>
+        {/* Detalle decorativo: franja celeste → naranja */}
+        <div className="-mx-5 -mb-4 mt-3 h-1 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
       </div>
 
       <div className="flex flex-row">
         {/* PANEL LATERAL: lista — a la izquierda */}
-        <div className="w-72 shrink-0 bg-slate-950/50 h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-white/10">
+        <div className="w-72 shrink-0 bg-white h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-sky-100">
           {filtered.map((p) => {
             const score = accessScore(p);
             const full = isFullyAccessible(p);
             return (
               <button key={p.id} onClick={() => setSelected(p)}
-                className={`w-full text-left px-4 py-3 border-b border-white/5 hover:bg-white/5 transition ${selected?.id === p.id ? "bg-white/10" : ""}`}>
+                className={`w-full text-left px-4 py-3 border-b border-slate-100 border-l-4 hover:bg-sky-50 transition ${selected?.id === p.id ? "bg-sky-100 border-l-orange-400" : "border-l-transparent"}`}>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium text-sm">{p.name}</span>
-                  {full && <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">100% apto</span>}
+                  <span className="font-medium text-sm text-slate-800">{p.name}</span>
+                  {full && <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 whitespace-nowrap">100% apto</span>}
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_LABELS[p.type]}</span>
-                  <span className="text-[11px] text-slate-400 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>
-                  <span className="text-[11px] text-slate-500">{score}/5 criterios</span>
+                  <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>
+                  <span className="text-[11px] text-slate-400">{score}/5 criterios</span>
                 </div>
               </button>
             );
@@ -307,7 +320,7 @@ export default function App() {
         {/* MAPA REAL (Leaflet) — a la derecha */}
         <div className="relative flex-1 h-[calc(100vh-110px)] min-h-[400px] overflow-hidden">
           <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} />
-          <div className="absolute bottom-3 left-3 z-[500] text-[10px] text-slate-300 bg-slate-950/80 px-2 py-1 rounded pointer-events-none">
+          <div className="absolute bottom-3 left-3 z-[500] text-[10px] text-slate-600 bg-white/90 border border-sky-100 px-2 py-1 rounded pointer-events-none">
             {filtered.length} lugares · pinchá un marcador
           </div>
         </div>
@@ -346,17 +359,18 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
   return (
     <div className="fixed inset-0 z-[700] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()}
-        className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-slate-900 sm:rounded-2xl rounded-t-2xl border border-white/10 shadow-2xl">
-        <div className="sticky top-0 bg-gradient-to-br from-slate-800 to-slate-900 p-5 border-b border-white/10 flex items-start justify-between">
+        className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white sm:rounded-2xl rounded-t-2xl border border-sky-200 shadow-2xl">
+        <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 sm:rounded-t-2xl rounded-t-2xl" />
+        <div className="sticky top-0 bg-sky-50 p-5 border-b border-sky-200 flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-bold">{place.name}</h2>
+            <h2 className="text-xl font-bold text-slate-900">{place.name}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs px-2 py-0.5 rounded" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_LABELS[place.type]}</span>
-              <span className="text-xs text-slate-400 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>
-              {avgRating && <span className="text-xs text-amber-300 flex items-center gap-1"><Star size={12} className="fill-amber-300 text-amber-300" /> {avgRating} usuarios</span>}
+              <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>
+              {avgRating && <span className="text-xs text-amber-600 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {avgRating} usuarios</span>}
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10"><X size={20} /></button>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
         </div>
 
         <div className="p-5">
@@ -367,15 +381,15 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
           )}
 
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-semibold text-slate-300">Accesibilidad</h3>
+            <h3 className="text-sm font-semibold text-slate-700">Accesibilidad</h3>
             {!editing ? (
               <button onClick={() => setEditing(true)}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-slate-300 border border-white/10 transition">
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-xs text-sky-700 border border-sky-200 transition">
                 <Pencil size={13} /> Editar
               </button>
             ) : (
               <div className="flex items-center gap-2">
-                <button onClick={cancelEdit} className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-slate-400 transition">Cancelar</button>
+                <button onClick={cancelEdit} className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs text-slate-600 transition">Cancelar</button>
                 <button onClick={saveEdit} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-xs font-medium transition">
                   <Save size={13} /> Guardar
                 </button>
@@ -390,18 +404,18 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
               if (editing) {
                 return (
                   <button key={c.key} onClick={() => setDraft({ ...draft, [c.key]: !draft[c.key] })}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border transition ${ok ? "bg-emerald-500/10 border-emerald-500/30" : "bg-white/5 border-white/10 hover:border-white/20"}`}>
-                    <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-400" /> {c.label}</span>
-                    <span className={`w-10 h-5 rounded-full relative transition ${ok ? "bg-emerald-500" : "bg-slate-600"}`}>
-                      <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${ok ? "left-[22px]" : "left-0.5"}`} />
+                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border transition ${ok ? "bg-emerald-50 border-emerald-300" : "bg-slate-50 border-slate-200 hover:border-slate-300"}`}>
+                    <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-500" /> {c.label}</span>
+                    <span className={`w-10 h-5 rounded-full relative transition ${ok ? "bg-emerald-500" : "bg-slate-300"}`}>
+                      <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${ok ? "left-[22px]" : "left-0.5"}`} />
                     </span>
                   </button>
                 );
               }
               return (
-                <div key={c.key} className={`flex items-center justify-between p-2.5 rounded-lg border ${ok ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/5 border-rose-500/15"}`}>
-                  <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-400" /> {c.label}</span>
-                  {ok ? <CheckCircle2 size={18} className="text-emerald-400" /> : <XCircle size={18} className="text-rose-400/60" />}
+                <div key={c.key} className={`flex items-center justify-between p-2.5 rounded-lg border ${ok ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"}`}>
+                  <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-500" /> {c.label}</span>
+                  {ok ? <CheckCircle2 size={18} className="text-emerald-500" /> : <XCircle size={18} className="text-rose-400" />}
                 </div>
               );
             })}
@@ -409,37 +423,37 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
           </div>
 
           {/* Reseñas */}
-          <h3 className="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2"><MessageSquare size={15} /> Comentarios ({reviews.length})</h3>
+          <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"><MessageSquare size={15} /> Comentarios ({reviews.length})</h3>
           <div className="space-y-2 mb-4 max-h-44 overflow-y-auto">
             {reviews.length === 0 && <p className="text-xs text-slate-500 italic">Todavía no hay comentarios. ¡Sé el primero!</p>}
             {reviews.map((r, i) => (
-              <div key={i} className="p-3 rounded-lg bg-white/5 border border-white/5">
+              <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-200">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{r.name}</span>
-                  <span className="flex gap-0.5">{[1,2,3,4,5].map((s) => <Star key={s} size={12} className={s <= r.stars ? "fill-amber-400 text-amber-400" : "text-slate-600"} />)}</span>
+                  <span className="text-sm font-medium text-slate-800">{r.name}</span>
+                  <span className="flex gap-0.5">{[1,2,3,4,5].map((s) => <Star key={s} size={12} className={s <= r.stars ? "fill-amber-400 text-amber-400" : "text-slate-300"} />)}</span>
                 </div>
-                <p className="text-xs text-slate-300 mt-1">{r.text}</p>
+                <p className="text-xs text-slate-600 mt-1">{r.text}</p>
                 <span className="text-[10px] text-slate-500">{r.date}</span>
               </div>
             ))}
           </div>
 
           {/* Formulario */}
-          <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+          <div className="p-3 rounded-xl bg-sky-50 border border-sky-200">
             <div className="flex items-center gap-1 mb-2">
               {[1,2,3,4,5].map((s) => (
                 <button key={s} onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)} onClick={() => setStars(s)}>
-                  <Star size={24} className={(hover || stars) >= s ? "fill-amber-400 text-amber-400" : "text-slate-600"} />
+                  <Star size={24} className={(hover || stars) >= s ? "fill-amber-400 text-amber-400" : "text-slate-300"} />
                 </button>
               ))}
-              <span className="text-xs text-slate-400 ml-2">{stars ? `${stars}/5` : "Tu calificación"}</span>
+              <span className="text-xs text-slate-500 ml-2">{stars ? `${stars}/5` : "Tu calificación"}</span>
             </div>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre (opcional)"
-              className="w-full mb-2 px-3 py-2 rounded-lg bg-slate-800 border border-white/10 text-sm outline-none focus:border-sky-500" />
+              className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
             <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Tu experiencia con la accesibilidad del lugar..."
-              rows={2} className="w-full mb-2 px-3 py-2 rounded-lg bg-slate-800 border border-white/10 text-sm outline-none focus:border-sky-500 resize-none" />
+              rows={2} className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500 resize-none" />
             <button onClick={submit} disabled={!stars || !text.trim()}
-              className="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium transition">
+              className="w-full py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-white disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium transition">
               Publicar comentario
             </button>
           </div>
@@ -452,10 +466,11 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
 function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
   return (
     <div className="fixed inset-0 z-[700] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-slate-900 rounded-2xl border border-white/10 shadow-2xl">
-        <div className="sticky top-0 bg-slate-900 p-5 border-b border-white/10 flex items-center justify-between">
-          <h2 className="text-lg font-bold flex items-center gap-2"><BarChart3 size={20} className="text-sky-400" /> Análisis de Accesibilidad</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10"><X size={20} /></button>
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl border border-sky-200 shadow-2xl">
+        <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 rounded-t-2xl" />
+        <div className="sticky top-0 bg-white p-5 border-b border-sky-200 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><BarChart3 size={20} className="text-sky-500" /> Análisis de Accesibilidad</h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
         </div>
         <div className="p-5">
           {/* Donut */}
@@ -465,40 +480,40 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
               <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500" /> 100% aptos: <b>{stats.full}</b> ({stats.pctFull}%)</div>
               <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-amber-500" /> Parciales: <b>{stats.partial}</b></div>
               <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-rose-500" /> Sin acceso: <b>{stats.none}</b></div>
-              <div className="text-slate-400 pt-1 border-t border-white/10">Total relevados: <b>{stats.total}</b></div>
+              <div className="text-slate-500 pt-1 border-t border-slate-200">Total relevados: <b>{stats.total}</b></div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
-            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
-              <div className="text-3xl font-bold text-emerald-400">{stats.pctFull}%</div>
-              <div className="text-xs text-slate-400 mt-1">100% apto para personas con discapacidad</div>
+            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+              <div className="text-3xl font-bold text-emerald-500">{stats.pctFull}%</div>
+              <div className="text-xs text-slate-500 mt-1">100% apto para personas con discapacidad</div>
             </div>
-            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-center">
-              <div className="text-3xl font-bold text-rose-400">{stats.pctNotFull}%</div>
-              <div className="text-xs text-slate-400 mt-1">No cumple todos los criterios</div>
+            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-center">
+              <div className="text-3xl font-bold text-rose-500">{stats.pctNotFull}%</div>
+              <div className="text-xs text-slate-500 mt-1">No cumple todos los criterios</div>
             </div>
           </div>
 
-          <h3 className="text-sm font-semibold text-slate-300 mb-3">Cobertura por criterio</h3>
+          <h3 className="text-sm font-semibold text-slate-700 mb-3">Cobertura por criterio</h3>
           <div className="space-y-3">
             {stats.byCriteria.map((c) => {
               const Icon = c.icon;
               return (
                 <div key={c.key}>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="flex items-center gap-1.5 text-slate-300"><Icon size={13} /> {c.label}</span>
-                    <span className="text-slate-400">{c.count}/{stats.total} · {c.pct}%</span>
+                    <span className="flex items-center gap-1.5 text-slate-700"><Icon size={13} /> {c.label}</span>
+                    <span className="text-slate-500">{c.count}/{stats.total} · {c.pct}%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-white/5 overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all" style={{ width: `${c.pct}%` }} />
+                  <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-orange-500 transition-all" style={{ width: `${c.pct}%` }} />
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <p className="text-[11px] text-slate-500 mt-5 leading-relaxed border-t border-white/10 pt-3">
+          <p className="text-[11px] text-slate-500 mt-5 leading-relaxed border-t border-slate-200 pt-3">
             Nota: los lugares y sus ubicaciones son reales (datos de Google). Los indicadores de accesibilidad son
             simulados con fines demostrativos, ya que esa información detallada no está disponible públicamente.
             Para uso real habría que relevar cada lugar o integrar una base colaborativa. Podés editar los datos de
@@ -521,12 +536,12 @@ function Donut({ pctFull }) {
   const r = 50, c = 2 * Math.PI * r;
   return (
     <svg width="140" height="140" viewBox="0 0 140 140">
-      <circle cx="70" cy="70" r={r} fill="none" stroke="#1e293b" strokeWidth="16" />
+      <circle cx="70" cy="70" r={r} fill="none" stroke="#e2e8f0" strokeWidth="16" />
       <circle cx="70" cy="70" r={r} fill="none" stroke="#10b981" strokeWidth="16" strokeLinecap="round"
         strokeDasharray={c} strokeDashoffset={c - (c * pctFull) / 100} transform="rotate(-90 70 70)"
         style={{ transition: "stroke-dashoffset 0.8s ease" }} />
-      <text x="70" y="64" textAnchor="middle" className="fill-white" style={{ fontSize: 26, fontWeight: 700 }}>{pctFull}%</text>
-      <text x="70" y="84" textAnchor="middle" className="fill-slate-400" style={{ fontSize: 11 }}>100% aptos</text>
+      <text x="70" y="64" textAnchor="middle" className="fill-slate-800" style={{ fontSize: 26, fontWeight: 700 }}>{pctFull}%</text>
+      <text x="70" y="84" textAnchor="middle" className="fill-slate-500" style={{ fontSize: 11 }}>100% aptos</text>
     </svg>
   );
 }
