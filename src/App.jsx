@@ -25,6 +25,15 @@ const PLACES = [
   { id: "switch", name: "Switch Club", type: "boliche", lat: -32.939125, lng: -60.6506263, gRating: 4.3, a: { bano: false, rampa: false, ascensor: false, braille: false, senas: false } },
   { id: "lotus", name: "Lotus Night Club", type: "boliche", lat: -32.9292618, lng: -60.6713676, gRating: 3.2, a: { bano: false, rampa: false, ascensor: false, braille: false, senas: false } },
   { id: "manushcentro", name: "Manush Centro", type: "bar", lat: -32.9445, lng: -60.6425, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
+  // Instituciones educativas de Rosario (ubicaciones reales; datos de accesibilidad simulados)
+  { id: "unr_rectorado", name: "UNR · Rectorado", type: "educativo", lat: -32.9468, lng: -60.6393, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "unr_derecho", name: "UNR · Facultad de Derecho", type: "educativo", lat: -32.9447, lng: -60.6485, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: true } },
+  { id: "unr_economicas", name: "UNR · Cs. Económicas", type: "educativo", lat: -32.9521, lng: -60.6537, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "unr_medicina", name: "UNR · Facultad de Medicina", type: "educativo", lat: -32.9486, lng: -60.6595, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: false } },
+  { id: "utn_rosario", name: "UTN · Facultad Regional Rosario", type: "educativo", lat: -32.9466, lng: -60.6432, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "austral_rosario", name: "Universidad Austral · Rosario", type: "educativo", lat: -32.9398, lng: -60.6470, gRating: 4.4, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
+  { id: "uca_rosario", name: "UCA · Rosario", type: "educativo", lat: -32.9585, lng: -60.6680, gRating: 4.3, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "uai_rosario", name: "UAI · Rosario", type: "educativo", lat: -32.9530, lng: -60.6510, gRating: 4.2, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
 ];
 
 const CRITERIA = [
@@ -35,8 +44,8 @@ const CRITERIA = [
   { key: "senas", label: "Personal con lengua de señas", icon: Hand },
 ];
 
-const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche" };
-const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7" };
+const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo" };
+const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6" };
 
 const isFullyAccessible = (p) => CRITERIA.every((c) => p.a[c.key]);
 const accessScore = (p) => CRITERIA.filter((c) => p.a[c.key]).length;
@@ -125,8 +134,27 @@ function RealMap({ places, selected, onSelect, avgRating }) {
     });
   }, [places, selected, ready, avgRating]);
 
-  return <div ref={containerRef} className="absolute inset-0 w-full h-full"
-    style={{ background: "radial-gradient(circle at 30% 20%, #15243b 0%, #0b1220 60%, #070b14 100%)" }} />;
+  // Centrar el mapa en el lugar seleccionado al hacer clic
+  useEffect(() => {
+    if (!ready || !mapRef.current || !selected) return;
+    mapRef.current.setView([selected.lat, selected.lng], 16, { animate: true });
+  }, [selected, ready]);
+
+  // Volver a la vista inicial de toda la ciudad
+  const resetView = () => {
+    if (mapRef.current) mapRef.current.setView([-32.945, -60.645], 14, { animate: true });
+  };
+
+  return (
+    <>
+      <div ref={containerRef} className="absolute inset-0 w-full h-full"
+        style={{ background: "radial-gradient(circle at 30% 20%, #15243b 0%, #0b1220 60%, #070b14 100%)" }} />
+      <button onClick={resetView} title="Volver a la vista inicial del mapa"
+        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950/80 hover:bg-slate-800 text-xs font-medium text-slate-100 border border-white/10 backdrop-blur shadow-lg transition">
+        <RotateCcw size={14} /> Volver al inicio
+      </button>
+    </>
+  );
 }
 
 export default function App() {
@@ -215,8 +243,8 @@ export default function App() {
               <Accessibility size={22} />
             </div>
             <div>
-              <h1 className="text-lg font-bold leading-tight">Rosario Accesible</h1>
-              <p className="text-xs text-slate-400">Bares, restaurantes y boliches inclusivos</p>
+              <h1 className="text-lg font-bold leading-tight">Rosario Access App</h1>
+              <p className="text-xs text-slate-400">Bares, restaurantes, boliches e instituciones educativas inclusivas</p>
             </div>
           </div>
           <button onClick={() => setShowAnalysis(true)}
@@ -228,7 +256,7 @@ export default function App() {
         {/* Filtros */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <span className="text-xs text-slate-500 flex items-center gap-1"><Filter size={13} /> Tipo:</span>
-          {["all", "bar", "restaurant", "boliche"].map((t) => (
+          {["all", "bar", "restaurant", "boliche", "educativo"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition ${typeFilter === t ? "bg-sky-500 text-white" : "bg-white/5 text-slate-300 hover:bg-white/10"}`}>
               {t === "all" ? "Todos" : TYPE_LABELS[t] + "s"}
