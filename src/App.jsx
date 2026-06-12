@@ -34,6 +34,15 @@ const PLACES = [
   { id: "austral_rosario", name: "Universidad Austral · Rosario", type: "educativo", lat: -32.9398, lng: -60.6470, gRating: 4.4, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
   { id: "uca_rosario", name: "UCA · Rosario", type: "educativo", lat: -32.9585, lng: -60.6680, gRating: 4.3, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
   { id: "uai_rosario", name: "UAI · Rosario", type: "educativo", lat: -32.9530, lng: -60.6510, gRating: 4.2, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  // Escuelas y colegios de Rosario (ubicaciones aproximadas; datos de accesibilidad simulados)
+  { id: "ips_rosario", name: "Instituto Politécnico Superior (UNR)", type: "educativo", lat: -32.9466, lng: -60.6360, gRating: 4.7, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "superior_comercio", name: "Esc. Superior de Comercio (UNR)", type: "educativo", lat: -32.9495, lng: -60.6360, gRating: 4.6, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "normal_1", name: "Escuela Normal Superior N°1 Avellaneda", type: "educativo", lat: -32.9479, lng: -60.6386, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: true } },
+  { id: "normal_2", name: "Escuela Normal N°2 J. M. Gutiérrez", type: "educativo", lat: -32.9490, lng: -60.6470, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
+  { id: "lasalle", name: "Colegio La Salle Rosario", type: "educativo", lat: -32.9520, lng: -60.6560, gRating: 4.5, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "inmaculada", name: "Colegio Inmaculada Concepción", type: "educativo", lat: -32.9430, lng: -60.6420, gRating: 4.4, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "sanbartolome", name: "Colegio San Bartolomé", type: "educativo", lat: -32.9550, lng: -60.6580, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
+  { id: "dante", name: "Colegio Dante Alighieri", type: "educativo", lat: -32.9505, lng: -60.6500, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
 ];
 
 const CRITERIA = [
