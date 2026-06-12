@@ -264,7 +264,7 @@ export default function App() {
   return (
     <div className="w-full min-h-screen bg-sky-50 text-slate-800" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
       {/* Header */}
-      <div className="sticky top-0 z-[600] backdrop-blur-xl bg-white/80 border-b border-sky-200 px-5 py-4">
+      <div className="sticky top-0 z-[600] backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-5 py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
         <div className="-mx-5 -mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -274,7 +274,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-lg font-bold leading-tight text-slate-900">Rosario Access App</h1>
-              <p className="text-xs text-slate-500">Bares, restaurantes, boliches e instituciones educativas inclusivas</p>
+              <p className="text-xs text-slate-500">Toda la información disponible acerca de la accesibilidad local</p>
             </div>
           </div>
           <button onClick={() => setShowAnalysis(true)}
