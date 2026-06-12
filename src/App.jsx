@@ -262,7 +262,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-sky-50 text-slate-800" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div className="w-full min-h-screen bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
       {/* Header */}
       <div className="sticky top-0 z-[600] backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-5 py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
@@ -273,8 +273,8 @@ export default function App() {
               <Accessibility size={22} />
             </div>
             <div>
-              <h1 className="text-lg font-bold leading-tight text-slate-900">Rosario Access App</h1>
-              <p className="text-xs text-slate-500">Toda la información disponible acerca de la accesibilidad local</p>
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-slate-900" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access App</h1>
+              <p className="text-sm font-semibold text-sky-700">Toda la información disponible acerca de la accesibilidad local</p>
             </div>
           </div>
           <button onClick={() => setShowAnalysis(true)}
