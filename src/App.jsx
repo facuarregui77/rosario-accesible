@@ -54,6 +54,14 @@ const PLACES = [
   { id: "megatlon", name: "Megatlón Rosario", type: "deportivo", lat: -32.9445, lng: -60.6390, gRating: 4.2, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
   { id: "sportclub", name: "SportClub Rosario", type: "deportivo", lat: -32.9486, lng: -60.6470, gRating: 4.1, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
   { id: "always_ready", name: "Always Ready Gym", type: "deportivo", lat: -32.9412, lng: -60.6520, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
+  // Centros culturales de Rosario (ubicaciones reales; datos de accesibilidad simulados)
+  { id: "cc_fontanarrosa", name: "Centro Cultural Roberto Fontanarrosa", type: "cultural", lat: -32.9476, lng: -60.6304, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
+  { id: "cc_parque_espana", name: "Centro Cultural Parque de España", type: "cultural", lat: -32.9407, lng: -60.6283, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "cc_lavarden", name: "Plataforma Lavardén", type: "cultural", lat: -32.9519, lng: -60.6361, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: true } },
+  { id: "cec", name: "Centro de Expresiones Contemporáneas (CEC)", type: "cultural", lat: -32.9268, lng: -60.6286, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "cc_la_toma", name: "Centro Cultural La Toma", type: "cultural", lat: -32.9543, lng: -60.6533, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
+  { id: "distrito_siete", name: "Distrito Siete", type: "cultural", lat: -32.9606, lng: -60.6486, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
+  { id: "cc_lumiere", name: "Centro Cultural Cine Lumière", type: "cultural", lat: -32.9486, lng: -60.6340, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
 ];
 
 const CRITERIA = [
@@ -64,8 +72,8 @@ const CRITERIA = [
   { key: "senas", label: "Personal con lengua de señas", icon: Hand },
 ];
 
-const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo" };
-const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444" };
+const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural" };
+const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444", cultural: "#d946ef" };
 
 const isFullyAccessible = (p) => CRITERIA.every((c) => p.a[c.key]);
 const accessScore = (p) => CRITERIA.filter((c) => p.a[c.key]).length;
@@ -257,6 +265,8 @@ export default function App() {
     <div className="w-full min-h-screen bg-sky-50 text-slate-800" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
       {/* Header */}
       <div className="sticky top-0 z-[600] backdrop-blur-xl bg-white/80 border-b border-sky-200 px-5 py-4">
+        {/* Detalle decorativo superior: franja celeste → naranja */}
+        <div className="-mx-5 -mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white">
@@ -276,7 +286,7 @@ export default function App() {
         {/* Filtros */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <span className="text-xs text-slate-500 flex items-center gap-1"><Filter size={13} /> Tipo:</span>
-          {["all", "bar", "restaurant", "boliche", "educativo", "deportivo"].map((t) => (
+          {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
               {t === "all" ? "Todos" : TYPE_LABELS[t] + "s"}
@@ -296,13 +306,13 @@ export default function App() {
 
       <div className="flex flex-row">
         {/* PANEL LATERAL: lista — a la izquierda */}
-        <div className="w-72 shrink-0 bg-white h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-sky-100">
+        <div className="w-72 shrink-0 bg-sky-100 h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-sky-300">
           {filtered.map((p) => {
             const score = accessScore(p);
             const full = isFullyAccessible(p);
             return (
               <button key={p.id} onClick={() => setSelected(p)}
-                className={`w-full text-left px-4 py-3 border-b border-slate-100 border-l-4 hover:bg-sky-50 transition ${selected?.id === p.id ? "bg-sky-100 border-l-orange-400" : "border-l-transparent"}`}>
+                className={`w-full text-left px-4 py-3 border-b border-sky-200 border-l-4 hover:bg-sky-200 transition ${selected?.id === p.id ? "bg-sky-300 border-l-orange-500" : "border-l-transparent"}`}>
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium text-sm text-slate-800">{p.name}</span>
                   {full && <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 whitespace-nowrap">100% apto</span>}

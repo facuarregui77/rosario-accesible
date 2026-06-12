@@ -1,6 +1,6 @@
 # 🗺️ Rosario Access App
 
-Mapa interactivo que muestra **bares, restaurantes, boliches, instituciones educativas y clubes deportivos/gimnasios** de **Rosario (Argentina)** con información de **accesibilidad** para personas con discapacidad.
+Mapa interactivo que muestra **bares, restaurantes, boliches, instituciones educativas, clubes deportivos/gimnasios y centros culturales** de **Rosario (Argentina)** con información de **accesibilidad** para personas con discapacidad.
 
 La idea es ayudar a encontrar lugares inclusivos según distintos criterios: baño adaptado, rampa de acceso, ascensor, menú en braille y personal con lengua de señas.
 
@@ -12,7 +12,7 @@ La idea es ayudar a encontrar lugares inclusivos según distintos criterios: ba�
 
 - 🗺️ **Mapa real** de Rosario con marcadores (usando Leaflet).
 - ♿ **5 criterios de accesibilidad** por lugar, con vista de "100% apto".
-- 🏫 **Instituciones educativas** (universidades, escuelas y colegios), 🏟️ **clubes deportivos y gimnasios**, además de bares, restaurantes y boliches.
+- 🏫 **Instituciones educativas** (universidades, escuelas y colegios), 🏟️ **clubes deportivos y gimnasios**, 🎭 **centros culturales**, además de bares, restaurantes y boliches.
 - 🔍 **Filtros** por tipo de lugar y por nivel de accesibilidad.
 - ⬅️ **Botón "Volver al inicio"**: al hacer clic en un lugar el mapa se centra en él, y con un botón volvés a la vista de toda la ciudad.
 - 📊 **Panel de análisis** con estadísticas y cobertura por criterio.
