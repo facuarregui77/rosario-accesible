@@ -84,6 +84,7 @@ const CRITERIA = [
 ];
 
 const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural" };
+const TYPE_PLURAL = { bar: "Bares", restaurant: "Restaurantes", boliche: "Boliches", educativo: "Educativos", deportivo: "Deportivos", cultural: "Culturales" };
 const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444", cultural: "#d946ef" };
 
 // Etiquetas del acceso en silla de ruedas (dato real de OSM)
@@ -340,10 +341,13 @@ export default function App() {
           {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
-              {t === "all" ? "Todos" : TYPE_LABELS[t] + "s"}
+              {t === "all" ? "Todos" : TYPE_PLURAL[t]}
             </button>
           ))}
-          <span className="text-xs text-slate-500 ml-2">Acceso (silla de ruedas):</span>
+          <button onClick={() => setAccessFilter("all")} title="Acceso en silla de ruedas — ver todos"
+            className="ml-2 px-3 py-1 rounded-full text-xs font-medium transition border bg-white text-slate-600 border-slate-200 hover:bg-sky-50 flex items-center gap-1">
+            <Accessibility size={13} /> Acceso:
+          </button>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
