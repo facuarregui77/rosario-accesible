@@ -222,7 +222,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
       <div ref={containerRef} className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa"
-        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-200 backdrop-blur shadow-lg transition">
+        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition">
         <RotateCcw size={14} /> Volver al inicio
       </button>
     </>
@@ -329,7 +329,7 @@ export default function App() {
             </button>
             <button onClick={() => setShowRamps((v) => !v)}
               title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
-              className={`w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-200"}`}>
+              className={`w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
               <Accessibility size={16} /> Rampas
             </button>
           </div>
@@ -340,7 +340,7 @@ export default function App() {
           <span title="Filtrar por tipo de lugar" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-sky-200 text-sky-700"><Filter size={14} /></span>
           {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-200 hover:bg-white"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
               {t === "all" ? "Todos" : TYPE_PLURAL[t]}
             </button>
           ))}
@@ -350,7 +350,7 @@ export default function App() {
           <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-orange-100 text-orange-600"><Accessibility size={14} /></span>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-200 hover:bg-white"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
               {l}
             </button>
           ))}
