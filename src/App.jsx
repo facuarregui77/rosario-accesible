@@ -322,10 +322,17 @@ export default function App() {
               <p className="text-sm font-semibold text-sky-500">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
           </div>
-          <button onClick={() => setShowAnalysis(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
-            <BarChart3 size={16} /> Análisis
-          </button>
+          <div className="flex flex-col gap-2 w-36 shrink-0">
+            <button onClick={() => setShowAnalysis(true)}
+              className="w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
+              <BarChart3 size={16} /> Análisis
+            </button>
+            <button onClick={() => setShowRamps((v) => !v)}
+              title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
+              className={`w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-200"}`}>
+              <Accessibility size={16} /> Rampas
+            </button>
+          </div>
         </div>
 
         {/* Filtros — fila por tipo */}
@@ -333,7 +340,7 @@ export default function App() {
           <span title="Filtrar por tipo de lugar" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-sky-200 text-sky-700"><Filter size={14} /></span>
           {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-200 hover:bg-white"}`}>
               {t === "all" ? "Todos" : TYPE_PLURAL[t]}
             </button>
           ))}
@@ -343,15 +350,10 @@ export default function App() {
           <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-orange-100 text-orange-600"><Accessibility size={14} /></span>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
+              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-200 hover:bg-white"}`}>
               {l}
             </button>
           ))}
-          <button onClick={() => setShowRamps((v) => !v)}
-            title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
-            className={`ml-2 px-3 py-1 rounded-full text-xs font-medium transition border flex items-center gap-1 ${showRamps ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
-            <Accessibility size={13} /> Rampas
-          </button>
         </div>
         {/* Detalle decorativo: franja celeste → naranja */}
         <div className="-mx-5 -mb-4 mt-3 h-1 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
