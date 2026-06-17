@@ -123,13 +123,12 @@ const loadLeaflet = () => {
   return leafletPromise;
 };
 
-function RealMap({ places, selected, onSelect, avgRating }) {
+function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
   const rampsLayerRef = useRef(null);
   const [ready, setReady] = useState(false);
-  const [showRamps, setShowRamps] = useState(false);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
 
@@ -220,17 +219,10 @@ function RealMap({ places, selected, onSelect, avgRating }) {
     <>
       <div ref={containerRef} className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
-      <div className="absolute top-3 right-3 z-[500] flex flex-col items-end gap-2">
-        <button onClick={resetView} title="Volver a la vista inicial del mapa"
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-200 backdrop-blur shadow-lg transition">
-          <RotateCcw size={14} /> Volver al inicio
-        </button>
-        <button onClick={() => setShowRamps((v) => !v)}
-          title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border backdrop-blur shadow-lg transition ${showRamps ? "bg-sky-500 text-white border-sky-500 hover:bg-sky-400" : "bg-white/90 text-sky-700 border-sky-200 hover:bg-white"}`}>
-          <Accessibility size={14} /> {showRamps ? "Ocultar rampas" : `Rampas accesibles (${RAMPS.count})`}
-        </button>
-      </div>
+      <button onClick={resetView} title="Volver a la vista inicial del mapa"
+        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-200 backdrop-blur shadow-lg transition">
+        <RotateCcw size={14} /> Volver al inicio
+      </button>
     </>
   );
 }
@@ -240,6 +232,7 @@ export default function App() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [accessFilter, setAccessFilter] = useState("all");
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showRamps, setShowRamps] = useState(false);
   const [reviews, setReviews] = useState({});
   const [overrides, setOverrides] = useState({});
   const [loading, setLoading] = useState(true);
@@ -354,6 +347,11 @@ export default function App() {
               {l}
             </button>
           ))}
+          <button onClick={() => setShowRamps((v) => !v)}
+            title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
+            className={`ml-2 px-3 py-1 rounded-full text-xs font-medium transition border flex items-center gap-1 ${showRamps ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
+            <Accessibility size={13} /> Rampas
+          </button>
         </div>
         {/* Detalle decorativo: franja celeste → naranja */}
         <div className="-mx-5 -mb-4 mt-3 h-1 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
@@ -380,7 +378,7 @@ export default function App() {
 
         {/* MAPA REAL (Leaflet) — a la derecha */}
         <div className="relative flex-1 h-[calc(100vh-110px)] min-h-[400px] overflow-hidden">
-          <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} />
+          <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} />
           <div className="absolute bottom-3 left-3 z-[500] text-[10px] text-slate-600 bg-white/90 border border-sky-100 px-2 py-1 rounded pointer-events-none">
             {filtered.length} lugares · pinchá un marcador
           </div>
