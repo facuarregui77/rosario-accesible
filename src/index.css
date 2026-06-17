@@ -28,3 +28,14 @@ body,
 .scroll-orange::-webkit-scrollbar-thumb:hover {
   background-color: #fb923c;
 }
+
+/* Controles de zoom (+ / -) del mapa en celeste, igual que las categorías */
+.leaflet-control-zoom a {
+  color: #0369a1 !important;
+  border-color: #38bdf8 !important;
+  font-weight: 700;
+}
+.leaflet-control-zoom a:hover {
+  color: #075985 !important;
+  background-color: #e0f2fe !important;
+}

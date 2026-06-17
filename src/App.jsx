@@ -366,7 +366,7 @@ export default function App() {
               <button key={p.id} onClick={() => setSelected(p)}
                 className={`w-full text-left px-4 py-3 border-b border-sky-200 border-l-4 hover:bg-sky-200 transition ${selected?.id === p.id ? "bg-sky-300 border-l-orange-500" : "border-l-transparent"}`}>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium text-sm text-slate-800">{p.name}</span>
+                  <span className="font-medium text-sm text-sky-700">{p.name}</span>
                   <AccessChip wheelchair={p.wheelchair} />
                 </div>
                 <div className="flex items-center gap-2 mt-1">
