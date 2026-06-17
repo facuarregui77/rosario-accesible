@@ -318,7 +318,7 @@ export default function App() {
               <Accessibility size={30} />
             </div>
             <div>
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access App</h1>
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
               <p className="text-sm font-semibold text-sky-500">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
           </div>
