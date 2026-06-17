@@ -1,67 +1,76 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save } from "lucide-react";
 
-// Lugares REALES de Rosario (nombre, coords, rating de Google reales).
-// Los datos de accesibilidad son SIMULADOS de forma realista para fines demostrativos.
+// Lugares REALES de Rosario (nombre, coords y rating de Google reales).
+//
+// DATOS DE ACCESIBILIDAD — política de honestidad:
+//   - Cada criterio puede ser "si" | "no" | null (null = SIN DATOS / a relevar).
+//   - Solo se cargan datos REALES y COMPROBABLES. La fuente es OpenStreetMap (ODbL);
+//     el campo `wheelchair` ("si"|"parcial") y `src` (link al objeto OSM) permiten verificarlos.
+//   - El resto queda en null ("sin datos") y puede completarse manualmente desde la app
+//     (relevamiento colaborativo); esas ediciones se guardan en el navegador.
+// Nada de esto se inventa: si no hay fuente, dice "sin datos".
+const SIN_DATOS = { bano: null, rampa: null, ascensor: null, braille: null, senas: null };
+const osm = (type, id) => `https://www.openstreetmap.org/${type}/${id}`;
 const PLACES = [
-  { id: "elcairo", name: "El Cairo", type: "bar", lat: -32.9450198, lng: -60.6379576, gRating: 4.2, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "theclub", name: "The Club", type: "restaurant", lat: -32.9460359, lng: -60.6480806, gRating: 4.2, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "hoxton", name: "Hoxton House", type: "bar", lat: -32.9576484, lng: -60.6401811, gRating: 4.1, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "brooklyn", name: "Brooklyn | Crafters' Garden", type: "bar", lat: -32.9412465, lng: -60.6396895, gRating: 4.0, a: { bano: false, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "elpatio", name: "El Patio Multiespacio", type: "bar", lat: -32.9497944, lng: -60.647806, gRating: 4.2, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "craft", name: "CRAFT", type: "bar", lat: -32.9574577, lng: -60.6389648, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "manush", name: "Manush Rosario", type: "bar", lat: -32.9328069, lng: -60.6523911, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
-  { id: "granlago", name: "Gran Lago - Resto Bar", type: "restaurant", lat: -32.955596, lng: -60.6585203, gRating: 4.1, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "losjardines", name: "Los Jardines", type: "restaurant", lat: -32.934148, lng: -60.6433216, gRating: 4.3, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: true } },
-  { id: "riomio", name: "Riomío", type: "restaurant", lat: -32.933136, lng: -60.6464189, gRating: 4.2, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "wembley", name: "Wembley", type: "restaurant", lat: -32.9647649, lng: -60.6217325, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "rockfellers", name: "Rock&Feller's Savoy", type: "restaurant", lat: -32.9446607, lng: -60.636258, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: false } },
-  { id: "escauriza", name: "Escauriza Parrilla", type: "restaurant", lat: -32.880531, lng: -60.6883401, gRating: 4.5, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "donferro", name: "Parrilla Don Ferro", type: "restaurant", lat: -32.9343572, lng: -60.6435197, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "rooftop", name: "Rooftop", type: "bar", lat: -32.9320322, lng: -60.6636827, gRating: 4.3, a: { bano: true, rampa: false, ascensor: true, braille: false, senas: false } },
-  { id: "roxy", name: "Roxy Club Rosario", type: "boliche", lat: -32.9310926, lng: -60.657733, gRating: 3.8, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "decada", name: "Década Disco", type: "boliche", lat: -32.9364977, lng: -60.6697425, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "bound", name: "Bound", type: "boliche", lat: -32.9364439, lng: -60.6516674, gRating: 3.6, a: { bano: false, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "switch", name: "Switch Club", type: "boliche", lat: -32.939125, lng: -60.6506263, gRating: 4.3, a: { bano: false, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "lotus", name: "Lotus Night Club", type: "boliche", lat: -32.9292618, lng: -60.6713676, gRating: 3.2, a: { bano: false, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "manushcentro", name: "Manush Centro", type: "bar", lat: -32.9445, lng: -60.6425, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
-  // Instituciones educativas de Rosario (ubicaciones reales; datos de accesibilidad simulados)
-  { id: "unr_rectorado", name: "UNR · Rectorado", type: "educativo", lat: -32.9468, lng: -60.6393, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "unr_derecho", name: "UNR · Facultad de Derecho", type: "educativo", lat: -32.9447, lng: -60.6485, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: true } },
-  { id: "unr_economicas", name: "UNR · Cs. Económicas", type: "educativo", lat: -32.9521, lng: -60.6537, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "unr_medicina", name: "UNR · Facultad de Medicina", type: "educativo", lat: -32.9486, lng: -60.6595, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: false } },
-  { id: "utn_rosario", name: "UTN · Facultad Regional Rosario", type: "educativo", lat: -32.9466, lng: -60.6432, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "austral_rosario", name: "Universidad Austral · Rosario", type: "educativo", lat: -32.9398, lng: -60.6470, gRating: 4.4, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
-  { id: "uca_rosario", name: "UCA · Rosario", type: "educativo", lat: -32.9585, lng: -60.6680, gRating: 4.3, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "uai_rosario", name: "UAI · Rosario", type: "educativo", lat: -32.9530, lng: -60.6510, gRating: 4.2, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  // Escuelas y colegios de Rosario (ubicaciones aproximadas; datos de accesibilidad simulados)
-  { id: "ips_rosario", name: "Instituto Politécnico Superior (UNR)", type: "educativo", lat: -32.9466, lng: -60.6360, gRating: 4.7, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "superior_comercio", name: "Esc. Superior de Comercio (UNR)", type: "educativo", lat: -32.9495, lng: -60.6360, gRating: 4.6, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "normal_1", name: "Escuela Normal Superior N°1 Avellaneda", type: "educativo", lat: -32.9479, lng: -60.6386, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: true } },
-  { id: "normal_2", name: "Escuela Normal N°2 J. M. Gutiérrez", type: "educativo", lat: -32.9490, lng: -60.6470, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "lasalle", name: "Colegio La Salle Rosario", type: "educativo", lat: -32.9520, lng: -60.6560, gRating: 4.5, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "inmaculada", name: "Colegio Inmaculada Concepción", type: "educativo", lat: -32.9430, lng: -60.6420, gRating: 4.4, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "sanbartolome", name: "Colegio San Bartolomé", type: "educativo", lat: -32.9550, lng: -60.6580, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "dante", name: "Colegio Dante Alighieri", type: "educativo", lat: -32.9505, lng: -60.6500, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  // Clubes deportivos y gimnasios de Rosario (ubicaciones reales; datos de accesibilidad simulados)
-  { id: "central", name: "Club Atlético Rosario Central", type: "deportivo", lat: -32.9080, lng: -60.6303, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "newells", name: "Club Atlético Newell's Old Boys", type: "deportivo", lat: -32.9582, lng: -60.6655, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "regatas", name: "Club de Regatas Rosario", type: "deportivo", lat: -32.9286, lng: -60.6281, gRating: 4.5, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "gimnasia_ros", name: "Club Gimnasia y Esgrima de Rosario", type: "deportivo", lat: -32.9499, lng: -60.6790, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "provincial", name: "Club Atlético Provincial", type: "deportivo", lat: -32.9618, lng: -60.6520, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "plaza_jewell", name: "Club Atlético del Rosario (Plaza Jewell)", type: "deportivo", lat: -32.9466, lng: -60.6700, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "nautico_ave", name: "Club Náutico Avellaneda", type: "deportivo", lat: -32.8830, lng: -60.6960, gRating: 4.5, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "megatlon", name: "Megatlón Rosario", type: "deportivo", lat: -32.9445, lng: -60.6390, gRating: 4.2, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "sportclub", name: "SportClub Rosario", type: "deportivo", lat: -32.9486, lng: -60.6470, gRating: 4.1, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "always_ready", name: "Always Ready Gym", type: "deportivo", lat: -32.9412, lng: -60.6520, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
-  // Centros culturales de Rosario (ubicaciones reales; datos de accesibilidad simulados)
-  { id: "cc_fontanarrosa", name: "Centro Cultural Roberto Fontanarrosa", type: "cultural", lat: -32.9476, lng: -60.6304, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: true, senas: true } },
-  { id: "cc_parque_espana", name: "Centro Cultural Parque de España", type: "cultural", lat: -32.9407, lng: -60.6283, gRating: 4.6, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
-  { id: "cc_lavarden", name: "Plataforma Lavardén", type: "cultural", lat: -32.9519, lng: -60.6361, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: true } },
-  { id: "cec", name: "Centro de Expresiones Contemporáneas (CEC)", type: "cultural", lat: -32.9268, lng: -60.6286, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "cc_la_toma", name: "Centro Cultural La Toma", type: "cultural", lat: -32.9543, lng: -60.6533, gRating: 4.3, a: { bano: true, rampa: false, ascensor: false, braille: false, senas: false } },
-  { id: "distrito_siete", name: "Distrito Siete", type: "cultural", lat: -32.9606, lng: -60.6486, gRating: 4.4, a: { bano: true, rampa: true, ascensor: false, braille: false, senas: false } },
-  { id: "cc_lumiere", name: "Centro Cultural Cine Lumière", type: "cultural", lat: -32.9486, lng: -60.6340, gRating: 4.5, a: { bano: true, rampa: true, ascensor: true, braille: false, senas: false } },
+  { id: "elcairo", name: "El Cairo", type: "bar", lat: -32.9450198, lng: -60.6379576, gRating: 4.2, a: { ...SIN_DATOS } },
+  { id: "theclub", name: "The Club", type: "restaurant", lat: -32.9460359, lng: -60.6480806, gRating: 4.2, a: { ...SIN_DATOS } },
+  { id: "hoxton", name: "Hoxton House", type: "bar", lat: -32.9576484, lng: -60.6401811, gRating: 4.1, a: { ...SIN_DATOS } },
+  { id: "brooklyn", name: "Brooklyn | Crafters' Garden", type: "bar", lat: -32.9412465, lng: -60.6396895, gRating: 4.0, a: { ...SIN_DATOS } },
+  { id: "elpatio", name: "El Patio Multiespacio", type: "bar", lat: -32.9497944, lng: -60.647806, gRating: 4.2, a: { ...SIN_DATOS } },
+  { id: "craft", name: "CRAFT", type: "bar", lat: -32.9574577, lng: -60.6389648, gRating: 4.3, a: { ...SIN_DATOS } },
+  { id: "manush", name: "Manush Rosario", type: "bar", lat: -32.9328069, lng: -60.6523911, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "granlago", name: "Gran Lago - Resto Bar", type: "restaurant", lat: -32.955596, lng: -60.6585203, gRating: 4.1, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("node", "12724554649") },
+  { id: "losjardines", name: "Los Jardines", type: "restaurant", lat: -32.934148, lng: -60.6433216, gRating: 4.3, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("node", "4513797894") },
+  { id: "riomio", name: "Riomío", type: "restaurant", lat: -32.933136, lng: -60.6464189, gRating: 4.2, a: { ...SIN_DATOS } },
+  { id: "wembley", name: "Wembley", type: "restaurant", lat: -32.9647649, lng: -60.6217325, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "rockfellers", name: "Rock&Feller's Savoy", type: "restaurant", lat: -32.9446607, lng: -60.636258, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "escauriza", name: "Escauriza Parrilla", type: "restaurant", lat: -32.880531, lng: -60.6883401, gRating: 4.5, a: { ...SIN_DATOS } },
+  { id: "donferro", name: "Parrilla Don Ferro", type: "restaurant", lat: -32.9343572, lng: -60.6435197, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "rooftop", name: "Rooftop", type: "bar", lat: -32.9320322, lng: -60.6636827, gRating: 4.3, a: { ...SIN_DATOS } },
+  { id: "roxy", name: "Roxy Club Rosario", type: "boliche", lat: -32.9310926, lng: -60.657733, gRating: 3.8, a: { ...SIN_DATOS } },
+  { id: "decada", name: "Década Disco", type: "boliche", lat: -32.9364977, lng: -60.6697425, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "bound", name: "Bound", type: "boliche", lat: -32.9364439, lng: -60.6516674, gRating: 3.6, a: { ...SIN_DATOS } },
+  { id: "switch", name: "Switch Club", type: "boliche", lat: -32.939125, lng: -60.6506263, gRating: 4.3, a: { ...SIN_DATOS } },
+  { id: "lotus", name: "Lotus Night Club", type: "boliche", lat: -32.9292618, lng: -60.6713676, gRating: 3.2, a: { ...SIN_DATOS } },
+  { id: "manushcentro", name: "Manush Centro", type: "bar", lat: -32.9445, lng: -60.6425, gRating: 4.5, a: { ...SIN_DATOS } },
+  // Instituciones educativas de Rosario (ubicaciones reales)
+  { id: "unr_rectorado", name: "UNR · Rectorado", type: "educativo", lat: -32.9468, lng: -60.6393, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "unr_derecho", name: "UNR · Facultad de Derecho", type: "educativo", lat: -32.9447, lng: -60.6485, gRating: 4.5, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "409067763") },
+  { id: "unr_economicas", name: "UNR · Cs. Económicas", type: "educativo", lat: -32.9521, lng: -60.6537, gRating: 4.4, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "188609144") },
+  { id: "unr_medicina", name: "UNR · Facultad de Medicina", type: "educativo", lat: -32.9486, lng: -60.6595, gRating: 4.5, a: { ...SIN_DATOS } },
+  { id: "utn_rosario", name: "UTN · Facultad Regional Rosario", type: "educativo", lat: -32.9466, lng: -60.6432, gRating: 4.5, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "187591366") },
+  { id: "austral_rosario", name: "Universidad Austral · Rosario", type: "educativo", lat: -32.9398, lng: -60.6470, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "uca_rosario", name: "UCA · Rosario", type: "educativo", lat: -32.9585, lng: -60.6680, gRating: 4.3, a: { ...SIN_DATOS } },
+  { id: "uai_rosario", name: "UAI · Rosario", type: "educativo", lat: -32.9530, lng: -60.6510, gRating: 4.2, a: { ...SIN_DATOS } },
+  // Escuelas y colegios de Rosario (ubicaciones aproximadas)
+  { id: "ips_rosario", name: "Instituto Politécnico Superior (UNR)", type: "educativo", lat: -32.9466, lng: -60.6360, gRating: 4.7, a: { ...SIN_DATOS } },
+  { id: "superior_comercio", name: "Esc. Superior de Comercio (UNR)", type: "educativo", lat: -32.9495, lng: -60.6360, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "normal_1", name: "Escuela Normal Superior N°1 Avellaneda", type: "educativo", lat: -32.9479, lng: -60.6386, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "normal_2", name: "Escuela Normal N°2 J. M. Gutiérrez", type: "educativo", lat: -32.9490, lng: -60.6470, gRating: 4.3, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "409067764") },
+  { id: "lasalle", name: "Colegio La Salle Rosario", type: "educativo", lat: -32.9520, lng: -60.6560, gRating: 4.5, a: { ...SIN_DATOS } },
+  { id: "inmaculada", name: "Colegio Inmaculada Concepción", type: "educativo", lat: -32.9430, lng: -60.6420, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "sanbartolome", name: "Colegio San Bartolomé", type: "educativo", lat: -32.9550, lng: -60.6580, gRating: 4.3, a: { ...SIN_DATOS } },
+  { id: "dante", name: "Colegio Dante Alighieri", type: "educativo", lat: -32.9505, lng: -60.6500, gRating: 4.4, a: { ...SIN_DATOS } },
+  // Clubes deportivos y gimnasios de Rosario (ubicaciones reales)
+  { id: "central", name: "Club Atlético Rosario Central", type: "deportivo", lat: -32.9080, lng: -60.6303, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "newells", name: "Club Atlético Newell's Old Boys", type: "deportivo", lat: -32.9582, lng: -60.6655, gRating: 4.6, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "1375044787") },
+  { id: "regatas", name: "Club de Regatas Rosario", type: "deportivo", lat: -32.9286, lng: -60.6281, gRating: 4.5, a: { ...SIN_DATOS } },
+  { id: "gimnasia_ros", name: "Club Gimnasia y Esgrima de Rosario", type: "deportivo", lat: -32.9499, lng: -60.6790, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "provincial", name: "Club Atlético Provincial", type: "deportivo", lat: -32.9618, lng: -60.6520, gRating: 4.3, a: { ...SIN_DATOS } },
+  { id: "plaza_jewell", name: "Club Atlético del Rosario (Plaza Jewell)", type: "deportivo", lat: -32.9466, lng: -60.6700, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "nautico_ave", name: "Club Náutico Avellaneda", type: "deportivo", lat: -32.8830, lng: -60.6960, gRating: 4.5, a: { ...SIN_DATOS } },
+  { id: "megatlon", name: "Megatlón Rosario", type: "deportivo", lat: -32.9445, lng: -60.6390, gRating: 4.2, a: { ...SIN_DATOS } },
+  { id: "sportclub", name: "SportClub Rosario", type: "deportivo", lat: -32.9486, lng: -60.6470, gRating: 4.1, a: { ...SIN_DATOS } },
+  { id: "always_ready", name: "Always Ready Gym", type: "deportivo", lat: -32.9412, lng: -60.6520, gRating: 4.3, a: { ...SIN_DATOS } },
+  // Centros culturales de Rosario (ubicaciones reales)
+  { id: "cc_fontanarrosa", name: "Centro Cultural Roberto Fontanarrosa", type: "cultural", lat: -32.9476, lng: -60.6304, gRating: 4.6, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "187592426") },
+  { id: "cc_parque_espana", name: "Centro Cultural Parque de España", type: "cultural", lat: -32.9407, lng: -60.6283, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "cc_lavarden", name: "Plataforma Lavardén", type: "cultural", lat: -32.9519, lng: -60.6361, gRating: 4.5, a: { ...SIN_DATOS } },
+  { id: "cec", name: "Centro de Expresiones Contemporáneas (CEC)", type: "cultural", lat: -32.9268, lng: -60.6286, gRating: 4.4, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "186984803") },
+  { id: "cc_la_toma", name: "Centro Cultural La Toma", type: "cultural", lat: -32.9543, lng: -60.6533, gRating: 4.3, a: { ...SIN_DATOS } },
+  { id: "distrito_siete", name: "Distrito Siete", type: "cultural", lat: -32.9606, lng: -60.6486, gRating: 4.4, a: { ...SIN_DATOS } },
+  { id: "cc_lumiere", name: "Centro Cultural Cine Lumière", type: "cultural", lat: -32.9486, lng: -60.6340, gRating: 4.5, a: { ...SIN_DATOS } },
 ];
 
 const CRITERIA = [
@@ -75,8 +84,18 @@ const CRITERIA = [
 const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural" };
 const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444", cultural: "#d946ef" };
 
-const isFullyAccessible = (p) => CRITERIA.every((c) => p.a[c.key]);
-const accessScore = (p) => CRITERIA.filter((c) => p.a[c.key]).length;
+// Etiquetas del acceso en silla de ruedas (dato real de OSM)
+const WHEELCHAIR_LABELS = { si: "Acceso en silla de ruedas", parcial: "Acceso parcial en silla de ruedas", no: "Sin acceso en silla de ruedas" };
+
+// ¿Tenemos algún dato real o cargado para este lugar?
+const hasAnyData = (p) => p.wheelchair != null || CRITERIA.some((c) => p.a[c.key] != null);
+
+// Chip compacto del acceso en silla de ruedas (dato real de OSM)
+function AccessChip({ wheelchair }) {
+  if (wheelchair === "si") return <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 whitespace-nowrap">♿ Accesible</span>;
+  if (wheelchair === "parcial") return <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 whitespace-nowrap">♿ Parcial</span>;
+  return null;
+}
 
 // Aplica los cambios guardados por el usuario sobre los datos base
 const mergePlaces = (overrides) => PLACES.map((p) =>
@@ -140,9 +159,9 @@ function RealMap({ places, selected, onSelect, avgRating }) {
     const L = window.L;
     layerRef.current.clearLayers();
     places.forEach((p) => {
-      const full = isFullyAccessible(p);
       const isSel = selected?.id === p.id;
-      const color = isSel ? "#f97316" : full ? "#10b981" : TYPE_COLORS[p.type];
+      // Color del marcador: naranja si está seleccionado; verde/ámbar según el acceso REAL (OSM); si no, color del tipo.
+      const color = isSel ? "#f97316" : p.wheelchair === "si" ? "#10b981" : p.wheelchair === "parcial" ? "#f59e0b" : TYPE_COLORS[p.type];
       const size = isSel ? 34 : 26;
       const icon = L.divIcon({
         className: "",
@@ -236,23 +255,25 @@ export default function App() {
 
   const filtered = useMemo(() => data.filter((p) => {
     if (typeFilter !== "all" && p.type !== typeFilter) return false;
-    if (accessFilter === "full" && !isFullyAccessible(p)) return false;
-    if (accessFilter === "partial" && (isFullyAccessible(p) || accessScore(p) === 0)) return false;
-    if (accessFilter === "none" && accessScore(p) !== 0) return false;
+    if (accessFilter === "si" && p.wheelchair !== "si") return false;
+    if (accessFilter === "parcial" && p.wheelchair !== "parcial") return false;
+    if (accessFilter === "sindato" && hasAnyData(p)) return false;
     return true;
   }), [typeFilter, accessFilter, data]);
 
   const stats = useMemo(() => {
     const total = data.length;
-    const full = data.filter(isFullyAccessible).length;
-    const partial = data.filter((p) => !isFullyAccessible(p) && accessScore(p) > 0).length;
-    const none = data.filter((p) => accessScore(p) === 0).length;
-    const byCriteria = CRITERIA.map((c) => ({
-      ...c, count: data.filter((p) => p.a[c.key]).length,
-      pct: Math.round((data.filter((p) => p.a[c.key]).length / total) * 100),
-    }));
-    return { total, full, partial, none, pctFull: Math.round((full / total) * 100),
-      pctNotFull: Math.round(((total - full) / total) * 100), byCriteria };
+    const accesible = data.filter((p) => p.wheelchair === "si").length;
+    const parcial = data.filter((p) => p.wheelchair === "parcial").length;
+    const conDato = data.filter(hasAnyData).length;
+    const sinDato = total - conDato;
+    const byCriteria = CRITERIA.map((c) => {
+      const si = data.filter((p) => p.a[c.key] === "si").length;
+      const no = data.filter((p) => p.a[c.key] === "no").length;
+      return { ...c, si, no, sd: total - si - no, pct: Math.round((si / total) * 100) };
+    });
+    return { total, accesible, parcial, conDato, sinDato,
+      pctConDato: Math.round((conDato / total) * 100), byCriteria };
   }, [data]);
 
   const avgRating = (id) => {
@@ -292,8 +313,8 @@ export default function App() {
               {t === "all" ? "Todos" : TYPE_LABELS[t] + "s"}
             </button>
           ))}
-          <span className="text-xs text-slate-500 ml-2">Acceso:</span>
-          {[["all", "Todos"], ["full", "100% apto"], ["partial", "Parcial"], ["none", "Sin acceso"]].map(([k, l]) => (
+          <span className="text-xs text-slate-500 ml-2">Acceso (silla de ruedas):</span>
+          {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
               {l}
@@ -307,24 +328,20 @@ export default function App() {
       <div className="flex flex-row">
         {/* PANEL LATERAL: lista — a la izquierda */}
         <div className="w-72 shrink-0 bg-sky-100 h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-sky-300">
-          {filtered.map((p) => {
-            const score = accessScore(p);
-            const full = isFullyAccessible(p);
-            return (
+          {filtered.map((p) => (
               <button key={p.id} onClick={() => setSelected(p)}
                 className={`w-full text-left px-4 py-3 border-b border-sky-200 border-l-4 hover:bg-sky-200 transition ${selected?.id === p.id ? "bg-sky-300 border-l-orange-500" : "border-l-transparent"}`}>
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium text-sm text-slate-800">{p.name}</span>
-                  {full && <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 whitespace-nowrap">100% apto</span>}
+                  <AccessChip wheelchair={p.wheelchair} />
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_LABELS[p.type]}</span>
                   <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>
-                  <span className="text-[11px] text-slate-400">{score}/5 criterios</span>
+                  {!hasAnyData(p) && <span className="text-[11px] text-slate-400 italic">a relevar</span>}
                 </div>
               </button>
-            );
-          })}
+          ))}
         </div>
 
         {/* MAPA REAL (Leaflet) — a la derecha */}
@@ -384,14 +401,21 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
         </div>
 
         <div className="p-5">
-          {isFullyAccessible(place) && !editing && (
-            <div className="mb-4 p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-2 text-emerald-300 text-sm font-medium">
-              <CheckCircle2 size={18} /> Lugar 100% apto para personas con discapacidad
+          {place.wheelchair && !editing && (
+            <div className={`mb-4 p-3 rounded-xl border text-sm ${place.wheelchair === "si" ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
+              <div className="flex items-center gap-2 font-medium">
+                <Accessibility size={18} /> {WHEELCHAIR_LABELS[place.wheelchair]}
+              </div>
+              {place.src && (
+                <a href={place.src} target="_blank" rel="noreferrer" className="text-[11px] underline opacity-80 hover:opacity-100 mt-1 inline-block">
+                  Dato verificable en OpenStreetMap ↗
+                </a>
+              )}
             </div>
           )}
 
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-semibold text-slate-700">Accesibilidad</h3>
+            <h3 className="text-sm font-semibold text-slate-700">Detalle de accesibilidad</h3>
             {!editing ? (
               <button onClick={() => setEditing(true)}
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-xs text-sky-700 border border-sky-200 transition">
@@ -400,36 +424,42 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
             ) : (
               <div className="flex items-center gap-2">
                 <button onClick={cancelEdit} className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs text-slate-600 transition">Cancelar</button>
-                <button onClick={saveEdit} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-xs font-medium transition">
+                <button onClick={saveEdit} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-medium transition">
                   <Save size={13} /> Guardar
                 </button>
               </div>
             )}
           </div>
 
-          <div className="space-y-2 mb-5">
+          <div className="space-y-2 mb-3">
             {CRITERIA.map((c) => {
-              const ok = editing ? draft[c.key] : place.a[c.key];
+              const val = editing ? draft[c.key] : place.a[c.key];
               const Icon = c.icon;
               if (editing) {
+                const opts = [["si", "Sí"], ["no", "No"], [null, "—"]];
                 return (
-                  <button key={c.key} onClick={() => setDraft({ ...draft, [c.key]: !draft[c.key] })}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border transition ${ok ? "bg-emerald-50 border-emerald-300" : "bg-slate-50 border-slate-200 hover:border-slate-300"}`}>
+                  <div key={c.key} className="flex items-center justify-between p-2.5 rounded-lg border bg-slate-50 border-slate-200">
                     <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-500" /> {c.label}</span>
-                    <span className={`w-10 h-5 rounded-full relative transition ${ok ? "bg-emerald-500" : "bg-slate-300"}`}>
-                      <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${ok ? "left-[22px]" : "left-0.5"}`} />
-                    </span>
-                  </button>
+                    <div className="flex gap-1">
+                      {opts.map(([v, l]) => (
+                        <button key={l} onClick={() => setDraft({ ...draft, [c.key]: v })}
+                          className={`px-2 py-0.5 rounded text-xs font-medium border transition ${val === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100"}`}>
+                          {l}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 );
               }
               return (
-                <div key={c.key} className={`flex items-center justify-between p-2.5 rounded-lg border ${ok ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"}`}>
+                <div key={c.key} className={`flex items-center justify-between p-2.5 rounded-lg border ${val === "si" ? "bg-emerald-50 border-emerald-200" : val === "no" ? "bg-rose-50 border-rose-200" : "bg-slate-50 border-slate-200"}`}>
                   <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-500" /> {c.label}</span>
-                  {ok ? <CheckCircle2 size={18} className="text-emerald-500" /> : <XCircle size={18} className="text-rose-400" />}
+                  {val === "si" ? <CheckCircle2 size={18} className="text-emerald-500" /> : val === "no" ? <XCircle size={18} className="text-rose-400" /> : <span className="text-[11px] text-slate-400 italic">sin datos</span>}
                 </div>
               );
             })}
-            {editing && <p className="text-[11px] text-slate-500 italic">Tocá cada criterio para activarlo o desactivarlo, luego "Guardar". Los cambios persisten entre sesiones.</p>}
+            {editing && <p className="text-[11px] text-slate-500 italic">Elegí Sí / No / — (sin datos) en cada criterio y tocá "Guardar". Tus datos se guardan en este navegador como relevamiento manual.</p>}
+            {!editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar. Podés cargarlos vos con "Editar".</p>}
           </div>
 
           {/* Reseñas */}
@@ -483,40 +513,41 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
         </div>
         <div className="p-5">
-          {/* Donut */}
+          {/* Donut: cobertura de datos verificados de acceso */}
           <div className="flex items-center justify-center gap-6 mb-6">
-            <Donut pctFull={stats.pctFull} />
+            <Donut pct={stats.pctConDato} />
             <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500" /> 100% aptos: <b>{stats.full}</b> ({stats.pctFull}%)</div>
-              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-amber-500" /> Parciales: <b>{stats.partial}</b></div>
-              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-rose-500" /> Sin acceso: <b>{stats.none}</b></div>
-              <div className="text-slate-500 pt-1 border-t border-slate-200">Total relevados: <b>{stats.total}</b></div>
+              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500" /> Acceso verificado: <b>{stats.accesible}</b></div>
+              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-amber-500" /> Acceso parcial: <b>{stats.parcial}</b></div>
+              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-slate-300" /> Sin datos: <b>{stats.sinDato}</b></div>
+              <div className="text-slate-500 pt-1 border-t border-slate-200">Total de lugares: <b>{stats.total}</b></div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
-              <div className="text-3xl font-bold text-emerald-500">{stats.pctFull}%</div>
-              <div className="text-xs text-slate-500 mt-1">100% apto para personas con discapacidad</div>
+              <div className="text-3xl font-bold text-emerald-500">{stats.conDato}</div>
+              <div className="text-xs text-slate-500 mt-1">lugares con dato real de acceso (fuente OpenStreetMap)</div>
             </div>
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-center">
-              <div className="text-3xl font-bold text-rose-500">{stats.pctNotFull}%</div>
-              <div className="text-xs text-slate-500 mt-1">No cumple todos los criterios</div>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
+              <div className="text-3xl font-bold text-slate-400">{stats.sinDato}</div>
+              <div className="text-xs text-slate-500 mt-1">a relevar (sin datos verificados todavía)</div>
             </div>
           </div>
 
-          <h3 className="text-sm font-semibold text-slate-700 mb-3">Cobertura por criterio</h3>
+          <h3 className="text-sm font-semibold text-slate-700 mb-3">Datos cargados por criterio</h3>
           <div className="space-y-3">
             {stats.byCriteria.map((c) => {
               const Icon = c.icon;
+              const conDato = c.si + c.no;
               return (
                 <div key={c.key}>
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="flex items-center gap-1.5 text-slate-700"><Icon size={13} /> {c.label}</span>
-                    <span className="text-slate-500">{c.count}/{stats.total} · {c.pct}%</span>
+                    <span className="text-slate-500">{conDato}/{stats.total} con dato</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-orange-500 transition-all" style={{ width: `${c.pct}%` }} />
+                    <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-orange-500 transition-all" style={{ width: `${Math.round((conDato / stats.total) * 100)}%` }} />
                   </div>
                 </div>
               );
@@ -524,16 +555,17 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
           </div>
 
           <p className="text-[11px] text-slate-500 mt-5 leading-relaxed border-t border-slate-200 pt-3">
-            Nota: los lugares y sus ubicaciones son reales (datos de Google). Los indicadores de accesibilidad son
-            simulados con fines demostrativos, ya que esa información detallada no está disponible públicamente.
-            Para uso real habría que relevar cada lugar o integrar una base colaborativa. Podés editar los datos de
-            cada lugar desde su ficha; los porcentajes de arriba se recalculan automáticamente.
+            <b>Sobre los datos:</b> los lugares y sus ubicaciones son reales. Los datos de accesibilidad provienen de
+            <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline"> OpenStreetMap</a> (ODbL),
+            son verificables (cada lugar con dato enlaza a su objeto en OSM) y hoy solo cubren el <b>acceso en silla de ruedas</b> de
+            unos pocos lugares. El resto figura como <b>"sin datos / a relevar"</b>: no se inventa nada. Podés cargar datos reales
+            vos mismo desde la ficha de cada lugar (relevamiento manual); se guardan en este navegador.
           </p>
 
           {hasOverrides && (
             <button onClick={onReset}
-              className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-medium transition">
-              <RotateCcw size={14} /> Restaurar datos originales
+              className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-medium transition">
+              <RotateCcw size={14} /> Borrar mis datos cargados
             </button>
           )}
         </div>
@@ -542,16 +574,16 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
   );
 }
 
-function Donut({ pctFull }) {
+function Donut({ pct }) {
   const r = 50, c = 2 * Math.PI * r;
   return (
     <svg width="140" height="140" viewBox="0 0 140 140">
       <circle cx="70" cy="70" r={r} fill="none" stroke="#e2e8f0" strokeWidth="16" />
       <circle cx="70" cy="70" r={r} fill="none" stroke="#10b981" strokeWidth="16" strokeLinecap="round"
-        strokeDasharray={c} strokeDashoffset={c - (c * pctFull) / 100} transform="rotate(-90 70 70)"
+        strokeDasharray={c} strokeDashoffset={c - (c * pct) / 100} transform="rotate(-90 70 70)"
         style={{ transition: "stroke-dashoffset 0.8s ease" }} />
-      <text x="70" y="64" textAnchor="middle" className="fill-slate-800" style={{ fontSize: 26, fontWeight: 700 }}>{pctFull}%</text>
-      <text x="70" y="84" textAnchor="middle" className="fill-slate-500" style={{ fontSize: 11 }}>100% aptos</text>
+      <text x="70" y="64" textAnchor="middle" className="fill-slate-800" style={{ fontSize: 26, fontWeight: 700 }}>{pct}%</text>
+      <text x="70" y="84" textAnchor="middle" className="fill-slate-500" style={{ fontSize: 11 }}>con datos</text>
     </svg>
   );
 }

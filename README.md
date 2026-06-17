@@ -11,7 +11,7 @@ La idea es ayudar a encontrar lugares inclusivos según distintos criterios: ba�
 ## ✨ Características
 
 - 🗺️ **Mapa real** de Rosario con marcadores (usando Leaflet).
-- ♿ **5 criterios de accesibilidad** por lugar, con vista de "100% apto".
+- ♿ **Datos de accesibilidad reales y verificables** (fuente: OpenStreetMap), con tres estados por criterio: **sí / no / sin datos**. Cada lugar con dato enlaza a su objeto en OSM para comprobarlo.
 - 🏫 **Instituciones educativas** (universidades, escuelas y colegios), 🏟️ **clubes deportivos y gimnasios**, 🎭 **centros culturales**, además de bares, restaurantes y boliches.
 - 🔍 **Filtros** por tipo de lugar y por nivel de accesibilidad.
 - ⬅️ **Botón "Volver al inicio"**: al hacer clic en un lugar el mapa se centra en él, y con un botón volvés a la vista de toda la ciudad.
@@ -48,7 +48,11 @@ npm run build
 
 ## 📝 Nota sobre los datos
 
-Los **lugares y sus ubicaciones son reales**. Los **indicadores de accesibilidad son simulados** con fines demostrativos, ya que esa información detallada no está disponible públicamente. Para un uso real habría que relevar cada lugar o integrar una base de datos colaborativa.
+Los **lugares y sus ubicaciones son reales**. Los **datos de accesibilidad también son reales y comprobables**: provienen de [OpenStreetMap](https://www.openstreetmap.org/copyright) (licencia ODbL) y cada lugar que tiene dato enlaza a su objeto en OSM para verificarlo.
+
+Hoy la cobertura abierta es limitada: solo algunos lugares tienen cargado el **acceso en silla de ruedas**, y prácticamente no hay datos públicos de baño adaptado, ascensor, braille o lengua de señas. Por eso **lo que no está verificado se muestra como "sin datos / a relevar"** — no se inventa ningún dato. Cualquiera puede completar información real desde la ficha de cada lugar (relevamiento manual), que se guarda en el navegador.
+
+El portal municipal de [datos abiertos de Rosario](https://datos.rosario.gob.ar) también publica un dataset de rampas en la vía pública, pensado como capa de contexto a futuro.
 
 ## 👤 Autor
 
