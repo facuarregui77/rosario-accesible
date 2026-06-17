@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -94,6 +94,9 @@ const WHEELCHAIR_LABELS = { si: "Acceso en silla de ruedas", parcial: "Acceso pa
 
 // ¿Tenemos algún dato real o cargado para este lugar?
 const hasAnyData = (p) => p.wheelchair != null || CRITERIA.some((c) => p.a[c.key] != null);
+
+// Normaliza texto para buscar sin distinguir mayúsculas ni acentos
+const norm = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 // Chip compacto del acceso en silla de ruedas (dato real de OSM)
 function AccessChip({ wheelchair }) {
@@ -231,6 +234,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
 
 export default function App() {
   const [selected, setSelected] = useState(null);
+  const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [accessFilter, setAccessFilter] = useState("all");
   const [showAnalysis, setShowAnalysis] = useState(false);
@@ -277,13 +281,17 @@ export default function App() {
     [selected, data]
   );
 
-  const filtered = useMemo(() => data.filter((p) => {
-    if (typeFilter !== "all" && p.type !== typeFilter) return false;
-    if (accessFilter === "si" && p.wheelchair !== "si") return false;
-    if (accessFilter === "parcial" && p.wheelchair !== "parcial") return false;
-    if (accessFilter === "sindato" && hasAnyData(p)) return false;
-    return true;
-  }), [typeFilter, accessFilter, data]);
+  const filtered = useMemo(() => {
+    const q = norm(query.trim());
+    return data.filter((p) => {
+      if (q && !norm(p.name).includes(q)) return false;
+      if (typeFilter !== "all" && p.type !== typeFilter) return false;
+      if (accessFilter === "si" && p.wheelchair !== "si") return false;
+      if (accessFilter === "parcial" && p.wheelchair !== "parcial") return false;
+      if (accessFilter === "sindato" && hasAnyData(p)) return false;
+      return true;
+    });
+  }, [query, typeFilter, accessFilter, data]);
 
   const stats = useMemo(() => {
     const total = data.length;
@@ -320,6 +328,19 @@ export default function App() {
             <div>
               <h1 className="text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
               <p className="text-sm font-semibold text-sky-500">Toda la información disponible acerca de la accesibilidad local.</p>
+            </div>
+          </div>
+          {/* Buscador + leyenda de colores (centro del header) */}
+          <div className="flex-1 min-w-[200px] max-w-md order-last sm:order-none w-full sm:w-auto">
+            <div className="relative">
+              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar un lugar por nombre…"
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
+            </div>
+            <div className="flex items-center justify-center gap-3 mt-1.5 text-[11px] text-slate-500">
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Accesible</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Parcial</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> por categoría</span>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-36 shrink-0">
