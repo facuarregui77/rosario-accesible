@@ -356,7 +356,7 @@ export default function App() {
 
       <div className="flex flex-row">
         {/* PANEL LATERAL: lista — a la izquierda */}
-        <div className="w-72 shrink-0 bg-sky-100 h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-sky-300">
+        <div className="w-72 shrink-0 bg-sky-100 h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-sky-300 scroll-orange">
           {filtered.map((p) => (
               <button key={p.id} onClick={() => setSelected(p)}
                 className={`w-full text-left px-4 py-3 border-b border-sky-200 border-l-4 hover:bg-sky-200 transition ${selected?.id === p.id ? "bg-sky-300 border-l-orange-500" : "border-l-transparent"}`}>

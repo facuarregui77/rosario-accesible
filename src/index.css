@@ -8,3 +8,23 @@ body,
   height: 100%;
   margin: 0;
 }
+
+/* Barra de scroll naranja para el listado de lugares */
+.scroll-orange {
+  scrollbar-width: thin;
+  scrollbar-color: #f97316 #e0f2fe;
+}
+.scroll-orange::-webkit-scrollbar {
+  width: 10px;
+}
+.scroll-orange::-webkit-scrollbar-track {
+  background: #e0f2fe;
+}
+.scroll-orange::-webkit-scrollbar-thumb {
+  background-color: #f97316;
+  border-radius: 9999px;
+  border: 2px solid #e0f2fe;
+}
+.scroll-orange::-webkit-scrollbar-thumb:hover {
+  background-color: #fb923c;
+}
