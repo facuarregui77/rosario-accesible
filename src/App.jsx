@@ -328,16 +328,19 @@ export default function App() {
           </button>
         </div>
 
-        {/* Filtros */}
+        {/* Filtros — fila por tipo */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
-          <span className="text-xs text-slate-500 flex items-center gap-1"><Filter size={13} /> Tipo:</span>
+          <span title="Filtrar por tipo de lugar" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-sky-200 text-sky-700"><Filter size={14} /></span>
           {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
               {t === "all" ? "Todos" : TYPE_PLURAL[t]}
             </button>
           ))}
-          <span className="text-xs text-slate-500 ml-2">Acceso:</span>
+        </div>
+        {/* Filtros — fila por accesibilidad */}
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+          <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-orange-100 text-orange-600"><Accessibility size={14} /></span>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
