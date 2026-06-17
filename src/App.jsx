@@ -337,10 +337,7 @@ export default function App() {
               {t === "all" ? "Todos" : TYPE_PLURAL[t]}
             </button>
           ))}
-          <button onClick={() => setAccessFilter("all")} title="Acceso en silla de ruedas — ver todos"
-            className="ml-2 px-3 py-1 rounded-full text-xs font-medium transition border bg-white text-slate-600 border-slate-200 hover:bg-sky-50 flex items-center gap-1">
-            <Accessibility size={13} /> Acceso:
-          </button>
+          <span className="text-xs text-slate-500 ml-2">Acceso:</span>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-50"}`}>
