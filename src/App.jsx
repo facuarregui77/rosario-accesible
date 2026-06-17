@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
+// Capa de datos: nube (Supabase) con fallback automático a localStorage
+import * as db from "./db";
 
 // Lugares REALES de Rosario (nombre, coords y rating de Google reales).
 //
@@ -237,35 +239,33 @@ export default function App() {
   const [overrides, setOverrides] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Cargar reseñas y cambios de accesibilidad guardados
+  // Cargar reseñas y cambios de accesibilidad guardados (nube o local)
   useEffect(() => {
     (async () => {
       try {
-        const res = await window.storage.get("reviews_all");
-        if (res && res.value) setReviews(JSON.parse(res.value));
-      } catch (e) { /* sin datos previos */ }
-      try {
-        const ov = await window.storage.get("access_overrides");
-        if (ov && ov.value) setOverrides(JSON.parse(ov.value));
-      } catch (e) { /* sin datos previos */ }
+        const { overrides: ov, reviews: rv } = await db.loadAll();
+        setOverrides(ov);
+        setReviews(rv);
+      } catch (e) { console.error("Error cargando datos:", e); }
       setLoading(false);
     })();
   }, []);
 
-  const saveReviews = async (next) => {
+  const addReview = async (placeId, rev) => {
+    const next = { ...reviews, [placeId]: [...(reviews[placeId] || []), rev] };
     setReviews(next);
-    try { await window.storage.set("reviews_all", JSON.stringify(next)); } catch (e) {}
+    await db.addReview(placeId, rev, next);
   };
 
   const saveAccess = async (placeId, newA) => {
     const next = { ...overrides, [placeId]: newA };
     setOverrides(next);
-    try { await window.storage.set("access_overrides", JSON.stringify(next)); } catch (e) {}
+    await db.saveAccess(placeId, newA, next);
   };
 
   const resetAccess = async () => {
     setOverrides({});
-    try { await window.storage.delete("access_overrides"); } catch (e) {}
+    await db.clearMyAccess();
   };
 
   // Lista de lugares con los cambios del usuario aplicados
@@ -387,11 +387,11 @@ export default function App() {
 
       {selectedLive && (
         <DetailPanel place={selectedLive} onClose={() => setSelected(null)} reviews={reviews[selectedLive.id] || []}
-          onAddReview={(rev) => saveReviews({ ...reviews, [selectedLive.id]: [...(reviews[selectedLive.id] || []), rev] })}
+          onAddReview={(rev) => addReview(selectedLive.id, rev)}
           onSaveAccess={(newA) => saveAccess(selectedLive.id, newA)}
           avgRating={avgRating(selectedLive.id)} />
       )}
-      {showAnalysis && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={Object.keys(overrides).length > 0} />}
+      {showAnalysis && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={!db.cloud && Object.keys(overrides).length > 0} />}
     </div>
   );
 }
@@ -490,7 +490,7 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
                 </div>
               );
             })}
-            {editing && <p className="text-[11px] text-slate-500 italic">Elegí Sí / No / — (sin datos) en cada criterio y tocá "Guardar". Tus datos se guardan en este navegador como relevamiento manual.</p>}
+            {editing && <p className="text-[11px] text-slate-500 italic">Elegí Sí / No / — (sin datos) en cada criterio y tocá "Guardar". {db.cloud ? "Tus datos se comparten con toda la comunidad (se guardan en la nube)." : "Tus datos se guardan en este navegador como relevamiento manual."}</p>}
             {!editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar. Podés cargarlos vos con "Editar".</p>}
           </div>
 
@@ -591,7 +591,7 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline"> OpenStreetMap</a> (ODbL),
             son verificables (cada lugar con dato enlaza a su objeto en OSM) y hoy solo cubren el <b>acceso en silla de ruedas</b> de
             unos pocos lugares. El resto figura como <b>"sin datos / a relevar"</b>: no se inventa nada. Podés cargar datos reales
-            vos mismo desde la ficha de cada lugar (relevamiento manual); se guardan en este navegador.
+            vos mismo desde la ficha de cada lugar (relevamiento manual); {db.cloud ? "se guardan en la nube y los ve toda la comunidad." : "se guardan en este navegador."}
           </p>
 
           {hasOverrides && (
