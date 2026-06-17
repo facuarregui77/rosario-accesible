@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save } from "lucide-react";
+// Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
+import RAMPS from "./rampas-rosario.json";
 
 // Lugares REALES de Rosario (nombre, coords y rating de Google reales).
 //
@@ -124,7 +126,9 @@ function RealMap({ places, selected, onSelect, avgRating }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
+  const rampsLayerRef = useRef(null);
   const [ready, setReady] = useState(false);
+  const [showRamps, setShowRamps] = useState(false);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
 
@@ -187,6 +191,25 @@ function RealMap({ places, selected, onSelect, avgRating }) {
     mapRef.current.setView([selected.lat, selected.lng], 16, { animate: true });
   }, [selected, ready]);
 
+  // Capa de rampas / cruces accesibles (se prende y apaga con el botón)
+  useEffect(() => {
+    if (!ready || !window.L || !mapRef.current) return;
+    const L = window.L;
+    if (showRamps) {
+      if (!rampsLayerRef.current) {
+        rampsLayerRef.current = L.layerGroup(
+          RAMPS.points.map(([lat, lng]) =>
+            L.circleMarker([lat, lng], { radius: 3.5, color: "#0284c7", weight: 1, fillColor: "#38bdf8", fillOpacity: 0.85 })
+              .bindTooltip("Rampa / cruce accesible (OSM)", { direction: "top" })
+          )
+        );
+      }
+      rampsLayerRef.current.addTo(mapRef.current);
+    } else if (rampsLayerRef.current) {
+      rampsLayerRef.current.remove();
+    }
+  }, [showRamps, ready]);
+
   // Volver a la vista inicial de toda la ciudad
   const resetView = () => {
     if (mapRef.current) mapRef.current.setView([-32.945, -60.645], 14, { animate: true });
@@ -196,10 +219,17 @@ function RealMap({ places, selected, onSelect, avgRating }) {
     <>
       <div ref={containerRef} className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
-      <button onClick={resetView} title="Volver a la vista inicial del mapa"
-        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-200 backdrop-blur shadow-lg transition">
-        <RotateCcw size={14} /> Volver al inicio
-      </button>
+      <div className="absolute top-3 right-3 z-[500] flex flex-col items-end gap-2">
+        <button onClick={resetView} title="Volver a la vista inicial del mapa"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-200 backdrop-blur shadow-lg transition">
+          <RotateCcw size={14} /> Volver al inicio
+        </button>
+        <button onClick={() => setShowRamps((v) => !v)}
+          title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border backdrop-blur shadow-lg transition ${showRamps ? "bg-sky-500 text-white border-sky-500 hover:bg-sky-400" : "bg-white/90 text-sky-700 border-sky-200 hover:bg-white"}`}>
+          <Accessibility size={14} /> {showRamps ? "Ocultar rampas" : `Rampas accesibles (${RAMPS.count})`}
+        </button>
+      </div>
     </>
   );
 }
