@@ -340,7 +340,7 @@ export default function App() {
             <div className="flex items-center justify-center gap-3 mt-1.5 text-[11px] text-slate-500">
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Accesible</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Parcial</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> por categoría</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> Por categoría</span>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-36 shrink-0 translate-y-6">
