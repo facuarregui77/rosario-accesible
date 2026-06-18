@@ -343,7 +343,7 @@ export default function App() {
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> por categoría</span>
             </div>
           </div>
-          <div className="flex flex-col gap-2 w-36 shrink-0">
+          <div className="flex flex-col gap-2 w-36 shrink-0 translate-y-6">
             <button onClick={() => setShowAnalysis(true)}
               className="w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
               <BarChart3 size={16} /> Análisis
