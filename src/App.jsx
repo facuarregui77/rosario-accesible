@@ -317,7 +317,7 @@ export default function App() {
   return (
     <div className="w-full min-h-screen bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
       {/* Header */}
-      <div className="sticky top-0 z-[600] backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-5 py-4">
+      <div className="sticky top-0 z-[1100] backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-5 py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
         <div className="-mx-5 -mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -439,7 +439,7 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
   const cancelEdit = () => { setDraft(place.a); setEditing(false); };
 
   return (
-    <div className="fixed inset-0 z-[700] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()}
         className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white sm:rounded-2xl rounded-t-2xl border border-sky-200 shadow-2xl">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 sm:rounded-t-2xl rounded-t-2xl" />
@@ -560,7 +560,7 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
 
 function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
   return (
-    <div className="fixed inset-0 z-[700] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl border border-sky-200 shadow-2xl">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 rounded-t-2xl" />
         <div className="sticky top-0 bg-white p-5 border-b border-sky-200 flex items-center justify-between">
