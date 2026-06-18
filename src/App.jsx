@@ -321,7 +321,7 @@ export default function App() {
         {/* Detalle decorativo superior: franja celeste → naranja */}
         <div className="-mx-5 -mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 self-start mt-3">
             <div className="p-2.5 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white">
               <Accessibility size={30} />
             </div>
@@ -331,7 +331,7 @@ export default function App() {
             </div>
           </div>
           {/* Buscador + leyenda de colores (centro del header) */}
-          <div className="flex-1 min-w-[200px] max-w-md order-last sm:order-none w-full sm:w-auto self-end">
+          <div className="flex-1 min-w-[200px] max-w-md order-last sm:order-none w-full sm:w-auto self-start mt-9">
             <div className="relative">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar un lugar por nombre…"
@@ -343,7 +343,7 @@ export default function App() {
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> por categoría</span>
             </div>
           </div>
-          <div className="flex flex-col gap-2 w-36 shrink-0">
+          <div className="flex flex-col gap-2 w-36 shrink-0 self-start mt-9">
             <button onClick={() => setShowAnalysis(true)}
               className="w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
               <BarChart3 size={16} /> Análisis
