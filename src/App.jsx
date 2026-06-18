@@ -331,7 +331,7 @@ export default function App() {
             </div>
           </div>
           {/* Buscador + leyenda de colores (centro del header) */}
-          <div className="flex-1 min-w-[200px] max-w-md order-last sm:order-none w-full sm:w-auto">
+          <div className="flex-1 min-w-[200px] max-w-md order-last sm:order-none w-full sm:w-auto translate-y-2">
             <div className="relative">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar un lugar por nombre…"
