@@ -108,6 +108,8 @@ const CRITERIA = [
 const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacio verde" };
 const TYPE_PLURAL = { bar: "Bares", restaurant: "Restaurantes", boliche: "Boliches", educativo: "Educativos", deportivo: "Deportivos", cultural: "Culturales", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacios verdes" };
 const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444", cultural: "#d946ef", salud: "#14b8a6", transporte: "#64748b", gobierno: "#6366f1", verde: "#84cc16" };
+// Ícono (emoji) por categoría — usado en los marcadores y en las etiquetas
+const TYPE_EMOJI = { bar: "🍺", restaurant: "🍽️", boliche: "🎶", educativo: "🎓", deportivo: "⚽", cultural: "🎭", salud: "🏥", transporte: "🚌", gobierno: "🏛️", verde: "🌳" };
 
 // Etiquetas del acceso en silla de ruedas (dato real de OSM)
 const WHEELCHAIR_LABELS = { si: "Acceso en silla de ruedas", parcial: "Acceso parcial en silla de ruedas", no: "Sin acceso en silla de ruedas" };
@@ -126,6 +128,7 @@ const norm = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,
 function AccessChip({ wheelchair }) {
   if (wheelchair === "si") return <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 whitespace-nowrap">♿ Accesible</span>;
   if (wheelchair === "parcial") return <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 whitespace-nowrap">♿ Parcial</span>;
+  if (wheelchair === "no") return <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200 whitespace-nowrap">♿ Sin acceso</span>;
   return null;
 }
 
@@ -201,17 +204,23 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
     layerRef.current.clearLayers();
     places.forEach((p) => {
       const isSel = selected?.id === p.id;
-      // Color del marcador: naranja si está seleccionado; verde/ámbar según el acceso REAL (OSM); si no, color del tipo.
-      const color = isSel ? "#f97316" : p.wheelchair === "si" ? "#10b981" : p.wheelchair === "parcial" ? "#f59e0b" : TYPE_COLORS[p.type];
-      const size = isSel ? 34 : 26;
+      // Color = ACCESIBILIDAD (semáforo: verde/ámbar/rojo/gris). El ÍCONO indica el tipo de lugar.
+      const color = p.wheelchair === "si" ? "#10b981" : p.wheelchair === "parcial" ? "#f59e0b" : p.wheelchair === "no" ? "#ef4444" : "#94a3b8";
+      const size = isSel ? 38 : 28;
+      const stroke = isSel ? "#0284c7" : "white";   // selección: anillo celeste + más grande
+      const strokeW = isSel ? 3 : 1.5;
+      const emoji = TYPE_EMOJI[p.type] || "📍";
+      const F = Math.round(size * 0.4);
       const icon = L.divIcon({
         className: "",
-        html: `<div style="transform:translate(-50%,-100%);">
-          <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="1.5"
-            style="filter:drop-shadow(0 2px 3px rgba(0,0,0,0.6));">
+        html: `<div style="transform:translate(-50%,-100%);position:relative;width:${size}px;height:${size}px;">
+          <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" stroke="${stroke}" stroke-width="${strokeW}"
+            style="filter:drop-shadow(0 2px 3px rgba(0,0,0,0.5));">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-            <circle cx="12" cy="9" r="2.5" fill="white"/>
-          </svg></div>`,
+            <circle cx="12" cy="9" r="5" fill="white"/>
+          </svg>
+          <span style="position:absolute;left:0;width:${size}px;text-align:center;top:${Math.round(size * 0.375 - F / 2)}px;font-size:${F}px;line-height:${F}px;">${emoji}</span>
+        </div>`,
         iconSize: [size, size],
         iconAnchor: [0, 0],
       });
@@ -385,10 +394,12 @@ export default function App() {
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar un lugar por nombre…"
                 className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
             </div>
-            <div className="flex items-center justify-center gap-3 mt-1.5 text-[11px] text-slate-500">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 mt-1.5 text-[11px] text-slate-500">
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Accesible</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Parcial</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> Por categoría</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Sin acceso</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-slate-400" /> Sin datos</span>
+              <span className="text-slate-400">· el ícono indica el tipo</span>
             </div>
           </div>
           <div className="flex flex-row sm:flex-col gap-2 sm:w-36 shrink-0 sm:translate-y-6">
@@ -448,7 +459,7 @@ export default function App() {
                   <AccessChip wheelchair={p.wheelchair} />
                 </div>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_LABELS[p.type]}</span>
+                  <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_EMOJI[p.type]} {TYPE_LABELS[p.type]}</span>
                   {p.gRating && <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>}
                   {!hasAnyData(p) && <span className="text-[11px] text-slate-400 italic">a relevar</span>}
                 </div>
@@ -505,7 +516,7 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
           <div>
             <h2 className="text-xl font-bold text-slate-900">{place.name}</h2>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs px-2 py-0.5 rounded" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_LABELS[place.type]}</span>
+              <span className="text-xs px-2 py-0.5 rounded" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_EMOJI[place.type]} {TYPE_LABELS[place.type]}</span>
               {place.gRating && <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>}
               {avgRating && <span className="text-xs text-amber-600 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {avgRating} usuarios</span>}
             </div>
