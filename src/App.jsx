@@ -274,8 +274,8 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
       <div ref={containerRef} className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa"
-        className="absolute top-3 right-3 z-[500] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/90 hover:bg-white text-xs font-medium text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition">
-        <RotateCcw size={14} /> Volver al inicio
+        className="absolute top-3 right-3 z-[500] flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition">
+        <RotateCcw size={16} />
       </button>
     </>
   );
