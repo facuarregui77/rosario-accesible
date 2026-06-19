@@ -367,7 +367,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
+    <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
       {/* Header */}
       <div className="relative z-20 shrink-0 backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-3 sm:px-5 py-3 sm:py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
@@ -387,22 +387,15 @@ export default function App() {
               {admin ? <Unlock size={15} /> : <Lock size={15} />}
             </button>
           </div>
-          {/* Buscador + leyenda de colores */}
-          <div className="w-full sm:flex-1 sm:max-w-md sm:translate-y-6">
+          {/* Buscador */}
+          <div className="w-full sm:flex-1 sm:max-w-md">
             <div className="relative">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar un lugar por nombre…"
                 className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 mt-1.5 text-[11px] text-slate-500">
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Accesible</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Parcial</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Sin acceso</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-slate-400" /> Sin datos</span>
-              <span className="text-slate-400">· el ícono indica el tipo</span>
-            </div>
           </div>
-          <div className="flex flex-row sm:flex-col gap-2 sm:w-36 shrink-0 sm:translate-y-6">
+          <div className="flex flex-row sm:flex-col gap-2 sm:w-36 shrink-0">
             <button onClick={() => setShowAnalysis(true)}
               className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
               <BarChart3 size={16} /> Análisis

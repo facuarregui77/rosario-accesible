@@ -39,3 +39,11 @@ body,
   color: #075985 !important;
   background-color: #e0f2fe !important;
 }
+
+/* Que los controles de abajo (zoom +/-) no queden tapados por la barra del navegador en celular */
+.leaflet-bottom {
+  bottom: env(safe-area-inset-bottom, 0px);
+}
+.leaflet-control-zoom {
+  margin-bottom: 14px !important;
+}
