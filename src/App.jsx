@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -91,6 +91,10 @@ const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7",
 
 // Etiquetas del acceso en silla de ruedas (dato real de OSM)
 const WHEELCHAIR_LABELS = { si: "Acceso en silla de ruedas", parcial: "Acceso parcial en silla de ruedas", no: "Sin acceso en silla de ruedas" };
+
+// Código para desbloquear el "modo edición" (admin). Cambialo por el que quieras.
+// (Candado blando del lado del cliente; la seguridad real llega con login de Supabase.)
+const ADMIN_CODE = "rosario-2026";
 
 // ¿Tenemos algún dato real o cargado para este lugar?
 const hasAnyData = (p) => p.wheelchair != null || CRITERIA.some((c) => p.a[c.key] != null);
@@ -241,6 +245,16 @@ export default function App() {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showRamps, setShowRamps] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
+  const [admin, setAdmin] = useState(() => typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
+
+  // Activar / salir del modo edición (admin)
+  const toggleAdmin = () => {
+    if (admin) { setAdmin(false); try { localStorage.removeItem("admin_mode"); } catch (e) {} return; }
+    const code = window.prompt("Ingresá el código de administrador para editar la información:");
+    if (code == null) return;
+    if (code === ADMIN_CODE) { setAdmin(true); try { localStorage.setItem("admin_mode", "1"); } catch (e) {} }
+    else window.alert("Código incorrecto.");
+  };
   const [reviews, setReviews] = useState({});
   const [overrides, setOverrides] = useState({});
   const [loading, setLoading] = useState(true);
@@ -311,9 +325,9 @@ export default function App() {
   }, [data]);
 
   const avgRating = (id) => {
-    const r = reviews[id] || [];
-    if (!r.length) return null;
-    return (r.reduce((s, x) => s + x.stars, 0) / r.length).toFixed(1);
+    const rated = (reviews[id] || []).filter((x) => x.stars > 0);
+    if (!rated.length) return null;
+    return (rated.reduce((s, x) => s + x.stars, 0) / rated.length).toFixed(1);
   };
 
   return (
@@ -331,6 +345,11 @@ export default function App() {
               <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
               <p className="text-xs sm:text-sm font-semibold text-sky-500">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
+            <button onClick={toggleAdmin}
+              title={admin ? "Modo edición activado — tocá para salir" : "Acceso de administrador (editar información)"}
+              className={`shrink-0 ml-1 w-8 h-8 flex items-center justify-center rounded-lg border transition ${admin ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/70 text-slate-400 border-slate-200 hover:text-sky-600 hover:border-sky-300"}`}>
+              {admin ? <Unlock size={15} /> : <Lock size={15} />}
+            </button>
           </div>
           {/* Buscador + leyenda de colores */}
           <div className="w-full sm:flex-1 sm:max-w-md sm:translate-y-6">
@@ -422,6 +441,7 @@ export default function App() {
 
       {selectedLive && (
         <DetailPanel place={selectedLive} onClose={() => setSelected(null)} reviews={reviews[selectedLive.id] || []}
+          admin={admin}
           onAddReview={(rev) => addReview(selectedLive.id, rev)}
           onSaveAccess={(newA) => saveAccess(selectedLive.id, newA)}
           avgRating={avgRating(selectedLive.id)} />
@@ -431,20 +451,21 @@ export default function App() {
   );
 }
 
-function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRating }) {
+function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRating, admin }) {
   const [stars, setStars] = useState(0);
   const [hover, setHover] = useState(0);
   const [name, setName] = useState("");
   const [text, setText] = useState("");
+  const [kind, setKind] = useState("experiencia"); // "experiencia" | "sugerencia"
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(place.a);
 
   useEffect(() => { setDraft(place.a); setEditing(false); }, [place.id, place.a]);
 
   const submit = () => {
-    if (!stars || !text.trim()) return;
-    onAddReview({ stars, name: name.trim() || "Anónimo", text: text.trim(), date: new Date().toLocaleDateString("es-AR") });
-    setStars(0); setName(""); setText("");
+    if (!text.trim()) return; // las estrellas son opcionales (una sugerencia puede no llevar puntaje)
+    onAddReview({ stars, kind, name: name.trim() || "Anónimo", text: text.trim(), date: new Date().toLocaleDateString("es-AR") });
+    setStars(0); setName(""); setText(""); setKind("experiencia");
   };
 
   const saveEdit = () => { onSaveAccess(draft); setEditing(false); };
@@ -483,19 +504,19 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
 
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-semibold text-slate-700">Detalle de accesibilidad</h3>
-            {!editing ? (
-              <button onClick={() => setEditing(true)}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-xs text-sky-700 border border-sky-200 transition">
-                <Pencil size={13} /> Editar
-              </button>
-            ) : (
+            {editing ? (
               <div className="flex items-center gap-2">
                 <button onClick={cancelEdit} className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs text-slate-600 transition">Cancelar</button>
                 <button onClick={saveEdit} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-medium transition">
                   <Save size={13} /> Guardar
                 </button>
               </div>
-            )}
+            ) : admin ? (
+              <button onClick={() => setEditing(true)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-xs text-sky-700 border border-sky-200 transition">
+                <Pencil size={13} /> Editar
+              </button>
+            ) : null}
           </div>
 
           <div className="space-y-2 mb-3">
@@ -526,42 +547,59 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
               );
             })}
             {editing && <p className="text-[11px] text-slate-500 italic">Elegí Sí / No / — (sin datos) en cada criterio y tocá "Guardar". {db.cloud ? "Tus datos se comparten con toda la comunidad (se guardan en la nube)." : "Tus datos se guardan en este navegador como relevamiento manual."}</p>}
-            {!editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar. Podés cargarlos vos con "Editar".</p>}
+            {!editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar.{admin ? ' Podés cargarlos con "Editar".' : ""}</p>}
           </div>
 
-          {/* Reseñas */}
-          <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"><MessageSquare size={15} /> Comentarios ({reviews.length})</h3>
+          {/* Opiniones y sugerencias */}
+          <h3 className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2"><MessageSquare size={15} /> Opiniones y sugerencias ({reviews.length})</h3>
+          <p className="text-[11px] text-slate-500 mb-2">Contá tu experiencia o dejá una recomendación para mejorar la app.</p>
           <div className="space-y-2 mb-4 max-h-44 overflow-y-auto">
-            {reviews.length === 0 && <p className="text-xs text-slate-500 italic">Todavía no hay comentarios. ¡Sé el primero!</p>}
-            {reviews.map((r, i) => (
-              <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-slate-800">{r.name}</span>
-                  <span className="flex gap-0.5">{[1,2,3,4,5].map((s) => <Star key={s} size={12} className={s <= r.stars ? "fill-amber-400 text-amber-400" : "text-slate-300"} />)}</span>
+            {reviews.length === 0 && <p className="text-xs text-slate-500 italic">Todavía no hay opiniones. ¡Sé el primero!</p>}
+            {reviews.map((r, i) => {
+              const esSug = r.kind === "sugerencia";
+              return (
+                <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-slate-800">{r.name}</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1 whitespace-nowrap ${esSug ? "bg-amber-100 text-amber-700 border-amber-200" : "bg-sky-100 text-sky-700 border-sky-200"}`}>
+                      {esSug ? <><Lightbulb size={10} /> Sugerencia</> : <><MessageSquare size={10} /> Experiencia</>}
+                    </span>
+                  </div>
+                  {r.stars > 0 && <span className="flex gap-0.5 mt-1">{[1,2,3,4,5].map((s) => <Star key={s} size={12} className={s <= r.stars ? "fill-amber-400 text-amber-400" : "text-slate-300"} />)}</span>}
+                  <p className="text-xs text-slate-600 mt-1">{r.text}</p>
+                  <span className="text-[10px] text-slate-500">{r.date}</span>
                 </div>
-                <p className="text-xs text-slate-600 mt-1">{r.text}</p>
-                <span className="text-[10px] text-slate-500">{r.date}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Formulario */}
+          {/* Formulario de feedback */}
           <div className="p-3 rounded-xl bg-sky-50 border border-sky-200">
+            {/* Tipo de feedback */}
+            <div className="flex gap-2 mb-2">
+              {[["experiencia", "Experiencia", MessageSquare], ["sugerencia", "Sugerencia", Lightbulb]].map(([k, l, Ic]) => (
+                <button key={k} onClick={() => setKind(k)}
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium border transition ${kind === k ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-100"}`}>
+                  <Ic size={13} /> {l}
+                </button>
+              ))}
+            </div>
+            {/* Puntuación (opcional) */}
             <div className="flex items-center gap-1 mb-2">
               {[1,2,3,4,5].map((s) => (
-                <button key={s} onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)} onClick={() => setStars(s)}>
+                <button key={s} onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)} onClick={() => setStars(stars === s ? 0 : s)}>
                   <Star size={24} className={(hover || stars) >= s ? "fill-amber-400 text-amber-400" : "text-slate-300"} />
                 </button>
               ))}
-              <span className="text-xs text-slate-500 ml-2">{stars ? `${stars}/5` : "Tu calificación"}</span>
+              <span className="text-xs text-slate-500 ml-2">{stars ? `${stars}/5` : "Puntuación (opcional)"}</span>
             </div>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre (opcional)"
               className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
-            <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Tu experiencia con la accesibilidad del lugar..."
+            <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={kind === "sugerencia" ? "¿Qué te gustaría que mejoremos o agreguemos?" : "Contanos tu experiencia con la accesibilidad del lugar…"}
               rows={2} className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500 resize-none" />
-            <button onClick={submit} disabled={!stars || !text.trim()}
+            <button onClick={submit} disabled={!text.trim()}
               className="w-full py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-white disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium transition">
-              Publicar comentario
+              Enviar
             </button>
           </div>
         </div>
