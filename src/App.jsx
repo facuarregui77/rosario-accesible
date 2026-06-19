@@ -289,10 +289,25 @@ export default function App() {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showRamps, setShowRamps] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
-  const [admin, setAdmin] = useState(() => typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
+  const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
+  const [showLogin, setShowLogin] = useState(false);
+
+  // En modo nube, "admin" = sesión activa de Supabase
+  useEffect(() => {
+    if (!db.cloud) return;
+    db.getSession().then((s) => setAdmin(!!s));
+    const unsub = db.onAuthChange((s) => setAdmin(!!s));
+    return () => unsub();
+  }, []);
 
   // Activar / salir del modo edición (admin)
   const toggleAdmin = () => {
+    if (db.cloud) {
+      if (admin) db.signOut();   // cerrar sesión
+      else setShowLogin(true);   // abrir login real
+      return;
+    }
+    // Modo local (sin nube): candado con código
     if (admin) { setAdmin(false); try { localStorage.removeItem("admin_mode"); } catch (e) {} return; }
     const code = window.prompt("Ingresá el código de administrador para editar la información:");
     if (code == null) return;
@@ -485,6 +500,7 @@ export default function App() {
           avgRating={avgRating(selectedLive.id)} />
       )}
       {showAnalysis && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={!db.cloud && Object.keys(overrides).length > 0} />}
+      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </div>
   );
 }
@@ -711,6 +727,44 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
               <RotateCcw size={14} /> Borrar mis datos cargados
             </button>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoginModal({ onClose }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
+  const submit = async () => {
+    if (!email || !password) return;
+    setErr(""); setLoading(true);
+    const { error } = await db.signIn(email.trim(), password);
+    setLoading(false);
+    if (error) setErr("No se pudo iniciar sesión. Revisá el email y la contraseña.");
+    else onClose();
+  };
+  return (
+    <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm bg-white rounded-2xl border border-sky-200 shadow-2xl overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><Lock size={18} className="text-sky-600" /> Acceso de administrador</h2>
+            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
+          </div>
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email"
+            className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
+          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Contraseña"
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+            className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
+          {err && <p className="text-xs text-rose-600 mb-2">{err}</p>}
+          <button onClick={submit} disabled={loading || !email || !password}
+            className="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium transition">
+            {loading ? "Ingresando…" : "Ingresar"}
+          </button>
         </div>
       </div>
     </div>

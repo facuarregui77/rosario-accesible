@@ -51,7 +51,7 @@ async function cloudLoadAll() {
     overrides[r.place_id] = Object.fromEntries(ACCESS_KEYS.map((k) => [k, r[k] ?? null]));
   });
   (rev.data || []).forEach((r) => {
-    (reviews[r.place_id] ||= []).push({ stars: r.stars, name: r.name, text: r.text, date: r.date });
+    (reviews[r.place_id] ||= []).push({ stars: r.stars, kind: r.kind || "experiencia", name: r.name, text: r.text, date: r.date });
   });
   return { overrides, reviews };
 }
@@ -77,7 +77,7 @@ export async function saveAccess(placeId, a, nextOverrides) {
 export async function addReview(placeId, review, nextReviews) {
   if (cloud) {
     const { error } = await supabase.from("reviews").insert({
-      place_id: placeId, stars: review.stars, name: review.name, text: review.text, date: review.date,
+      place_id: placeId, stars: review.stars || null, kind: review.kind || "experiencia", name: review.name, text: review.text, date: review.date,
     });
     if (error) console.error("Supabase addReview:", error.message);
   } else {
@@ -88,4 +88,27 @@ export async function addReview(placeId, review, nextReviews) {
 // Borrar los datos cargados (solo tiene sentido en modo local).
 export async function clearMyAccess() {
   if (!cloud) await local.clearMyAccess();
+}
+
+// ---- Autenticación (modo nube) ----
+// Login del admin. Devuelve { error } si falla.
+export async function signIn(email, password) {
+  if (!cloud) return { error: { message: "Supabase no está configurado." } };
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  return { error };
+}
+export async function signOut() {
+  if (cloud) await supabase.auth.signOut();
+}
+// Sesión actual (o null).
+export async function getSession() {
+  if (!cloud) return null;
+  const { data } = await supabase.auth.getSession();
+  return data.session;
+}
+// Suscribirse a cambios de login/logout. Devuelve una función para desuscribir.
+export function onAuthChange(cb) {
+  if (!cloud) return () => {};
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => cb(session));
+  return () => data.subscription.unsubscribe();
 }
