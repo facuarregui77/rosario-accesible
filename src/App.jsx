@@ -176,12 +176,20 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
         attributionControl: true,
         minZoom: 12,                 // no permite alejarse hasta ver toda la provincia
         maxBounds: ROSARIO_BOUNDS,   // no permite salir de Rosario
-        maxBoundsViscosity: 1.0,     // "rebote" firme al llegar al borde
+        maxBoundsViscosity: 0.5,     // borde menos "pegajoso" → se arrastra más libre
+        inertiaDeceleration: 1800,   // el desplazamiento por inercia "viaja" más (más ágil al deslizar)
+        wheelPxPerZoomLevel: 40,     // zoom con la rueda más rápido
+        zoomDelta: 1,
+        keyboardPanDelta: 120,       // flechas del teclado mueven más
+        tap: false,                  // mejor respuesta táctil en celulares modernos
       }).setView([-32.945, -60.66], 13);
       // Mapa con calles (Esri — muy confiable, sin bloqueos)
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19,
         attribution: "Tiles &copy; Esri",
+        keepBuffer: 6,            // mantiene más tiles alrededor → menos "blancos" al panear
+        updateWhenIdle: false,    // actualiza tiles mientras se mueve (sensación más fluida)
+        updateWhenZooming: false,
       }).addTo(map);
       mapRef.current = map;
       map.zoomControl.setPosition("bottomright"); // abajo-derecha: no choca con el panel ni el header
