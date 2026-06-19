@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -150,6 +150,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
         attribution: "Tiles &copy; Esri",
       }).addTo(map);
       mapRef.current = map;
+      map.zoomControl.setPosition("bottomright"); // abajo-derecha: no choca con el panel ni el header
       layerRef.current = L.layerGroup().addTo(map);
       // Varios "empujones" para forzar la carga del mapa dentro del visor
       const kick = () => map.invalidateSize();
@@ -239,6 +240,7 @@ export default function App() {
   const [accessFilter, setAccessFilter] = useState("all");
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showRamps, setShowRamps] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [reviews, setReviews] = useState({});
   const [overrides, setOverrides] = useState({});
   const [loading, setLoading] = useState(true);
@@ -315,23 +317,23 @@ export default function App() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
+    <div className="w-full h-screen flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
       {/* Header */}
-      <div className="sticky top-0 z-[1100] backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-5 py-4">
+      <div className="relative z-20 shrink-0 backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-3 sm:px-5 py-3 sm:py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
-        <div className="-mx-5 -mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
-        <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="-mx-3 sm:-mx-5 -mt-3 sm:-mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white">
-              <Accessibility size={30} />
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white shrink-0">
+              <Accessibility size={28} />
             </div>
             <div>
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
-              <p className="text-sm font-semibold text-sky-500">Toda la información disponible acerca de la accesibilidad local.</p>
+              <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
+              <p className="text-xs sm:text-sm font-semibold text-sky-500">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
           </div>
-          {/* Buscador + leyenda de colores (centro del header) */}
-          <div className="flex-1 min-w-[200px] max-w-md order-last sm:order-none w-full sm:w-auto translate-y-6">
+          {/* Buscador + leyenda de colores */}
+          <div className="w-full sm:flex-1 sm:max-w-md sm:translate-y-6">
             <div className="relative">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar un lugar por nombre…"
@@ -343,48 +345,59 @@ export default function App() {
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> Por categoría</span>
             </div>
           </div>
-          <div className="flex flex-col gap-2 w-36 shrink-0 translate-y-6">
+          <div className="flex flex-row sm:flex-col gap-2 sm:w-36 shrink-0 sm:translate-y-6">
             <button onClick={() => setShowAnalysis(true)}
-              className="w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
+              className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
               <BarChart3 size={16} /> Análisis
             </button>
             <button onClick={() => setShowRamps((v) => !v)}
               title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
-              className={`w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
+              className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
               <Accessibility size={16} /> Rampas
             </button>
           </div>
         </div>
 
-        {/* Filtros — fila por tipo */}
-        <div className="flex items-center gap-2 mt-3 flex-wrap">
+        {/* Filtros — fila por tipo (deslizable en celular, con wrap en escritorio) */}
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
           <span title="Filtrar por tipo de lugar" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-sky-200 text-sky-700"><Filter size={14} /></span>
           {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
+              className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
               {t === "all" ? "Todos" : TYPE_PLURAL[t]}
             </button>
           ))}
         </div>
         {/* Filtros — fila por accesibilidad */}
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
+        <div className="flex items-center gap-2 mt-2 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
           <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-orange-100 text-orange-600"><Accessibility size={14} /></span>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
+              className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
               {l}
             </button>
           ))}
         </div>
         {/* Detalle decorativo: franja celeste → naranja */}
-        <div className="-mx-5 -mb-4 mt-3 h-1 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
+        <div className="-mx-3 sm:-mx-5 -mb-3 sm:-mb-4 mt-3 h-1 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
       </div>
 
-      <div className="flex flex-row">
-        {/* PANEL LATERAL: lista — a la izquierda */}
-        <div className="w-72 shrink-0 bg-sky-100 h-[calc(100vh-110px)] min-h-[400px] overflow-y-auto border-r border-sky-300 scroll-orange">
-          {filtered.map((p) => (
-              <button key={p.id} onClick={() => setSelected(p)}
+      {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
+      <div className="relative flex-1 min-h-0">
+        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} />
+        <div className="absolute bottom-3 left-3 z-[500] text-[10px] text-slate-600 bg-white/90 border border-sky-100 px-2 py-1 rounded pointer-events-none">
+          {filtered.length} lugares
+        </div>
+
+        {/* Fondo oscuro al abrir el panel en celular */}
+        {sidebarOpen && <div className="sm:hidden absolute inset-0 bg-black/30 z-[1040]" onClick={() => setSidebarOpen(false)} />}
+
+        {/* Panel lateral desplegable (overlay sobre el mapa, no lo deforma) */}
+        <div className={`absolute inset-y-0 left-0 z-[1050] w-[86%] max-w-xs transition-transform duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="h-full overflow-y-auto bg-sky-100 border-r border-sky-300 scroll-orange shadow-2xl">
+            {filtered.length === 0 && <p className="px-4 py-4 text-sm text-slate-500 italic">No hay lugares que coincidan con la búsqueda.</p>}
+            {filtered.map((p) => (
+              <button key={p.id} onClick={() => { setSelected(p); if (typeof window !== "undefined" && window.innerWidth < 640) setSidebarOpen(false); }}
                 className={`w-full text-left px-4 py-3 border-b border-sky-200 border-l-4 hover:bg-sky-200 transition ${selected?.id === p.id ? "bg-sky-300 border-l-orange-500" : "border-l-transparent"}`}>
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium text-sm text-sky-700">{p.name}</span>
@@ -396,15 +409,14 @@ export default function App() {
                   {!hasAnyData(p) && <span className="text-[11px] text-slate-400 italic">a relevar</span>}
                 </div>
               </button>
-          ))}
-        </div>
-
-        {/* MAPA REAL (Leaflet) — a la derecha */}
-        <div className="relative flex-1 h-[calc(100vh-110px)] min-h-[400px] overflow-hidden">
-          <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} />
-          <div className="absolute bottom-3 left-3 z-[500] text-[10px] text-slate-600 bg-white/90 border border-sky-100 px-2 py-1 rounded pointer-events-none">
-            {filtered.length} lugares · pinchá un marcador
+            ))}
           </div>
+          {/* Tirador para abrir/cerrar el panel */}
+          <button onClick={() => setSidebarOpen((v) => !v)}
+            title={sidebarOpen ? "Ocultar la lista de lugares" : "Ver la lista de lugares"}
+            className="absolute top-3 -right-10 w-10 h-14 rounded-r-xl bg-sky-500 hover:bg-sky-400 text-white shadow-lg flex items-center justify-center">
+            {sidebarOpen ? <ChevronLeft size={20} /> : <List size={18} />}
+          </button>
         </div>
       </div>
 
