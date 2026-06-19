@@ -343,7 +343,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
-              <p className="text-xs sm:text-sm font-semibold text-sky-500">Toda la información disponible acerca de la accesibilidad local.</p>
+              <p className="text-xs sm:text-sm text-slate-500">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
             <button onClick={toggleAdmin}
               title={admin ? "Modo edición activado — tocá para salir" : "Acceso de administrador (editar información)"}
@@ -379,7 +379,7 @@ export default function App() {
 
         {/* Filtros — fila por tipo (deslizable en celular, con wrap en escritorio) */}
         <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
-          <span title="Filtrar por tipo de lugar" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-sky-200 text-sky-700"><Filter size={14} /></span>
+          <span title="Filtrar por tipo de lugar" className="shrink-0 text-slate-400"><Filter size={15} /></span>
           {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
               className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
@@ -389,7 +389,7 @@ export default function App() {
         </div>
         {/* Filtros — fila por accesibilidad */}
         <div className="flex items-center gap-2 mt-2 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
-          <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-orange-100 text-orange-600"><Accessibility size={14} /></span>
+          <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 text-slate-400"><Accessibility size={15} /></span>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
               className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
@@ -397,8 +397,6 @@ export default function App() {
             </button>
           ))}
         </div>
-        {/* Detalle decorativo: franja celeste → naranja */}
-        <div className="-mx-3 sm:-mx-5 -mb-3 sm:-mb-4 mt-3 h-1 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
       </div>
 
       {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
