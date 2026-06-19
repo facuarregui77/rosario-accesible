@@ -348,6 +348,7 @@ export default function App() {
       if (typeFilter !== "all" && p.type !== typeFilter) return false;
       if (accessFilter === "si" && p.wheelchair !== "si") return false;
       if (accessFilter === "parcial" && p.wheelchair !== "parcial") return false;
+      if (accessFilter === "no" && p.wheelchair !== "no") return false;
       if (accessFilter === "sindato" && hasAnyData(p)) return false;
       return true;
     });
@@ -429,7 +430,7 @@ export default function App() {
         {/* Filtros — fila por accesibilidad */}
         <div className="flex items-center gap-2 mt-2 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
           <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 text-slate-400"><Accessibility size={15} /></span>
-          {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["sindato", "Sin datos"]].map(([k, l]) => (
+          {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
               className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
               {l}
