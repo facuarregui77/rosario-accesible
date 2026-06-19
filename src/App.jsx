@@ -75,6 +75,26 @@ const PLACES = [
   { id: "cc_la_toma", name: "Centro Cultural La Toma", type: "cultural", lat: -32.9543, lng: -60.6533, gRating: 4.3, a: { ...SIN_DATOS } },
   { id: "distrito_siete", name: "Distrito Siete", type: "cultural", lat: -32.9606, lng: -60.6486, gRating: 4.4, a: { ...SIN_DATOS } },
   { id: "cc_lumiere", name: "Centro Cultural Cine Lumière", type: "cultural", lat: -32.9486, lng: -60.6340, gRating: 4.5, a: { ...SIN_DATOS } },
+  // Salud (ubicaciones y dato de accesibilidad reales de OpenStreetMap)
+  { id: "hosp_centenario", name: "Hospital Provincial del Centenario", type: "salud", lat: -32.938543, lng: -60.664759, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "190050427") },
+  { id: "heca", name: "Hospital de Emergencias Dr. Clemente Álvarez (HECA)", type: "salud", lat: -32.952783, lng: -60.670521, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "304102717") },
+  { id: "hosp_provincial", name: "Hospital Provincial de Rosario", type: "salud", lat: -32.956172, lng: -60.63106, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "383917122") },
+  { id: "hosp_italiano", name: "Hospital Italiano Garibaldi", type: "salud", lat: -32.970095, lng: -60.646303, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "414243785") },
+  { id: "hosp_espanol", name: "Hospital Español", type: "salud", lat: -32.973801, lng: -60.645766, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "475554302") },
+  { id: "sanatorio_parque", name: "Sanatorio Parque", type: "salud", lat: -32.944263, lng: -60.653745, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("node", "4030806363") },
+  { id: "sanatorio_ninos", name: "Sanatorio de Niños", type: "salud", lat: -32.944224, lng: -60.654669, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("node", "4030806362") },
+  // Transporte (ubicaciones reales; accesibilidad a relevar)
+  { id: "terminal", name: "Terminal de Ómnibus Mariano Moreno", type: "transporte", lat: -32.9606, lng: -60.6790, a: { ...SIN_DATOS } },
+  { id: "est_rosario_norte", name: "Estación Rosario Norte", type: "transporte", lat: -32.930733, lng: -60.657531, a: { ...SIN_DATOS } },
+  { id: "aeropuerto", name: "Aeropuerto Internacional de Rosario (Islas Malvinas)", type: "transporte", lat: -32.9036, lng: -60.7846, a: { ...SIN_DATOS } },
+  // Gobierno / trámites
+  { id: "palacio_leones", name: "Municipalidad de Rosario (Palacio de los Leones)", type: "gobierno", lat: -32.947129, lng: -60.632202, a: { ...SIN_DATOS }, wheelchair: "no", src: osm("way", "187197923") },
+  { id: "concejo", name: "Concejo Municipal de Rosario", type: "gobierno", lat: -32.9483, lng: -60.63011, a: { ...SIN_DATOS } },
+  // Espacios verdes
+  { id: "parque_independencia", name: "Parque Independencia", type: "verde", lat: -32.9636, lng: -60.6755, a: { ...SIN_DATOS } },
+  { id: "parque_urquiza", name: "Parque Urquiza", type: "verde", lat: -32.957749, lng: -60.623346, a: { ...SIN_DATOS } },
+  { id: "parque_italia", name: "Parque Italia", type: "verde", lat: -32.97208, lng: -60.624632, a: { ...SIN_DATOS } },
+  { id: "plaza_montenegro", name: "Plaza Montenegro", type: "verde", lat: -32.9476, lng: -60.6386, a: { ...SIN_DATOS } },
 ];
 
 const CRITERIA = [
@@ -85,9 +105,9 @@ const CRITERIA = [
   { key: "senas", label: "Personal con lengua de señas", icon: Hand },
 ];
 
-const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural" };
-const TYPE_PLURAL = { bar: "Bares", restaurant: "Restaurantes", boliche: "Boliches", educativo: "Educativos", deportivo: "Deportivos", cultural: "Culturales" };
-const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444", cultural: "#d946ef" };
+const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacio verde" };
+const TYPE_PLURAL = { bar: "Bares", restaurant: "Restaurantes", boliche: "Boliches", educativo: "Educativos", deportivo: "Deportivos", cultural: "Culturales", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacios verdes" };
+const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444", cultural: "#d946ef", salud: "#14b8a6", transporte: "#64748b", gobierno: "#6366f1", verde: "#84cc16" };
 
 // Etiquetas del acceso en silla de ruedas (dato real de OSM)
 const WHEELCHAIR_LABELS = { si: "Acceso en silla de ruedas", parcial: "Acceso parcial en silla de ruedas", no: "Sin acceso en silla de ruedas" };
@@ -387,7 +407,7 @@ export default function App() {
         {/* Filtros — fila por tipo (deslizable en celular, con wrap en escritorio) */}
         <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
           <span title="Filtrar por tipo de lugar" className="shrink-0 text-slate-400"><Filter size={15} /></span>
-          {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural"].map((t) => (
+          {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural", "salud", "transporte", "gobierno", "verde"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
               className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
               {t === "all" ? "Todos" : TYPE_PLURAL[t]}
@@ -429,7 +449,7 @@ export default function App() {
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_LABELS[p.type]}</span>
-                  <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>
+                  {p.gRating && <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>}
                   {!hasAnyData(p) && <span className="text-[11px] text-slate-400 italic">a relevar</span>}
                 </div>
               </button>
@@ -486,7 +506,7 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
             <h2 className="text-xl font-bold text-slate-900">{place.name}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs px-2 py-0.5 rounded" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_LABELS[place.type]}</span>
-              <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>
+              {place.gRating && <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>}
               {avgRating && <span className="text-xs text-amber-600 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {avgRating} usuarios</span>}
             </div>
           </div>
