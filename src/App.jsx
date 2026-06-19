@@ -146,8 +146,15 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
     let cancelled = false;
     loadLeaflet().then((L) => {
       if (cancelled || mapRef.current || !containerRef.current) return;
-      const map = L.map(containerRef.current, { zoomControl: true, attributionControl: true })
-        .setView([-32.945, -60.645], 14);
+      // Límites de la ciudad de Rosario: el mapa no se puede alejar ni desplazar fuera de la ciudad.
+      const ROSARIO_BOUNDS = [[-33.06, -60.82], [-32.83, -60.55]];
+      const map = L.map(containerRef.current, {
+        zoomControl: true,
+        attributionControl: true,
+        minZoom: 12,                 // no permite alejarse hasta ver toda la provincia
+        maxBounds: ROSARIO_BOUNDS,   // no permite salir de Rosario
+        maxBoundsViscosity: 1.0,     // "rebote" firme al llegar al borde
+      }).setView([-32.945, -60.66], 13);
       // Mapa con calles (Esri — muy confiable, sin bloqueos)
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19,
@@ -222,7 +229,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
 
   // Volver a la vista inicial de toda la ciudad
   const resetView = () => {
-    if (mapRef.current) mapRef.current.setView([-32.945, -60.645], 14, { animate: true });
+    if (mapRef.current) mapRef.current.setView([-32.945, -60.66], 13, { animate: true });
   };
 
   return (
@@ -343,7 +350,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
-              <p className="text-xs sm:text-sm text-slate-500">Toda la información disponible acerca de la accesibilidad local.</p>
+              <p className="text-xs sm:text-sm font-medium text-sky-800">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
             <button onClick={toggleAdmin}
               title={admin ? "Modo edición activado — tocá para salir" : "Acceso de administrador (editar información)"}
