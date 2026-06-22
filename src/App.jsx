@@ -428,8 +428,8 @@ export default function App() {
     return (rated.reduce((s, x) => s + x.stars, 0) / rated.length).toFixed(1);
   };
 
-  // Sugerencias del autocompletado: las mejores coincidencias por nombre (respetando los filtros activos).
-  const suggestions = useMemo(() => filtered.slice(0, 8), [filtered]);
+  // Sugerencias del autocompletado: todas las coincidencias por nombre (respetando los filtros activos).
+  const suggestions = filtered;
 
   // Elegir un lugar de la lista: lo resalta y centra en el mapa, y completa el buscador.
   const pickSuggestion = (p) => {
@@ -517,7 +517,7 @@ export default function App() {
               {/* Desplegable de coincidencias en vivo (estilo autocompletado) */}
               {showSuggestions && query.trim() && (
                 <ul role="listbox"
-                  className="absolute left-0 right-0 sm:right-[calc(2.75rem+0.5rem)] top-full mt-1.5 z-[1100] bg-white rounded-xl border border-sky-200 shadow-xl overflow-hidden max-h-72 overflow-y-auto">
+                  className="absolute left-0 right-0 sm:right-[calc(2.75rem+0.5rem)] top-full mt-1.5 z-[1100] bg-white rounded-xl border border-sky-200 shadow-2xl max-h-[70vh] overflow-y-auto scroll-orange">
                   {suggestions.length === 0 ? (
                     <li className="px-3 py-2.5 text-sm text-slate-400 italic">Sin coincidencias…</li>
                   ) : (
