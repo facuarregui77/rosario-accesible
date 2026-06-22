@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       // Archivos del /public que no entran al precache automático
       includeAssets: ["favicon.svg", "apple-touch-icon.png", "og-image.png"],
       manifest: {
