@@ -169,26 +169,31 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
     let cancelled = false;
     loadLeaflet().then((L) => {
       if (cancelled || mapRef.current || !containerRef.current) return;
+      // ¿Es un celular/tablet (pantalla táctil)? Aplicamos ajustes más livianos para que vaya fluido.
+      const isMobile = (L.Browser && L.Browser.mobile) || window.matchMedia("(pointer: coarse)").matches;
       // Límites de la ciudad de Rosario: el mapa no se puede alejar ni desplazar fuera de la ciudad.
       const ROSARIO_BOUNDS = [[-33.06, -60.82], [-32.83, -60.55]];
       const map = L.map(containerRef.current, {
         zoomControl: true,
         attributionControl: true,
+        preferCanvas: true,          // dibuja las rampas en canvas (no cientos de nodos SVG) → paneo mucho más ágil
         minZoom: 12,                 // no permite alejarse hasta ver toda la provincia
         maxBounds: ROSARIO_BOUNDS,   // no permite salir de Rosario
         maxBoundsViscosity: 0.5,     // borde menos "pegajoso" → se arrastra más libre
-        inertiaDeceleration: 1800,   // el desplazamiento por inercia "viaja" más (más ágil al deslizar)
+        inertiaDeceleration: 2200,   // glide natural al soltar el dedo
         wheelPxPerZoomLevel: 40,     // zoom con la rueda más rápido
         zoomDelta: 1,
+        zoomSnap: isMobile ? 0.5 : 1,// zoom más suave al pellizcar en celular
         keyboardPanDelta: 120,       // flechas del teclado mueven más
+        fadeAnimation: !isMobile,    // sin fundido de tiles en celular → menos trabajo de pintado
         tap: false,                  // mejor respuesta táctil en celulares modernos
       }).setView([-32.945, -60.66], 13);
       // Mapa con calles (Esri — muy confiable, sin bloqueos)
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19,
         attribution: "Tiles &copy; Esri",
-        keepBuffer: 6,            // mantiene más tiles alrededor → menos "blancos" al panear
-        updateWhenIdle: false,    // actualiza tiles mientras se mueve (sensación más fluida)
+        keepBuffer: isMobile ? 2 : 6,   // celular: menos tiles en memoria → arrastre mucho más liviano
+        updateWhenIdle: isMobile,       // celular: carga tiles al SOLTAR (arrastre fluido); escritorio: mientras se mueve
         updateWhenZooming: false,
       }).addTo(map);
       mapRef.current = map;
