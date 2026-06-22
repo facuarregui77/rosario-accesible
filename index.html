@@ -30,10 +30,50 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-    <title>Rosario Accesible — Mapa</title>
+    <title>Rosario Accesible — Mapa de accesibilidad de Rosario</title>
+
+    <!-- Datos estructurados para Google (invisible al usuario) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Rosario Accesible",
+      "alternateName": "Mapa de accesibilidad de Rosario",
+      "url": "https://access-app-rosario.vercel.app/",
+      "description": "Mapa colaborativo de accesibilidad de Rosario: rampas, baños accesibles, comercios y lugares con accesibilidad para personas con movilidad reducida y usuarios de silla de ruedas.",
+      "applicationCategory": "TravelApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "es-AR",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ARS" },
+      "about": {
+        "@type": "Thing",
+        "name": "Accesibilidad para personas con movilidad reducida en Rosario"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Rosario",
+        "containedInPlace": {
+          "@type": "AdministrativeArea",
+          "name": "Santa Fe, Argentina"
+        }
+      }
+    }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <noscript>
+        <h1>Rosario Accesible — Mapa de accesibilidad de Rosario</h1>
+        <p>
+          Mapa colaborativo de accesibilidad de la ciudad de Rosario, Santa Fe.
+          Consultá y sumá información sobre rampas, baños accesibles, comercios y
+          lugares con accesibilidad para personas con movilidad reducida y
+          usuarios de silla de ruedas. Esta aplicación necesita JavaScript para
+          mostrar el mapa interactivo.
+        </p>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
