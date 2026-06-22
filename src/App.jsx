@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
@@ -321,7 +322,9 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [ddPos, setDdPos] = useState(null); // posición del desplegable (portal), medida del buscador
   const searchBoxRef = useRef(null);
+  const dropdownRef = useRef(null);
   const [typeFilter, setTypeFilter] = useState("all");
   const [accessFilter, setAccessFilter] = useState("all");
   const [showAnalysis, setShowAnalysis] = useState(false);
@@ -454,14 +457,38 @@ export default function App() {
     else if (e.key === "Escape") { setShowSuggestions(false); setActiveIndex(-1); }
   };
 
-  // Cerrar el desplegable al hacer clic fuera del buscador.
+  // Cerrar el desplegable al hacer clic fuera del buscador (o del propio desplegable, que vive en un portal).
   useEffect(() => {
     const onDocClick = (e) => {
-      if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) setShowSuggestions(false);
+      if (searchBoxRef.current && searchBoxRef.current.contains(e.target)) return;
+      if (dropdownRef.current && dropdownRef.current.contains(e.target)) return;
+      setShowSuggestions(false);
     };
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
+
+  // Medir dónde colocar el desplegable (debajo del buscador). Como va en un portal con position:fixed,
+  // ningún contenedor padre puede recortarlo. Se recalcula al abrir y al cambiar el tamaño/scroll.
+  const placeDropdown = () => {
+    const el = searchBoxRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setDdPos({ top: r.bottom + 6, left: r.left, width: r.width });
+  };
+  useLayoutEffect(() => {
+    if (showSuggestions && query.trim()) placeDropdown();
+  }, [showSuggestions, query]);
+  useEffect(() => {
+    if (!showSuggestions) return;
+    const onMove = () => placeDropdown();
+    window.addEventListener("resize", onMove);
+    window.addEventListener("scroll", onMove, true);
+    return () => {
+      window.removeEventListener("resize", onMove);
+      window.removeEventListener("scroll", onMove, true);
+    };
+  }, [showSuggestions]);
 
   return (
     <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
@@ -514,10 +541,12 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Desplegable de coincidencias en vivo (estilo autocompletado) */}
-              {showSuggestions && query.trim() && (
-                <ul role="listbox"
-                  className="absolute left-0 right-0 sm:right-[calc(2.75rem+0.5rem)] top-full mt-1.5 z-[1100] bg-white rounded-xl border border-sky-200 shadow-2xl max-h-[70vh] overflow-y-auto scroll-orange">
+              {/* Desplegable de coincidencias en vivo (estilo autocompletado).
+                  Va en un PORTAL al <body> con position:fixed → ningún padre lo recorta. */}
+              {showSuggestions && query.trim() && ddPos && createPortal(
+                <ul role="listbox" ref={dropdownRef}
+                  style={{ position: "fixed", top: ddPos.top, left: ddPos.left, width: ddPos.width }}
+                  className="z-[3000] bg-white rounded-xl border border-sky-200 shadow-2xl max-h-[70vh] overflow-y-auto scroll-orange">
                   {suggestions.length === 0 ? (
                     <li className="px-3 py-2.5 text-sm text-slate-400 italic">Sin coincidencias…</li>
                   ) : (
@@ -537,7 +566,8 @@ export default function App() {
                       );
                     })
                   )}
-                </ul>
+                </ul>,
+                document.body
               )}
             </div>
           </div>
