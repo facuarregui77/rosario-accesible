@@ -489,9 +489,10 @@ export default function App() {
             <div className="relative">
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <button onClick={handleSearch} title="Buscar y resaltar el lugar en el mapa"
-                    className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 p-0.5 text-sky-500 hover:text-sky-700 transition">
-                    <Search size={15} />
+                  <button type="button" onClick={handleSearch} aria-label="Buscar"
+                    title="Buscar y resaltar el lugar en el mapa"
+                    className="absolute left-0 top-0 h-full px-2.5 z-10 flex items-center text-sky-500 hover:text-sky-700 active:text-sky-800 transition">
+                    <Search size={16} />
                   </button>
                   <input value={query}
                     onChange={(e) => { setQuery(e.target.value); setShowSuggestions(true); setActiveIndex(-1); }}
