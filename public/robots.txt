@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://access-app-rosario.vercel.app/sitemap.xml
