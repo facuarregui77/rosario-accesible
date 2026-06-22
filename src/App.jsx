@@ -155,7 +155,7 @@ const loadLeaflet = () => {
   return leafletPromise;
 };
 
-function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
+function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
@@ -260,6 +260,25 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
     if (!ready || !mapRef.current || !selected) return;
     mapRef.current.setView([selected.lat, selected.lng], 16, { animate: true });
   }, [selected, ready]);
+
+  // Mientras se escribe en el buscador, el mapa se ajusta solo a los resultados (feedback en vivo).
+  // Debounce de 250 ms para no saltar en cada tecla. Solo actúa si hay una búsqueda activa.
+  useEffect(() => {
+    if (!ready || !mapRef.current || !window.L) return;
+    const q = (searchTerm || "").trim();
+    if (!q) return;                         // sin búsqueda → no movemos la vista del usuario
+    const L = window.L;
+    const t = setTimeout(() => {
+      if (!mapRef.current || !places.length) return;  // sin resultados → dejamos el mapa como está
+      if (places.length === 1) {
+        mapRef.current.setView([places[0].lat, places[0].lng], 16, { animate: true });
+      } else {
+        const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lng]));
+        mapRef.current.fitBounds(bounds, { padding: [60, 60], maxZoom: 16, animate: true });
+      }
+    }, 250);
+    return () => clearTimeout(t);
+  }, [searchTerm, ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Capa de rampas / cruces accesibles (se prende y apaga con el botón)
   useEffect(() => {
@@ -406,6 +425,11 @@ export default function App() {
     return (rated.reduce((s, x) => s + x.stars, 0) / rated.length).toFixed(1);
   };
 
+  // Al tocar "Buscar" (o Enter): resalta el primer resultado en el mapa (lo selecciona y lo centra).
+  const handleSearch = () => {
+    if (filtered.length > 0) setSelected(filtered[0]);
+  };
+
   return (
     <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
       {/* Header */}
@@ -429,10 +453,24 @@ export default function App() {
           </div>
           {/* Buscador */}
           <div className="w-full sm:flex-1 sm:max-w-md">
-            <div className="relative">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar un lugar por nombre…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
+                <input value={query} onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  placeholder="Buscar un lugar por nombre…"
+                  className="w-full pl-9 pr-9 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
+                {query && (
+                  <button onClick={() => setQuery("")} title="Limpiar búsqueda"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
+              <button onClick={handleSearch} title="Buscar y resaltar el lugar en el mapa"
+                className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-sm font-medium border border-sky-500 shadow-sm transition">
+                <Search size={15} /> <span className="hidden sm:inline">Buscar</span>
+              </button>
             </div>
           </div>
           <div className="flex flex-row sm:flex-col gap-2 sm:w-36 shrink-0">
@@ -472,7 +510,7 @@ export default function App() {
 
       {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
       <div className="relative flex-1 min-h-0">
-        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} />
+        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} searchTerm={query} />
         <div className="absolute bottom-3 left-3 z-[500] text-[10px] text-slate-600 bg-white/90 border border-sky-100 px-2 py-1 rounded pointer-events-none">
           {filtered.length} lugares
         </div>
