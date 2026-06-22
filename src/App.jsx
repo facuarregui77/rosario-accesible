@@ -466,7 +466,7 @@ export default function App() {
   return (
     <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
       {/* Header */}
-      <div className="relative z-20 shrink-0 backdrop-blur-xl bg-sky-100 border-b border-sky-300 px-3 sm:px-5 py-3 sm:py-4">
+      <div className="relative z-20 shrink-0 bg-sky-100 border-b border-sky-300 px-3 sm:px-5 py-3 sm:py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
         <div className="-mx-3 sm:-mx-5 -mt-3 sm:-mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
