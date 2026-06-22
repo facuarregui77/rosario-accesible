@@ -48,7 +48,10 @@ async function cloudLoadAll() {
     supabase.from("reviews").select("*").order("created_at", { ascending: true }),
   ]);
   (acc.data || []).forEach((r) => {
-    overrides[r.place_id] = Object.fromEntries(ACCESS_KEYS.map((k) => [k, r[k] ?? null]));
+    overrides[r.place_id] = {
+      ...Object.fromEntries(ACCESS_KEYS.map((k) => [k, r[k] ?? null])),
+      wheelchair: r.wheelchair ?? null, // estado general (semáforo); null = sin dato → se mantiene el de OSM
+    };
   });
   (rev.data || []).forEach((r) => {
     (reviews[r.place_id] ||= []).push({ stars: r.stars, kind: r.kind || "experiencia", name: r.name, text: r.text, date: r.date });
@@ -62,10 +65,16 @@ export async function loadAll() {
 }
 
 // Guardar/actualizar el detalle de accesibilidad de un lugar.
-// `nextOverrides` es el objeto completo (para el modo local); `placeId`/`a` para la nube.
-export async function saveAccess(placeId, a, nextOverrides) {
+// `data` incluye los 5 criterios y (opcional) `wheelchair` (estado general).
+// `nextOverrides` es el objeto completo (para el modo local); `placeId`/`data` para la nube.
+export async function saveAccess(placeId, data, nextOverrides) {
   if (cloud) {
-    const row = { place_id: placeId, ...Object.fromEntries(ACCESS_KEYS.map((k) => [k, a[k] ?? null])), updated_at: new Date().toISOString() };
+    const row = {
+      place_id: placeId,
+      ...Object.fromEntries(ACCESS_KEYS.map((k) => [k, data[k] ?? null])),
+      wheelchair: data.wheelchair ?? null,
+      updated_at: new Date().toISOString(),
+    };
     const { error } = await supabase.from("place_access").upsert(row, { onConflict: "place_id" });
     if (error) console.error("Supabase saveAccess:", error.message);
   } else {

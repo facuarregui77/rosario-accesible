@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -134,8 +134,16 @@ function AccessChip({ wheelchair }) {
 }
 
 // Aplica los cambios guardados por el usuario sobre los datos base
-const mergePlaces = (overrides) => PLACES.map((p) =>
-  overrides[p.id] ? { ...p, a: { ...p.a, ...overrides[p.id] } } : p);
+const mergePlaces = (overrides) => PLACES.map((p) => {
+  const o = overrides[p.id];
+  if (!o) return p;
+  const { wheelchair, ...a } = o; // separamos el estado general de los 5 criterios
+  return {
+    ...p,
+    a: { ...p.a, ...a },
+    wheelchair: wheelchair != null ? wheelchair : p.wheelchair, // null = sin dato → se mantiene el de OSM
+  };
+});
 
 // Carga la librería Leaflet (mapa real) una sola vez
 let leafletPromise = null;
@@ -317,6 +325,186 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm 
   );
 }
 
+// Distancia en metros entre dos puntos (fórmula de Haversine)
+const distanceM = (a, b) => {
+  const R = 6371000, rad = (d) => (d * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+};
+const fmtDist = (d) => (d == null ? "" : d < 1000 ? `${Math.round(d)} m` : `${(d / 1000).toFixed(1)} km`);
+
+// Modo relevamiento (solo admin): geolocaliza, ordena los lugares por cercanía y permite
+// cargar la accesibilidad con pocos toques, parado frente al lugar.
+function SurveyMode({ places, onSaveAccess, onClose }) {
+  const [coords, setCoords] = useState(null);
+  const [geo, setGeo] = useState("loading"); // loading | ok | denied | error | unavailable
+  const [onlyMissing, setOnlyMissing] = useState(true);
+  const [active, setActive] = useState(null); // lugar en edición
+  const [draftA, setDraftA] = useState(null);
+  const [draftW, setDraftW] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState("");
+
+  const askLocation = () => {
+    if (!("geolocation" in navigator)) { setGeo("unavailable"); return; }
+    setGeo("loading");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setGeo("ok"); },
+      (err) => { setGeo(err && err.code === 1 ? "denied" : "error"); },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+    );
+  };
+  useEffect(() => { askLocation(); }, []);
+
+  const list = useMemo(() => {
+    const arr = places
+      .filter((p) => (onlyMissing ? !hasAnyData(p) : true))
+      .map((p) => ({ p, d: coords ? distanceM(coords, p) : null }));
+    if (coords) arr.sort((a, b) => a.d - b.d);
+    else arr.sort((a, b) => a.p.name.localeCompare(b.p.name));
+    return arr;
+  }, [places, onlyMissing, coords]);
+
+  const done = places.filter(hasAnyData).length;
+
+  const openEditor = (p) => { setActive(p); setDraftA({ ...p.a }); setDraftW(p.wheelchair ?? null); };
+  const save = async () => {
+    setSaving(true);
+    await onSaveAccess(active.id, draftA, draftW);
+    setSaving(false);
+    setToast(`Guardado: ${active.name}`);
+    setActive(null);
+    setTimeout(() => setToast(""), 2500);
+  };
+
+  const WOPTS = [["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], [null, "Sin datos"]];
+  const wClass = (v, on) => on
+    ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400")
+    : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+
+  return (
+    <div className="fixed inset-0 z-[1300] bg-white flex flex-col">
+      {/* Encabezado */}
+      <div className="shrink-0 bg-sky-100 border-b border-sky-300 px-4 py-3 flex items-center gap-3">
+        <div className="p-1.5 rounded-lg bg-sky-500 text-white"><ClipboardList size={18} /></div>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-base font-bold text-slate-800 leading-tight">Modo relevamiento</h2>
+          <p className="text-xs text-slate-500">{done} de {places.length} lugares con datos</p>
+        </div>
+        <button onClick={onClose} className="p-2 rounded-lg hover:bg-sky-200 text-slate-600"><X size={20} /></button>
+      </div>
+
+      {!active ? (
+        // ---- Lista de lugares por cercanía ----
+        <div className="flex-1 overflow-y-auto scroll-orange">
+          <div className="px-4 py-3 flex items-center justify-between gap-2 border-b border-slate-100">
+            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+              <LocateFixed size={14} className={geo === "ok" ? "text-emerald-500" : "text-slate-400"} />
+              {geo === "loading" && "Buscando tu ubicación…"}
+              {geo === "ok" && "Ordenado por cercanía a vos"}
+              {geo === "denied" && "Sin permiso de ubicación · orden alfabético"}
+              {(geo === "error" || geo === "unavailable") && "Ubicación no disponible · orden alfabético"}
+              {(geo === "denied" || geo === "error") && (
+                <button onClick={askLocation} className="underline text-sky-600 ml-1">reintentar</button>
+              )}
+            </div>
+            <button onClick={() => setOnlyMissing((v) => !v)}
+              className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium border transition ${onlyMissing ? "bg-orange-500 text-white border-orange-500" : "bg-white text-slate-600 border-slate-300"}`}>
+              {onlyMissing ? "Solo sin datos" : "Todos"}
+            </button>
+          </div>
+
+          {list.length === 0 && (
+            <p className="px-4 py-8 text-center text-sm text-slate-400 italic">
+              {onlyMissing ? "¡No quedan lugares sin datos! 🎉" : "No hay lugares."}
+            </p>
+          )}
+
+          {list.map(({ p, d }) => (
+            <button key={p.id} onClick={() => openEditor(p)}
+              className="w-full text-left px-4 py-3 border-b border-slate-100 hover:bg-sky-50 transition flex items-center gap-3">
+              <span className="text-xl shrink-0">{TYPE_EMOJI[p.type]}</span>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-sm text-slate-800 truncate">{p.name}</div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[11px] text-slate-400">{TYPE_LABELS[p.type]}</span>
+                  {d != null && <span className="text-[11px] font-medium text-sky-600">· {fmtDist(d)}</span>}
+                  {hasAnyData(p) ? <AccessChip wheelchair={p.wheelchair} /> : <span className="text-[11px] text-orange-500 italic">a relevar</span>}
+                </div>
+              </div>
+              <ChevronRight size={18} className="text-slate-300 shrink-0" />
+            </button>
+          ))}
+        </div>
+      ) : (
+        // ---- Editor rápido del lugar ----
+        <div className="flex-1 overflow-y-auto scroll-orange">
+          <div className="px-4 py-3 border-b border-slate-100">
+            <button onClick={() => setActive(null)} className="text-sm text-sky-600 flex items-center gap-1 mb-2"><ChevronLeft size={16} /> Volver a la lista</button>
+            <h3 className="text-lg font-bold text-slate-800">{active.name}</h3>
+            <span className="text-xs text-slate-400">{TYPE_LABELS[active.type]}</span>
+          </div>
+
+          <div className="p-4 space-y-4">
+            {/* Estado general (semáforo) */}
+            <div>
+              <p className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"><Accessibility size={16} className="text-sky-600" /> ¿Es accesible en silla de ruedas?</p>
+              <div className="grid grid-cols-2 gap-2">
+                {WOPTS.map(([v, l]) => (
+                  <button key={l} onClick={() => setDraftW(v)}
+                    className={`px-3 py-3 rounded-xl text-sm font-medium border transition ${wClass(v, draftW === v)}`}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 5 criterios */}
+            <div>
+              <p className="text-sm font-semibold text-slate-700 mb-2">Detalle</p>
+              <div className="space-y-2">
+                {CRITERIA.map((c) => {
+                  const Icon = c.icon;
+                  const val = draftA[c.key];
+                  return (
+                    <div key={c.key} className="flex items-center justify-between p-3 rounded-xl border bg-slate-50 border-slate-200">
+                      <span className="flex items-center gap-2 text-sm text-slate-700"><Icon size={18} className="text-slate-500" /> {c.label}</span>
+                      <div className="flex gap-1.5">
+                        {[["si", "Sí"], ["no", "No"], [null, "—"]].map(([v, l]) => (
+                          <button key={l} onClick={() => setDraftA({ ...draftA, [c.key]: v })}
+                            className={`w-10 py-1.5 rounded-lg text-sm font-medium border transition ${val === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100"}`}>
+                            {l}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Barra inferior fija con Guardar */}
+          <div className="sticky bottom-0 bg-white border-t border-slate-200 p-3 flex gap-2" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+            <button onClick={() => setActive(null)} className="px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition">Cancelar</button>
+            <button onClick={save} disabled={saving}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-white text-sm font-semibold transition">
+              <Save size={16} /> {saving ? "Guardando…" : "Guardar y volver"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1400] bg-emerald-600 text-white text-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+          <CheckCircle2 size={16} /> {toast}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [query, setQuery] = useState("");
@@ -329,6 +517,7 @@ export default function App() {
   const [accessFilter, setAccessFilter] = useState("all");
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showRamps, setShowRamps] = useState(false);
+  const [showSurvey, setShowSurvey] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
   const [showLogin, setShowLogin] = useState(false);
@@ -377,10 +566,14 @@ export default function App() {
     await db.addReview(placeId, rev, next);
   };
 
-  const saveAccess = async (placeId, newA) => {
-    const next = { ...overrides, [placeId]: newA };
+  // Guarda los 5 criterios y, si se pasa, el estado general (wheelchair). Preserva lo previo.
+  const saveAccess = async (placeId, newA, newWheelchair = undefined) => {
+    const prev = overrides[placeId] || {};
+    const merged = { ...prev, ...newA };
+    if (newWheelchair !== undefined) merged.wheelchair = newWheelchair;
+    const next = { ...overrides, [placeId]: merged };
     setOverrides(next);
-    await db.saveAccess(placeId, newA, next);
+    await db.saveAccess(placeId, merged, next);
   };
 
   const resetAccess = async () => {
@@ -571,7 +764,7 @@ export default function App() {
               )}
             </div>
           </div>
-          <div className="flex flex-row sm:flex-col gap-2 sm:w-36 shrink-0">
+          <div className="flex flex-row flex-wrap sm:flex-col gap-2 sm:w-36 shrink-0">
             <button onClick={() => setShowAnalysis(true)}
               className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
               <BarChart3 size={16} /> Análisis
@@ -581,6 +774,13 @@ export default function App() {
               className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
               <Accessibility size={16} /> Rampas
             </button>
+            {admin && (
+              <button onClick={() => setShowSurvey(true)}
+                title="Relevar accesibilidad en la calle: ordena los lugares por cercanía y los cargás con pocos toques"
+                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white transition text-sm font-medium border border-emerald-500 shadow-sm">
+                <ClipboardList size={16} /> Relevar
+              </button>
+            )}
           </div>
         </div>
 
@@ -648,11 +848,15 @@ export default function App() {
         <DetailPanel place={selectedLive} onClose={() => setSelected(null)} reviews={reviews[selectedLive.id] || []}
           admin={admin}
           onAddReview={(rev) => addReview(selectedLive.id, rev)}
-          onSaveAccess={(newA) => saveAccess(selectedLive.id, newA)}
+          onSaveAccess={(newA, newW) => saveAccess(selectedLive.id, newA, newW)}
           avgRating={avgRating(selectedLive.id)} />
       )}
       {showAnalysis && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={!db.cloud && Object.keys(overrides).length > 0} />}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showSurvey && admin && (
+        <SurveyMode places={data} onClose={() => setShowSurvey(false)}
+          onSaveAccess={(placeId, newA, newW) => saveAccess(placeId, newA, newW)} />
+      )}
     </div>
   );
 }
@@ -665,8 +869,9 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
   const [kind, setKind] = useState("experiencia"); // "experiencia" | "sugerencia"
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(place.a);
+  const [draftW, setDraftW] = useState(place.wheelchair ?? null);
 
-  useEffect(() => { setDraft(place.a); setEditing(false); }, [place.id, place.a]);
+  useEffect(() => { setDraft(place.a); setDraftW(place.wheelchair ?? null); setEditing(false); }, [place.id, place.a, place.wheelchair]);
 
   const submit = () => {
     if (!text.trim()) return; // las estrellas son opcionales (una sugerencia puede no llevar puntaje)
@@ -674,8 +879,8 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
     setStars(0); setName(""); setText(""); setKind("experiencia");
   };
 
-  const saveEdit = () => { onSaveAccess(draft); setEditing(false); };
-  const cancelEdit = () => { setDraft(place.a); setEditing(false); };
+  const saveEdit = () => { onSaveAccess(draft, draftW); setEditing(false); };
+  const cancelEdit = () => { setDraft(place.a); setDraftW(place.wheelchair ?? null); setEditing(false); };
 
   return (
     <div className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
@@ -724,6 +929,20 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
               </button>
             ) : null}
           </div>
+
+          {editing && (
+            <div className="mb-3 p-2.5 rounded-lg border bg-sky-50 border-sky-200">
+              <span className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2"><Accessibility size={16} className="text-sky-600" /> Accesibilidad general (silla de ruedas)</span>
+              <div className="grid grid-cols-2 gap-1.5">
+                {[["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], [null, "Sin datos"]].map(([v, l]) => (
+                  <button key={l} onClick={() => setDraftW(v)}
+                    className={`px-2 py-1.5 rounded-lg text-xs font-medium border transition ${draftW === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"}`}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2 mb-3">
             {CRITERIA.map((c) => {
