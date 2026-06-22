@@ -319,6 +319,9 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm 
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [query, setQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const searchBoxRef = useRef(null);
   const [typeFilter, setTypeFilter] = useState("all");
   const [accessFilter, setAccessFilter] = useState("all");
   const [showAnalysis, setShowAnalysis] = useState(false);
@@ -425,10 +428,40 @@ export default function App() {
     return (rated.reduce((s, x) => s + x.stars, 0) / rated.length).toFixed(1);
   };
 
-  // Al tocar "Buscar" (o Enter): resalta el primer resultado en el mapa (lo selecciona y lo centra).
-  const handleSearch = () => {
-    if (filtered.length > 0) setSelected(filtered[0]);
+  // Sugerencias del autocompletado: las mejores coincidencias por nombre (respetando los filtros activos).
+  const suggestions = useMemo(() => filtered.slice(0, 8), [filtered]);
+
+  // Elegir un lugar de la lista: lo resalta y centra en el mapa, y completa el buscador.
+  const pickSuggestion = (p) => {
+    setSelected(p);
+    setQuery(p.name);
+    setShowSuggestions(false);
+    setActiveIndex(-1);
   };
+
+  // Al tocar "Buscar" o Enter: si hay una sugerencia marcada con el teclado la elige; si no, el primer resultado.
+  const handleSearch = () => {
+    if (activeIndex >= 0 && suggestions[activeIndex]) { pickSuggestion(suggestions[activeIndex]); return; }
+    if (filtered.length > 0) setSelected(filtered[0]);
+    setShowSuggestions(false);
+  };
+
+  // Navegación del desplegable con el teclado (flechas / Enter / Esc).
+  const onSearchKeyDown = (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); setShowSuggestions(true); setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1)); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); setActiveIndex((i) => Math.max(i - 1, 0)); }
+    else if (e.key === "Enter") { handleSearch(); }
+    else if (e.key === "Escape") { setShowSuggestions(false); setActiveIndex(-1); }
+  };
+
+  // Cerrar el desplegable al hacer clic fuera del buscador.
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) setShowSuggestions(false);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
 
   return (
     <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
@@ -451,26 +484,57 @@ export default function App() {
               {admin ? <Unlock size={15} /> : <Lock size={15} />}
             </button>
           </div>
-          {/* Buscador */}
-          <div className="w-full sm:flex-1 sm:max-w-md">
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
-                <input value={query} onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder="Buscar un lugar por nombre…"
-                  className="w-full pl-9 pr-9 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
-                {query && (
-                  <button onClick={() => setQuery("")} title="Limpiar búsqueda"
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
-                    <X size={15} />
-                  </button>
-                )}
+          {/* Buscador con autocompletado */}
+          <div className="w-full sm:flex-1 sm:max-w-md" ref={searchBoxRef}>
+            <div className="relative">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500" />
+                  <input value={query}
+                    onChange={(e) => { setQuery(e.target.value); setShowSuggestions(true); setActiveIndex(-1); }}
+                    onFocus={() => { if (query.trim()) setShowSuggestions(true); }}
+                    onKeyDown={onSearchKeyDown}
+                    placeholder="Buscar un lugar por nombre…"
+                    role="combobox" aria-expanded={showSuggestions} aria-autocomplete="list"
+                    className="w-full pl-9 pr-9 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
+                  {query && (
+                    <button onClick={() => { setQuery(""); setShowSuggestions(false); setActiveIndex(-1); }} title="Limpiar búsqueda"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
+                <button onClick={handleSearch} title="Buscar y resaltar el lugar en el mapa"
+                  className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-sm font-medium border border-sky-500 shadow-sm transition">
+                  <Search size={15} /> <span className="hidden sm:inline">Buscar</span>
+                </button>
               </div>
-              <button onClick={handleSearch} title="Buscar y resaltar el lugar en el mapa"
-                className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-sm font-medium border border-sky-500 shadow-sm transition">
-                <Search size={15} /> <span className="hidden sm:inline">Buscar</span>
-              </button>
+
+              {/* Desplegable de coincidencias en vivo (estilo autocompletado) */}
+              {showSuggestions && query.trim() && (
+                <ul role="listbox"
+                  className="absolute left-0 right-0 sm:right-[calc(2.75rem+0.5rem)] top-full mt-1.5 z-[1100] bg-white rounded-xl border border-sky-200 shadow-xl overflow-hidden max-h-72 overflow-y-auto">
+                  {suggestions.length === 0 ? (
+                    <li className="px-3 py-2.5 text-sm text-slate-400 italic">Sin coincidencias…</li>
+                  ) : (
+                    suggestions.map((p, i) => {
+                      const dot = p.wheelchair === "si" ? "#10b981" : p.wheelchair === "parcial" ? "#f59e0b" : p.wheelchair === "no" ? "#ef4444" : "#94a3b8";
+                      return (
+                        <li key={p.id} role="option" aria-selected={i === activeIndex}>
+                          <button onClick={() => pickSuggestion(p)}
+                            onMouseEnter={() => setActiveIndex(i)}
+                            className={`w-full text-left px-3 py-2 flex items-center gap-2.5 text-sm transition ${i === activeIndex ? "bg-sky-100" : "hover:bg-sky-50"}`}>
+                            <span className="text-base leading-none shrink-0">{TYPE_EMOJI[p.type]}</span>
+                            <span className="flex-1 truncate text-slate-700 font-medium">{p.name}</span>
+                            <span className="text-[11px] text-slate-400 shrink-0">{TYPE_LABELS[p.type]}</span>
+                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: dot }} title="Accesibilidad" />
+                          </button>
+                        </li>
+                      );
+                    })
+                  )}
+                </ul>
+              )}
             </div>
           </div>
           <div className="flex flex-row sm:flex-col gap-2 sm:w-36 shrink-0">
