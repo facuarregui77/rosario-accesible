@@ -160,6 +160,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
   const mapRef = useRef(null);
   const layerRef = useRef(null);
   const rampsLayerRef = useRef(null);
+  const isMobileRef = useRef(false);
   const [ready, setReady] = useState(false);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
@@ -171,6 +172,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
       if (cancelled || mapRef.current || !containerRef.current) return;
       // ¿Es un celular/tablet (pantalla táctil)? Aplicamos ajustes más livianos para que vaya fluido.
       const isMobile = (L.Browser && L.Browser.mobile) || window.matchMedia("(pointer: coarse)").matches;
+      isMobileRef.current = isMobile;
       // Límites de la ciudad de Rosario: el mapa no se puede alejar ni desplazar fuera de la ciudad.
       const ROSARIO_BOUNDS = [[-33.06, -60.82], [-32.83, -60.55]];
       const map = L.map(containerRef.current, {
@@ -186,6 +188,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
         zoomSnap: isMobile ? 0.5 : 1,// zoom más suave al pellizcar en celular
         keyboardPanDelta: 120,       // flechas del teclado mueven más
         fadeAnimation: !isMobile,    // sin fundido de tiles en celular → menos trabajo de pintado
+        markerZoomAnimation: !isMobile, // celular: los pines no se animan al pellizcar → menos repintado por frame
         tap: false,                  // mejor respuesta táctil en celulares modernos
       }).setView([-32.945, -60.66], 13);
       // Mapa con calles (Esri — muy confiable, sin bloqueos)
@@ -224,11 +227,19 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps }) {
       const strokeW = isSel ? 3 : 1.5;
       const emoji = TYPE_EMOJI[p.type] || "📍";
       const F = Math.round(size * 0.4);
+      // En celular evitamos `filter:drop-shadow` (repinta cada frame al panear/zoom → laguea).
+      // Usamos una sombra "barata": un óvalo gris dibujado dentro del SVG, sin filtro.
+      const mobile = isMobileRef.current;
+      const svgShadow = mobile
+        ? `<ellipse cx="12" cy="22.5" rx="4" ry="1.3" fill="rgba(0,0,0,0.28)" stroke="none"/>`
+        : "";
+      const svgFilter = mobile ? "" : "filter:drop-shadow(0 2px 3px rgba(0,0,0,0.5));";
       const icon = L.divIcon({
         className: "",
         html: `<div style="transform:translate(-50%,-100%);position:relative;width:${size}px;height:${size}px;">
           <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" stroke="${stroke}" stroke-width="${strokeW}"
-            style="filter:drop-shadow(0 2px 3px rgba(0,0,0,0.5));">
+            style="${svgFilter}">
+            ${svgShadow}
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
             <circle cx="12" cy="9" r="5" fill="white"/>
           </svg>
