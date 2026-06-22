@@ -505,6 +505,122 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
   );
 }
 
+// Mini-formulario para que el público SUGIERA datos de accesibilidad (entran como propuesta pendiente).
+function SuggestionForm({ onSubmit }) {
+  const [sugg, setSugg] = useState({ wheelchair: null, bano: null, rampa: null, ascensor: null, braille: null, senas: null });
+  const [comment, setComment] = useState("");
+  const [name, setName] = useState("");
+  const [sent, setSent] = useState(false);
+
+  const anyData = sugg.wheelchair != null || CRITERIA.some((c) => sugg[c.key] != null) || comment.trim();
+  const submit = () => {
+    if (!anyData) return;
+    onSubmit({ ...sugg, comment: comment.trim(), name: name.trim() });
+    setSent(true);
+  };
+
+  if (sent) return (
+    <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-800 flex items-center gap-2">
+      <CheckCircle2 size={16} /> ¡Gracias! Tu sugerencia será revisada por el equipo. 💙
+    </div>
+  );
+
+  const WOPTS = [["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"]];
+
+  return (
+    <div className="mt-4 p-3 rounded-xl bg-sky-50 border border-sky-200">
+      <p className="text-sm font-semibold text-slate-700 flex items-center gap-2"><Lightbulb size={15} className="text-amber-500" /> Sugerir datos de accesibilidad</p>
+      <p className="text-[11px] text-slate-500 mb-2.5">Completá solo lo que sepas. El equipo lo revisa antes de publicarlo.</p>
+
+      <div className="mb-2">
+        <span className="text-xs text-slate-600">Acceso en silla de ruedas</span>
+        <div className="flex gap-1.5 mt-1">
+          {WOPTS.map(([v, l]) => (
+            <button key={v} onClick={() => setSugg((s) => ({ ...s, wheelchair: s.wheelchair === v ? null : v }))}
+              className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium border transition ${sugg.wheelchair === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : "bg-rose-500 text-white border-rose-500") : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"}`}>
+              {l}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-1.5 mb-2">
+        {CRITERIA.map((c) => {
+          const Icon = c.icon;
+          return (
+            <div key={c.key} className="flex items-center justify-between">
+              <span className="flex items-center gap-1.5 text-xs text-slate-600"><Icon size={14} className="text-slate-400" /> {c.label}</span>
+              <div className="flex gap-1">
+                {[["si", "Sí"], ["no", "No"], [null, "—"]].map(([v, l]) => (
+                  <button key={l} onClick={() => setSugg((s) => ({ ...s, [c.key]: v }))}
+                    className={`w-8 py-0.5 rounded text-xs font-medium border transition ${sugg[c.key] === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100"}`}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={2}
+        placeholder="Comentario (opcional): contanos qué viste…"
+        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-sky-400 resize-none mb-2" />
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre (opcional)"
+        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-sky-400 mb-2" />
+
+      <button onClick={submit} disabled={!anyData}
+        className="w-full px-3 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 disabled:opacity-50 text-white text-sm font-medium transition">
+        Enviar sugerencia
+      </button>
+    </div>
+  );
+}
+
+// Panel de moderación (solo admin): aprobar / rechazar las sugerencias del público.
+function SuggestionsPanel({ suggestions, places, onApprove, onReject, onClose, onRefresh }) {
+  const nameOf = (id) => places.find((p) => p.id === id)?.name || id;
+  const chip = (label, v) => (
+    <span className={`text-[11px] px-1.5 py-0.5 rounded border ${v === "si" ? "bg-emerald-50 border-emerald-200 text-emerald-700" : v === "parcial" ? "bg-amber-50 border-amber-200 text-amber-700" : "bg-rose-50 border-rose-200 text-rose-700"}`}>
+      {label}: {v === "si" ? "Sí" : v === "parcial" ? "Parcial" : "No"}
+    </span>
+  );
+  return (
+    <div className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()}
+        className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white sm:rounded-2xl rounded-t-2xl border border-sky-200 shadow-2xl scroll-orange">
+        <div className="sticky top-0 bg-sky-50 p-4 border-b border-sky-200 flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-800 flex items-center gap-2"><Lightbulb size={18} className="text-amber-500" /> Sugerencias pendientes ({suggestions.length})</h2>
+          <div className="flex items-center gap-1">
+            <button onClick={onRefresh} title="Actualizar" className="p-1.5 rounded-lg hover:bg-sky-100 text-slate-500"><RotateCcw size={16} /></button>
+            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
+          </div>
+        </div>
+        <div className="p-4 space-y-3">
+          {suggestions.length === 0 && <p className="text-center text-sm text-slate-400 italic py-8">No hay sugerencias pendientes. 🎉</p>}
+          {suggestions.map((s) => (
+            <div key={s.id} className="p-3 rounded-xl border border-slate-200 bg-slate-50">
+              <div className="font-semibold text-sm text-slate-800">{nameOf(s.place_id)}</div>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {s.wheelchair && chip("Silla de ruedas", s.wheelchair)}
+                {CRITERIA.filter((c) => s[c.key]).map((c) => chip(c.label, s[c.key]))}
+              </div>
+              {s.comment && <p className="text-xs text-slate-600 mt-2 italic">“{s.comment}”</p>}
+              <div className="flex items-center justify-between mt-2.5">
+                <span className="text-[11px] text-slate-400">{s.name ? `por ${s.name}` : "anónimo"}</span>
+                <div className="flex gap-2">
+                  <button onClick={() => onReject(s)} className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-600 text-xs font-medium hover:bg-slate-100 transition">Rechazar</button>
+                  <button onClick={() => onApprove(s)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-medium transition"><CheckCircle2 size={14} /> Aprobar</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [query, setQuery] = useState("");
@@ -518,6 +634,8 @@ export default function App() {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showRamps, setShowRamps] = useState(false);
   const [showSurvey, setShowSurvey] = useState(false);
+  const [pendingSuggestions, setPendingSuggestions] = useState([]);
+  const [showSuggPanel, setShowSuggPanel] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
   const [showLogin, setShowLogin] = useState(false);
@@ -579,6 +697,40 @@ export default function App() {
   const resetAccess = async () => {
     setOverrides({});
     await db.clearMyAccess();
+  };
+
+  // ---- Sugerencias del público (capa 2) ----
+  // Cargar las pendientes cuando el usuario es admin (en la nube, RLS solo deja leerlas al admin).
+  useEffect(() => {
+    if (!admin) { setPendingSuggestions([]); return; }
+    db.loadPendingSuggestions().then(setPendingSuggestions).catch(() => {});
+  }, [admin]);
+
+  const refreshSuggestions = () => { db.loadPendingSuggestions().then(setPendingSuggestions).catch(() => {}); };
+
+  const addSuggestion = async (placeId, s) => {
+    const item = { id: `local-${Date.now()}-${Math.round(Math.random() * 1e6)}`, place_id: placeId, status: "pending", created_at: new Date().toISOString(), ...s };
+    const next = db.cloud ? null : [...pendingSuggestions, item];
+    await db.addSuggestion(placeId, s, next);
+    if (!db.cloud) setPendingSuggestions(next);
+    else if (admin) refreshSuggestions();
+  };
+
+  const approveSuggestion = async (sug) => {
+    const place = data.find((p) => p.id === sug.place_id);
+    const newA = { ...(place ? place.a : {}) };
+    CRITERIA.forEach((c) => { if (sug[c.key] != null) newA[c.key] = sug[c.key]; });
+    const newW = sug.wheelchair != null ? sug.wheelchair : undefined;
+    await saveAccess(sug.place_id, newA, newW);
+    const next = pendingSuggestions.filter((x) => x.id !== sug.id);
+    setPendingSuggestions(next);
+    await db.setSuggestionStatus(sug.id, "approved", next);
+  };
+
+  const rejectSuggestion = async (sug) => {
+    const next = pendingSuggestions.filter((x) => x.id !== sug.id);
+    setPendingSuggestions(next);
+    await db.setSuggestionStatus(sug.id, "rejected", next);
   };
 
   // Lista de lugares con los cambios del usuario aplicados
@@ -781,6 +933,16 @@ export default function App() {
                 <ClipboardList size={16} /> Relevar
               </button>
             )}
+            {admin && (
+              <button onClick={() => { setShowSuggPanel(true); refreshSuggestions(); }}
+                title="Revisar las sugerencias de accesibilidad enviadas por el público"
+                className="relative flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-white/90 hover:bg-white text-amber-700 transition text-sm font-medium border border-amber-400 shadow-sm">
+                <Lightbulb size={16} /> Sugerencias
+                {pendingSuggestions.length > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-orange-500 text-white text-[10px] font-bold">{pendingSuggestions.length}</span>
+                )}
+              </button>
+            )}
           </div>
         </div>
 
@@ -849,6 +1011,7 @@ export default function App() {
           admin={admin}
           onAddReview={(rev) => addReview(selectedLive.id, rev)}
           onSaveAccess={(newA, newW) => saveAccess(selectedLive.id, newA, newW)}
+          onAddSuggestion={addSuggestion}
           avgRating={avgRating(selectedLive.id)} />
       )}
       {showAnalysis && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={!db.cloud && Object.keys(overrides).length > 0} />}
@@ -857,11 +1020,16 @@ export default function App() {
         <SurveyMode places={data} onClose={() => setShowSurvey(false)}
           onSaveAccess={(placeId, newA, newW) => saveAccess(placeId, newA, newW)} />
       )}
+      {showSuggPanel && admin && (
+        <SuggestionsPanel suggestions={pendingSuggestions} places={data}
+          onApprove={approveSuggestion} onReject={rejectSuggestion}
+          onRefresh={refreshSuggestions} onClose={() => setShowSuggPanel(false)} />
+      )}
     </div>
   );
 }
 
-function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRating, admin }) {
+function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAddSuggestion, avgRating, admin }) {
   const [stars, setStars] = useState(0);
   const [hover, setHover] = useState(0);
   const [name, setName] = useState("");
@@ -974,6 +1142,9 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, avgRa
             {editing && <p className="text-[11px] text-slate-500 italic">Elegí Sí / No / — (sin datos) en cada criterio y tocá "Guardar". {db.cloud ? "Tus datos se comparten con toda la comunidad (se guardan en la nube)." : "Tus datos se guardan en este navegador como relevamiento manual."}</p>}
             {!editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar.{admin ? ' Podés cargarlos con "Editar".' : ""}</p>}
           </div>
+
+          {/* Sugerir datos de accesibilidad (público, no admin) */}
+          {!admin && !editing && <SuggestionForm onSubmit={(s) => onAddSuggestion(place.id, s)} />}
 
           {/* Opiniones y sugerencias */}
           <h3 className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2"><MessageSquare size={15} /> Opiniones y sugerencias ({reviews.length})</h3>

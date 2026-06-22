@@ -38,6 +38,12 @@ const local = {
   async clearMyAccess() {
     try { await window.storage.delete("access_overrides"); } catch (e) {}
   },
+  async loadSuggestions() {
+    try { const r = await window.storage.get("suggestions_pending"); return r && r.value ? JSON.parse(r.value) : []; } catch (e) { return []; }
+  },
+  async saveSuggestions(arr) {
+    try { await window.storage.set("suggestions_pending", JSON.stringify(arr || [])); } catch (e) {}
+  },
 };
 
 // ---- Modo nube (Supabase) ----
@@ -97,6 +103,38 @@ export async function addReview(placeId, review, nextReviews) {
 // Borrar los datos cargados (solo tiene sentido en modo local).
 export async function clearMyAccess() {
   if (!cloud) await local.clearMyAccess();
+}
+
+// ---- Sugerencias de accesibilidad del público (capa 2) ----
+// Crear una sugerencia (queda 'pending'). `nextLocal` es la cola completa (modo local).
+export async function addSuggestion(placeId, s, nextLocal) {
+  if (cloud) {
+    const { error } = await supabase.from("access_suggestions").insert({
+      place_id: placeId,
+      wheelchair: s.wheelchair ?? null,
+      bano: s.bano ?? null, rampa: s.rampa ?? null, ascensor: s.ascensor ?? null, braille: s.braille ?? null, senas: s.senas ?? null,
+      comment: s.comment || null, name: s.name || null, status: "pending",
+    });
+    if (error) console.error("Supabase addSuggestion:", error.message);
+    return { error };
+  }
+  await local.saveSuggestions(nextLocal);
+  return { error: null };
+}
+
+// Cargar las sugerencias pendientes (solo admin las puede leer en la nube por RLS).
+export async function loadPendingSuggestions() {
+  if (!cloud) return local.loadSuggestions();
+  const { data, error } = await supabase.from("access_suggestions").select("*").eq("status", "pending").order("created_at", { ascending: true });
+  if (error) { console.error("Supabase loadPendingSuggestions:", error.message); return []; }
+  return data || [];
+}
+
+// Aprobar / rechazar una sugerencia. `nextLocal` es la cola restante (modo local).
+export async function setSuggestionStatus(id, status, nextLocal) {
+  if (!cloud) { await local.saveSuggestions(nextLocal || []); return; }
+  const { error } = await supabase.from("access_suggestions").update({ status }).eq("id", id);
+  if (error) console.error("Supabase setSuggestionStatus:", error.message);
 }
 
 // ---- Autenticación (modo nube) ----
