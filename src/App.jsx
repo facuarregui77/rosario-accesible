@@ -836,7 +836,7 @@ export default function App() {
   }, [showSuggestions]);
 
   return (
-    <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "Poppins, system-ui, sans-serif" }}>
+    <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       {/* Header */}
       <div className="relative z-20 shrink-0 bg-sky-100 border-b border-sky-300 px-3 sm:px-5 py-3 sm:py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
@@ -847,7 +847,7 @@ export default function App() {
               <Accessibility size={28} />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Space Grotesk', Poppins, sans-serif" }}>Rosario Access Map</h1>
+              <h1 className="text-lg sm:text-xl font-extrabold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Rosario Access Map</h1>
               <p className="text-xs sm:text-sm font-medium text-sky-800">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
             <button onClick={toggleAdmin}
