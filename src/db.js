@@ -4,14 +4,21 @@
 // Variables de entorno necesarias para el modo nube (ver .env.example):
 //   VITE_SUPABASE_URL
 //   VITE_SUPABASE_ANON_KEY
-import { createClient } from "@supabase/supabase-js";
-
 const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // ¿Está configurada la nube?
 export const cloud = Boolean(url && key);
-const supabase = cloud ? createClient(url, key) : null;
+
+// Cliente de Supabase cargado de forma diferida (lazy): la librería NO entra al bundle
+// inicial, así la app (mapa + header) aparece más rápido. Se importa al primer uso.
+let clientPromise = null;
+function getClient() {
+  if (!clientPromise) {
+    clientPromise = import("@supabase/supabase-js").then(({ createClient }) => createClient(url, key));
+  }
+  return clientPromise;
+}
 
 const ACCESS_KEYS = ["bano", "rampa", "ascensor", "braille", "senas"];
 
@@ -49,9 +56,10 @@ const local = {
 // ---- Modo nube (Supabase) ----
 async function cloudLoadAll() {
   const overrides = {}, reviews = {};
+  const sb = await getClient();
   const [acc, rev] = await Promise.all([
-    supabase.from("place_access").select("*"),
-    supabase.from("reviews").select("*").order("created_at", { ascending: true }),
+    sb.from("place_access").select("*"),
+    sb.from("reviews").select("*").order("created_at", { ascending: true }),
   ]);
   (acc.data || []).forEach((r) => {
     overrides[r.place_id] = {
@@ -81,7 +89,8 @@ export async function saveAccess(placeId, data, nextOverrides) {
       wheelchair: data.wheelchair ?? null,
       updated_at: new Date().toISOString(),
     };
-    const { error } = await supabase.from("place_access").upsert(row, { onConflict: "place_id" });
+    const sb = await getClient();
+    const { error } = await sb.from("place_access").upsert(row, { onConflict: "place_id" });
     if (error) console.error("Supabase saveAccess:", error.message);
   } else {
     await local.saveAccess(nextOverrides);
@@ -91,7 +100,8 @@ export async function saveAccess(placeId, data, nextOverrides) {
 // Agregar una reseña. `nextReviews` es el objeto completo (modo local).
 export async function addReview(placeId, review, nextReviews) {
   if (cloud) {
-    const { error } = await supabase.from("reviews").insert({
+    const sb = await getClient();
+    const { error } = await sb.from("reviews").insert({
       place_id: placeId, stars: review.stars || null, kind: review.kind || "experiencia", name: review.name, text: review.text, date: review.date,
     });
     if (error) console.error("Supabase addReview:", error.message);
@@ -109,7 +119,8 @@ export async function clearMyAccess() {
 // Crear una sugerencia (queda 'pending'). `nextLocal` es la cola completa (modo local).
 export async function addSuggestion(placeId, s, nextLocal) {
   if (cloud) {
-    const { error } = await supabase.from("access_suggestions").insert({
+    const sb = await getClient();
+    const { error } = await sb.from("access_suggestions").insert({
       place_id: placeId,
       wheelchair: s.wheelchair ?? null,
       bano: s.bano ?? null, rampa: s.rampa ?? null, ascensor: s.ascensor ?? null, braille: s.braille ?? null, senas: s.senas ?? null,
@@ -125,7 +136,8 @@ export async function addSuggestion(placeId, s, nextLocal) {
 // Cargar las sugerencias pendientes (solo admin las puede leer en la nube por RLS).
 export async function loadPendingSuggestions() {
   if (!cloud) return local.loadSuggestions();
-  const { data, error } = await supabase.from("access_suggestions").select("*").eq("status", "pending").order("created_at", { ascending: true });
+  const sb = await getClient();
+  const { data, error } = await sb.from("access_suggestions").select("*").eq("status", "pending").order("created_at", { ascending: true });
   if (error) { console.error("Supabase loadPendingSuggestions:", error.message); return []; }
   return data || [];
 }
@@ -133,7 +145,8 @@ export async function loadPendingSuggestions() {
 // Aprobar / rechazar una sugerencia. `nextLocal` es la cola restante (modo local).
 export async function setSuggestionStatus(id, status, nextLocal) {
   if (!cloud) { await local.saveSuggestions(nextLocal || []); return; }
-  const { error } = await supabase.from("access_suggestions").update({ status }).eq("id", id);
+  const sb = await getClient();
+  const { error } = await sb.from("access_suggestions").update({ status }).eq("id", id);
   if (error) console.error("Supabase setSuggestionStatus:", error.message);
 }
 
@@ -141,21 +154,30 @@ export async function setSuggestionStatus(id, status, nextLocal) {
 // Login del admin. Devuelve { error } si falla.
 export async function signIn(email, password) {
   if (!cloud) return { error: { message: "Supabase no está configurado." } };
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const sb = await getClient();
+  const { error } = await sb.auth.signInWithPassword({ email, password });
   return { error };
 }
 export async function signOut() {
-  if (cloud) await supabase.auth.signOut();
+  if (cloud) { const sb = await getClient(); await sb.auth.signOut(); }
 }
 // Sesión actual (o null).
 export async function getSession() {
   if (!cloud) return null;
-  const { data } = await supabase.auth.getSession();
+  const sb = await getClient();
+  const { data } = await sb.auth.getSession();
   return data.session;
 }
 // Suscribirse a cambios de login/logout. Devuelve una función para desuscribir.
+// El cliente se carga de forma diferida; la suscripción se engancha cuando está listo.
 export function onAuthChange(cb) {
   if (!cloud) return () => {};
-  const { data } = supabase.auth.onAuthStateChange((_event, session) => cb(session));
-  return () => data.subscription.unsubscribe();
+  let cancelled = false;
+  let unsub = () => {};
+  getClient().then((sb) => {
+    if (cancelled) return;
+    const { data } = sb.auth.onAuthStateChange((_event, session) => cb(session));
+    unsub = () => data.subscription.unsubscribe();
+  });
+  return () => { cancelled = true; unsub(); };
 }

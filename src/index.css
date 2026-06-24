@@ -9,6 +9,15 @@ body,
   margin: 0;
 }
 
+/* Ocultar la barra de scroll (filas de filtros deslizables en celular) sin perder el scroll */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE / Edge viejo */
+  scrollbar-width: none;    /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;            /* Chrome / Safari / Edge */
+}
+
 /* Barra de scroll naranja para el listado de lugares */
 .scroll-orange {
   scrollbar-width: thin;

@@ -947,7 +947,7 @@ export default function App() {
         </div>
 
         {/* Filtros — fila por tipo (deslizable en celular, con wrap en escritorio) */}
-        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0 no-scrollbar">
           <span title="Filtrar por tipo de lugar" className="shrink-0 text-slate-400"><Filter size={15} /></span>
           {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural", "salud", "transporte", "gobierno", "verde"].map((t) => (
             <button key={t} onClick={() => setTypeFilter(t)}
@@ -957,7 +957,7 @@ export default function App() {
           ))}
         </div>
         {/* Filtros — fila por accesibilidad */}
-        <div className="flex items-center gap-2 mt-2 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0">
+        <div className="flex items-center gap-2 mt-2 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0 no-scrollbar">
           <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 text-slate-400"><Accessibility size={15} /></span>
           {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], ["sindato", "Sin datos"]].map(([k, l]) => (
             <button key={k} onClick={() => setAccessFilter(k)}
