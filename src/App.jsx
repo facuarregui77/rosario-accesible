@@ -971,9 +971,6 @@ export default function App() {
       {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
       <div className="relative flex-1 min-h-0">
         <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} searchTerm={query} />
-        <div className="absolute bottom-3 left-3 z-[500] text-[10px] text-slate-600 bg-white/90 border border-sky-100 px-2 py-1 rounded pointer-events-none">
-          {filtered.length} lugares
-        </div>
 
         {/* Fondo oscuro al abrir el panel en celular */}
         {sidebarOpen && <div className="sm:hidden absolute inset-0 bg-black/30 z-[1040]" onClick={() => setSidebarOpen(false)} />}
