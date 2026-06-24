@@ -847,7 +847,7 @@ export default function App() {
               <Accessibility size={28} />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-extrabold leading-tight tracking-tight text-orange-500" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Rosario Access Map</h1>
+              <h1 className="text-lg sm:text-xl font-extrabold leading-tight tracking-tight w-fit bg-gradient-to-r from-sky-500 via-sky-400 to-orange-500 bg-clip-text text-transparent" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Rosario Access Map</h1>
               <p className="text-xs sm:text-sm font-medium text-sky-800">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
             <button onClick={toggleAdmin}
