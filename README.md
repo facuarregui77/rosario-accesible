@@ -26,6 +26,7 @@ La idea es ayudar a encontrar lugares inclusivos según distintos criterios: **a
 
 > 📖 ¿Cómo cargar o relevar datos? Mirá la guía paso a paso en **[COMO-RELEVAR.md](COMO-RELEVAR.md)**.
 > 👥 ¿Cómo sumar colaboradores al equipo? Guía en **[COMO-AGREGAR-COLABORADORES.md](COMO-AGREGAR-COLABORADORES.md)**.
+> 🤖 ¿Cómo enriquecer datos automáticamente con Google Maps? Guía en **[COMO-ENRIQUECER-DATOS.md](COMO-ENRIQUECER-DATOS.md)**.
 
 ## 🛠️ Tecnologías
 
