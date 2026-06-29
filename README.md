@@ -25,6 +25,7 @@ La idea es ayudar a encontrar lugares inclusivos según distintos criterios: **a
 - 📱 **App instalable (PWA)** con **autoactualización** (avisa cuando hay una versión nueva).
 
 > 📖 ¿Cómo cargar o relevar datos? Mirá la guía paso a paso en **[COMO-RELEVAR.md](COMO-RELEVAR.md)**.
+> 💻 ¿Cómo relevar sin ir al lugar (desde la compu, gratis)? Guía en **[COMO-RELEVAR-ESCRITORIO.md](COMO-RELEVAR-ESCRITORIO.md)**.
 > 👥 ¿Cómo sumar colaboradores al equipo? Guía en **[COMO-AGREGAR-COLABORADORES.md](COMO-AGREGAR-COLABORADORES.md)**.
 > 🤖 ¿Cómo enriquecer datos automáticamente con Google Maps? Guía en **[COMO-ENRIQUECER-DATOS.md](COMO-ENRIQUECER-DATOS.md)**.
 
