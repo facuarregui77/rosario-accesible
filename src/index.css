@@ -38,9 +38,10 @@ body,
   background-color: #fb923c;
 }
 
-/* Nombre del lugar (tooltip al pasar el cursor sobre un pin) en el azul oscuro de la app */
+/* Nombre del lugar (tooltip al pasar el cursor sobre un pin) en el azul oscuro de la app.
+   !important porque el CSS de Leaflet se carga después (por CDN) y si no, le gana. */
 .leaflet-tooltip {
-  color: #075985;
+  color: #075985 !important;
   font-weight: 600;
 }
 

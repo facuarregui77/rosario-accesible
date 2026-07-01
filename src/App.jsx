@@ -164,7 +164,7 @@ const loadLeaflet = () => {
   return leafletPromise;
 };
 
-function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm }) {
+function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm, sidebarOpen }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
@@ -318,7 +318,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm 
       <div ref={containerRef} className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa"
-        className="absolute bottom-3 left-3 z-[500] flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition">
+        className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[500] bottom-3 left-3"}`}>
         <RotateCcw size={16} />
       </button>
     </>
@@ -954,7 +954,7 @@ export default function App() {
 
       {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
       <div className="relative flex-1 min-h-0">
-        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} searchTerm={query} />
+        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} searchTerm={query} sidebarOpen={sidebarOpen} />
 
         {/* Fondo oscuro al abrir el panel en celular */}
         {sidebarOpen && <div className="sm:hidden absolute inset-0 bg-black/30 z-[1040]" onClick={() => setSidebarOpen(false)} />}
