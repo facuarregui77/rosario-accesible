@@ -918,10 +918,12 @@ export default function App() {
             </div>
           </div>
           <div className="flex flex-row flex-wrap sm:flex-col gap-2 sm:w-36 shrink-0">
-            <button onClick={() => setShowAnalysis(true)}
-              className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
-              <BarChart3 size={16} /> Análisis
-            </button>
+            {admin && (
+              <button onClick={() => setShowAnalysis(true)}
+                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-400 text-white transition text-sm font-medium border border-orange-500 shadow-sm">
+                <BarChart3 size={16} /> Análisis
+              </button>
+            )}
             <button onClick={() => setShowRamps((v) => !v)}
               title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
               className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
@@ -1034,7 +1036,7 @@ export default function App() {
           onAddSuggestion={addSuggestion}
           avgRating={avgRating(selectedLive.id)} />
       )}
-      {showAnalysis && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={!db.cloud && Object.keys(overrides).length > 0} />}
+      {showAnalysis && admin && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={!db.cloud && Object.keys(overrides).length > 0} />}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
       {showSurvey && admin && (
         <SurveyMode places={data} onClose={() => setShowSurvey(false)}
