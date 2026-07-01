@@ -971,7 +971,7 @@ export default function App() {
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_EMOJI[p.type]} {TYPE_LABELS[p.type]}</span>
                   {p.gRating && <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>}
-                  {!hasAnyData(p) && <span className="text-[11px] text-slate-400 italic">a relevar</span>}
+                  {admin && !hasAnyData(p) && <span className="text-[11px] text-slate-400 italic">a relevar</span>}
                 </div>
               </button>
             ))}
@@ -1160,7 +1160,7 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
               );
             })}
             {editing && <p className="text-[11px] text-slate-500 italic">Elegí Sí / No / — (sin datos) en cada criterio y tocá "Guardar". {db.cloud ? "Tus datos se comparten con toda la comunidad (se guardan en la nube)." : "Tus datos se guardan en este navegador como relevamiento manual."}</p>}
-            {!editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar.{admin ? ' Podés cargarlos con "Editar".' : ""}</p>}
+            {admin && !editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar. Podés cargarlos con "Editar".</p>}
           </div>
 
           {/* Sugerir datos de accesibilidad (público, no admin) */}
