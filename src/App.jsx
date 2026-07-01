@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -636,6 +636,7 @@ export default function App() {
   const [showSurvey, setShowSurvey] = useState(false);
   const [pendingSuggestions, setPendingSuggestions] = useState([]);
   const [showSuggPanel, setShowSuggPanel] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
   const [showLogin, setShowLogin] = useState(false);
@@ -946,26 +947,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Filtros — fila por tipo (deslizable en celular, con wrap en escritorio) */}
-        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0 no-scrollbar">
-          <span title="Filtrar por tipo de lugar" className="shrink-0 text-slate-400"><Filter size={15} /></span>
-          {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural", "salud", "transporte", "gobierno", "verde"].map((t) => (
-            <button key={t} onClick={() => setTypeFilter(t)}
-              className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
-              {t === "all" ? "Todos" : TYPE_PLURAL[t]}
-            </button>
-          ))}
-        </div>
-        {/* Filtros — fila por accesibilidad */}
-        <div className="flex items-center gap-2 mt-2 flex-nowrap overflow-x-auto sm:flex-wrap sm:overflow-visible pb-1 sm:pb-0 no-scrollbar">
-          <span title="Filtrar por acceso en silla de ruedas" className="shrink-0 text-slate-400"><Accessibility size={15} /></span>
-          {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], ["sindato", "Sin datos"]].map(([k, l]) => (
-            <button key={k} onClick={() => setAccessFilter(k)}
-              className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
-              {l}
-            </button>
-          ))}
-        </div>
+        {/* Los filtros (Tipo + Acceso) ahora viven en el panel desplegable de la derecha (ver abajo). */}
       </div>
 
       {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
@@ -999,6 +981,47 @@ export default function App() {
             title={sidebarOpen ? "Ocultar la lista de lugares" : "Ver la lista de lugares"}
             className="absolute top-3 -right-10 w-10 h-14 rounded-r-xl bg-sky-500 hover:bg-sky-400 text-white shadow-lg flex items-center justify-center">
             {sidebarOpen ? <ChevronLeft size={20} /> : <List size={18} />}
+          </button>
+        </div>
+
+        {/* Fondo oscuro al abrir los filtros en celular */}
+        {filtersOpen && <div className="sm:hidden absolute inset-0 bg-black/30 z-[1040]" onClick={() => setFiltersOpen(false)} />}
+
+        {/* Panel de filtros desplegable (derecha) — gemelo del de lugares, con ícono distinto */}
+        <div className={`absolute inset-y-0 right-0 z-[1050] w-[86%] max-w-xs transition-transform duration-300 ease-in-out ${filtersOpen ? "translate-x-0" : "translate-x-full"}`}>
+          <div className="h-full overflow-y-auto bg-sky-100 border-l border-sky-300 scroll-orange shadow-2xl p-4 space-y-5">
+            <h3 className="text-base font-bold text-sky-800 flex items-center gap-2"><SlidersHorizontal size={18} /> Filtros</h3>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Filter size={13} /> Tipo de lugar</p>
+              <div className="flex flex-wrap gap-2">
+                {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural", "salud", "transporte", "gobierno", "verde"].map((t) => (
+                  <button key={t} onClick={() => setTypeFilter(t)}
+                    className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
+                    {t === "all" ? "Todos" : TYPE_PLURAL[t]}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Accessibility size={13} /> Accesibilidad</p>
+              <div className="flex flex-wrap gap-2">
+                {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], ["sindato", "Sin datos"]].map(([k, l]) => (
+                  <button key={k} onClick={() => setAccessFilter(k)}
+                    className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Tirador para abrir/cerrar los filtros (ícono distinto al de lugares) */}
+          <button onClick={() => setFiltersOpen((v) => !v)}
+            title={filtersOpen ? "Ocultar filtros" : "Ver filtros"}
+            className="absolute top-20 -left-10 w-10 h-14 rounded-l-xl bg-orange-500 hover:bg-orange-400 text-white shadow-lg flex items-center justify-center">
+            {filtersOpen ? <ChevronRight size={20} /> : <SlidersHorizontal size={18} />}
+            {!filtersOpen && (typeFilter !== "all" || accessFilter !== "all") && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white border-2 border-orange-500" title="Hay filtros activos" />
+            )}
           </button>
         </div>
       </div>
