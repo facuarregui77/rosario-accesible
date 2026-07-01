@@ -38,6 +38,12 @@ body,
   background-color: #fb923c;
 }
 
+/* Nombre del lugar (tooltip al pasar el cursor sobre un pin) en el azul oscuro de la app */
+.leaflet-tooltip {
+  color: #075985;
+  font-weight: 600;
+}
+
 /* Controles de zoom (+ / -) del mapa en celeste, igual que las categorías */
 .leaflet-control-zoom a {
   color: #0369a1 !important;
