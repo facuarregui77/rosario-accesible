@@ -63,3 +63,46 @@ body,
 .leaflet-control-zoom {
   margin-bottom: 14px !important;
 }
+
+/* ===== TEMA OSCURO (sigue la preferencia del sistema) ===== */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #0f172a; /* evita el "flash" blanco antes de montar la app */
+  }
+
+  /* Tooltip de los pines: fondo oscuro y texto celeste claro */
+  .leaflet-tooltip {
+    color: #7dd3fc !important;
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+  .leaflet-tooltip-top::before { border-top-color: #1e293b; }
+  .leaflet-tooltip-bottom::before { border-bottom-color: #1e293b; }
+  .leaflet-tooltip-left::before { border-left-color: #1e293b; }
+  .leaflet-tooltip-right::before { border-right-color: #1e293b; }
+
+  /* Controles de zoom (+ / -) en oscuro */
+  .leaflet-control-zoom a {
+    color: #7dd3fc !important;
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+  }
+  .leaflet-control-zoom a:hover {
+    color: #bae6fd !important;
+    background-color: #334155 !important;
+  }
+  .leaflet-bar { border-color: #334155 !important; }
+
+  /* Scrollbar naranja sobre fondo oscuro */
+  .scroll-orange { scrollbar-color: #f97316 #1e293b; }
+  .scroll-orange::-webkit-scrollbar-track { background: #1e293b; }
+  .scroll-orange::-webkit-scrollbar-thumb { border-color: #1e293b; }
+
+  /* Atribución de Leaflet legible en oscuro */
+  .leaflet-control-attribution {
+    background: rgba(30, 41, 59, 0.85) !important;
+    color: #cbd5e1 !important;
+  }
+  .leaflet-control-attribution a { color: #7dd3fc !important; }
+}
