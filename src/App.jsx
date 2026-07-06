@@ -170,7 +170,6 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
   const layerRef = useRef(null);
   const rampsLayerRef = useRef(null);
   const isMobileRef = useRef(false);
-  const themeCleanupRef = useRef(null);
   const [ready, setReady] = useState(false);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
@@ -201,21 +200,14 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
         markerZoomAnimation: !isMobile, // celular: los pines no se animan al pellizcar → menos repintado por frame
         tap: false,                  // mejor respuesta táctil en celulares modernos
       }).setView([-32.945, -60.66], 13);
-      // Mapa con calles (Esri — muy confiable, sin bloqueos). Versión clara u oscura según el tema del sistema.
-      const LIGHT_TILES = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
-      const DARK_TILES = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}";
-      const themeMq = window.matchMedia("(prefers-color-scheme: dark)");
-      const tiles = L.tileLayer(themeMq.matches ? DARK_TILES : LIGHT_TILES, {
+      // Mapa con calles (Esri — muy confiable, sin bloqueos)
+      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19,
         attribution: "Tiles &copy; Esri",
         keepBuffer: isMobile ? 2 : 6,   // celular: menos tiles en memoria → arrastre mucho más liviano
         updateWhenIdle: isMobile,       // celular: carga tiles al SOLTAR (arrastre fluido); escritorio: mientras se mueve
         updateWhenZooming: false,
       }).addTo(map);
-      // Si el usuario cambia el tema (claro/oscuro) con la app abierta, cambiamos los tiles al vuelo.
-      const onThemeChange = (e) => tiles.setUrl(e.matches ? DARK_TILES : LIGHT_TILES);
-      themeMq.addEventListener("change", onThemeChange);
-      themeCleanupRef.current = () => themeMq.removeEventListener("change", onThemeChange);
       mapRef.current = map;
       map.zoomControl.setPosition("bottomright"); // abajo-derecha: no choca con el panel ni el header
       layerRef.current = L.layerGroup().addTo(map);
@@ -227,11 +219,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
       map.on("click", kick);
       setReady(true);
     });
-    return () => {
-      cancelled = true;
-      if (themeCleanupRef.current) { themeCleanupRef.current(); themeCleanupRef.current = null; }
-      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
-    };
+    return () => { cancelled = true; if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
   }, []);
 
   // Dibujar / actualizar los marcadores cuando cambian los lugares filtrados
@@ -330,7 +318,7 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
       <div ref={containerRef} className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa"
-        className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 dark:bg-slate-800/90 dark:hover:bg-slate-700 dark:text-sky-300 dark:border-slate-600 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[500] bottom-3 left-3"}`}>
+        className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[500] bottom-3 left-3"}`}>
         <RotateCcw size={16} />
       </button>
     </>
@@ -393,25 +381,25 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
   const WOPTS = [["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], [null, "Sin datos"]];
   const wClass = (v, on) => on
     ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400")
-    : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600";
+    : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
 
   return (
-    <div className="fixed inset-0 z-[1300] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col">
+    <div className="fixed inset-0 z-[1300] bg-white flex flex-col">
       {/* Encabezado */}
-      <div className="shrink-0 bg-sky-100 border-b border-sky-300 dark:bg-slate-800 dark:border-slate-700 px-4 py-3 flex items-center gap-3">
+      <div className="shrink-0 bg-sky-100 border-b border-sky-300 px-4 py-3 flex items-center gap-3">
         <div className="p-1.5 rounded-lg bg-sky-500 text-white"><ClipboardList size={18} /></div>
         <div className="flex-1 min-w-0">
-          <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Modo relevamiento</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{done} de {places.length} lugares con datos</p>
+          <h2 className="text-base font-bold text-slate-800 leading-tight">Modo relevamiento</h2>
+          <p className="text-xs text-slate-500">{done} de {places.length} lugares con datos</p>
         </div>
-        <button onClick={onClose} className="p-2 rounded-lg hover:bg-sky-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"><X size={20} /></button>
+        <button onClick={onClose} className="p-2 rounded-lg hover:bg-sky-200 text-slate-600"><X size={20} /></button>
       </div>
 
       {!active ? (
         // ---- Lista de lugares por cercanía ----
         <div className="flex-1 overflow-y-auto scroll-orange">
-          <div className="px-4 py-3 flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700">
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+          <div className="px-4 py-3 flex items-center justify-between gap-2 border-b border-slate-100">
+            <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <LocateFixed size={14} className={geo === "ok" ? "text-emerald-500" : "text-slate-400"} />
               {geo === "loading" && "Buscando tu ubicación…"}
               {geo === "ok" && "Ordenado por cercanía a vos"}
@@ -422,7 +410,7 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
               )}
             </div>
             <button onClick={() => setOnlyMissing((v) => !v)}
-              className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium border transition ${onlyMissing ? "bg-orange-500 text-white border-orange-500" : "bg-white text-slate-600 border-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600"}`}>
+              className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium border transition ${onlyMissing ? "bg-orange-500 text-white border-orange-500" : "bg-white text-slate-600 border-slate-300"}`}>
               {onlyMissing ? "Solo sin datos" : "Todos"}
             </button>
           </div>
@@ -435,10 +423,10 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
 
           {list.map(({ p, d }) => (
             <button key={p.id} onClick={() => openEditor(p)}
-              className="w-full text-left px-4 py-3 border-b border-slate-100 hover:bg-sky-50 dark:border-slate-700 dark:hover:bg-slate-800 transition flex items-center gap-3">
+              className="w-full text-left px-4 py-3 border-b border-slate-100 hover:bg-sky-50 transition flex items-center gap-3">
               <span className="text-xl shrink-0">{TYPE_EMOJI[p.type]}</span>
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm text-slate-800 dark:text-slate-100 truncate">{p.name}</div>
+                <div className="font-medium text-sm text-slate-800 truncate">{p.name}</div>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-[11px] text-slate-400">{TYPE_LABELS[p.type]}</span>
                   {d != null && <span className="text-[11px] font-medium text-sky-600">· {fmtDist(d)}</span>}
@@ -452,16 +440,16 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
       ) : (
         // ---- Editor rápido del lugar ----
         <div className="flex-1 overflow-y-auto scroll-orange">
-          <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
-            <button onClick={() => setActive(null)} className="text-sm text-sky-600 dark:text-sky-400 flex items-center gap-1 mb-2"><ChevronLeft size={16} /> Volver a la lista</button>
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">{active.name}</h3>
+          <div className="px-4 py-3 border-b border-slate-100">
+            <button onClick={() => setActive(null)} className="text-sm text-sky-600 flex items-center gap-1 mb-2"><ChevronLeft size={16} /> Volver a la lista</button>
+            <h3 className="text-lg font-bold text-slate-800">{active.name}</h3>
             <span className="text-xs text-slate-400">{TYPE_LABELS[active.type]}</span>
           </div>
 
           <div className="p-4 space-y-4">
             {/* Estado general (semáforo) */}
             <div>
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2 flex items-center gap-2"><Accessibility size={16} className="text-sky-600 dark:text-sky-400" /> ¿Es accesible en silla de ruedas?</p>
+              <p className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"><Accessibility size={16} className="text-sky-600" /> ¿Es accesible en silla de ruedas?</p>
               <div className="grid grid-cols-2 gap-2">
                 {WOPTS.map(([v, l]) => (
                   <button key={l} onClick={() => setDraftW(v)}
@@ -474,18 +462,18 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
 
             {/* 5 criterios */}
             <div>
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">Detalle</p>
+              <p className="text-sm font-semibold text-slate-700 mb-2">Detalle</p>
               <div className="space-y-2">
                 {CRITERIA.map((c) => {
                   const Icon = c.icon;
                   const val = draftA[c.key];
                   return (
-                    <div key={c.key} className="flex items-center justify-between p-3 rounded-xl border bg-slate-50 border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-                      <span className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200"><Icon size={18} className="text-slate-500 dark:text-slate-400" /> {c.label}</span>
+                    <div key={c.key} className="flex items-center justify-between p-3 rounded-xl border bg-slate-50 border-slate-200">
+                      <span className="flex items-center gap-2 text-sm text-slate-700"><Icon size={18} className="text-slate-500" /> {c.label}</span>
                       <div className="flex gap-1.5">
                         {[["si", "Sí"], ["no", "No"], [null, "—"]].map(([v, l]) => (
                           <button key={l} onClick={() => setDraftA({ ...draftA, [c.key]: v })}
-                            className={`w-10 py-1.5 rounded-lg text-sm font-medium border transition ${val === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+                            className={`w-10 py-1.5 rounded-lg text-sm font-medium border transition ${val === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100"}`}>
                             {l}
                           </button>
                         ))}
@@ -498,8 +486,8 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
           </div>
 
           {/* Barra inferior fija con Guardar */}
-          <div className="sticky bottom-0 bg-white border-t border-slate-200 dark:bg-slate-900 dark:border-slate-700 p-3 flex gap-2" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
-            <button onClick={() => setActive(null)} className="px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200 text-sm font-medium transition">Cancelar</button>
+          <div className="sticky bottom-0 bg-white border-t border-slate-200 p-3 flex gap-2" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+            <button onClick={() => setActive(null)} className="px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition">Cancelar</button>
             <button onClick={save} disabled={saving}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-white text-sm font-semibold transition">
               <Save size={16} /> {saving ? "Guardando…" : "Guardar y volver"}
@@ -532,7 +520,7 @@ function SuggestionForm({ onSubmit }) {
   };
 
   if (sent) return (
-    <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-800 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300 flex items-center gap-2">
+    <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-800 flex items-center gap-2">
       <CheckCircle2 size={16} /> ¡Gracias! Tu sugerencia será revisada por el equipo. 💙
     </div>
   );
@@ -540,16 +528,16 @@ function SuggestionForm({ onSubmit }) {
   const WOPTS = [["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"]];
 
   return (
-    <div className="mt-4 p-3 rounded-xl bg-sky-50 border border-sky-200 dark:bg-slate-700/50 dark:border-slate-600">
-      <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"><Lightbulb size={15} className="text-amber-500" /> Sugerir datos de accesibilidad</p>
-      <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2.5">Completá solo lo que sepas. El equipo lo revisa antes de publicarlo.</p>
+    <div className="mt-4 p-3 rounded-xl bg-sky-50 border border-sky-200">
+      <p className="text-sm font-semibold text-slate-700 flex items-center gap-2"><Lightbulb size={15} className="text-amber-500" /> Sugerir datos de accesibilidad</p>
+      <p className="text-[11px] text-slate-500 mb-2.5">Completá solo lo que sepas. El equipo lo revisa antes de publicarlo.</p>
 
       <div className="mb-2">
-        <span className="text-xs text-slate-600 dark:text-slate-300">Acceso en silla de ruedas</span>
+        <span className="text-xs text-slate-600">Acceso en silla de ruedas</span>
         <div className="flex gap-1.5 mt-1">
           {WOPTS.map(([v, l]) => (
             <button key={v} onClick={() => setSugg((s) => ({ ...s, wheelchair: s.wheelchair === v ? null : v }))}
-              className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium border transition ${sugg.wheelchair === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : "bg-rose-500 text-white border-rose-500") : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+              className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium border transition ${sugg.wheelchair === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : "bg-rose-500 text-white border-rose-500") : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"}`}>
               {l}
             </button>
           ))}
@@ -561,11 +549,11 @@ function SuggestionForm({ onSubmit }) {
           const Icon = c.icon;
           return (
             <div key={c.key} className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300"><Icon size={14} className="text-slate-400" /> {c.label}</span>
+              <span className="flex items-center gap-1.5 text-xs text-slate-600"><Icon size={14} className="text-slate-400" /> {c.label}</span>
               <div className="flex gap-1">
                 {[["si", "Sí"], ["no", "No"], [null, "—"]].map(([v, l]) => (
                   <button key={l} onClick={() => setSugg((s) => ({ ...s, [c.key]: v }))}
-                    className={`w-8 py-0.5 rounded text-xs font-medium border transition ${sugg[c.key] === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+                    className={`w-8 py-0.5 rounded text-xs font-medium border transition ${sugg[c.key] === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100"}`}>
                     {l}
                   </button>
                 ))}
@@ -577,9 +565,9 @@ function SuggestionForm({ onSubmit }) {
 
       <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={2}
         placeholder="Comentario (opcional): contanos qué viste…"
-        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-sky-400 resize-none mb-2 bg-white text-slate-800 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-400" />
+        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-sky-400 resize-none mb-2" />
       <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre (opcional)"
-        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-sky-400 mb-2 bg-white text-slate-800 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-400" />
+        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-sky-400 mb-2" />
 
       <button onClick={submit} disabled={!anyData}
         className="w-full px-3 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 disabled:opacity-50 text-white text-sm font-medium transition">
@@ -600,28 +588,28 @@ function SuggestionsPanel({ suggestions, places, onApprove, onReject, onClose, o
   return (
     <div className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()}
-        className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-800 sm:rounded-2xl rounded-t-2xl border border-sky-200 dark:border-slate-700 shadow-2xl scroll-orange">
-        <div className="sticky top-0 bg-sky-50 dark:bg-slate-800 p-4 border-b border-sky-200 dark:border-slate-700 flex items-center justify-between z-10">
-          <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2"><Lightbulb size={18} className="text-amber-500" /> Sugerencias pendientes ({suggestions.length})</h2>
+        className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white sm:rounded-2xl rounded-t-2xl border border-sky-200 shadow-2xl scroll-orange">
+        <div className="sticky top-0 bg-sky-50 p-4 border-b border-sky-200 flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-800 flex items-center gap-2"><Lightbulb size={18} className="text-amber-500" /> Sugerencias pendientes ({suggestions.length})</h2>
           <div className="flex items-center gap-1">
-            <button onClick={onRefresh} title="Actualizar" className="p-1.5 rounded-lg hover:bg-sky-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300"><RotateCcw size={16} /></button>
-            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"><X size={20} /></button>
+            <button onClick={onRefresh} title="Actualizar" className="p-1.5 rounded-lg hover:bg-sky-100 text-slate-500"><RotateCcw size={16} /></button>
+            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
           </div>
         </div>
         <div className="p-4 space-y-3">
           {suggestions.length === 0 && <p className="text-center text-sm text-slate-400 italic py-8">No hay sugerencias pendientes. 🎉</p>}
           {suggestions.map((s) => (
-            <div key={s.id} className="p-3 rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-700/50 dark:border-slate-600">
-              <div className="font-semibold text-sm text-slate-800 dark:text-slate-100">{nameOf(s.place_id)}</div>
+            <div key={s.id} className="p-3 rounded-xl border border-slate-200 bg-slate-50">
+              <div className="font-semibold text-sm text-slate-800">{nameOf(s.place_id)}</div>
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {s.wheelchair && chip("Silla de ruedas", s.wheelchair)}
                 {CRITERIA.filter((c) => s[c.key]).map((c) => chip(c.label, s[c.key]))}
               </div>
-              {s.comment && <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 italic">“{s.comment}”</p>}
+              {s.comment && <p className="text-xs text-slate-600 mt-2 italic">“{s.comment}”</p>}
               <div className="flex items-center justify-between mt-2.5">
                 <span className="text-[11px] text-slate-400">{s.name ? `por ${s.name}` : "anónimo"}</span>
                 <div className="flex gap-2">
-                  <button onClick={() => onReject(s)} className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-600 text-xs font-medium hover:bg-slate-100 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-600 transition">Rechazar</button>
+                  <button onClick={() => onReject(s)} className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-600 text-xs font-medium hover:bg-slate-100 transition">Rechazar</button>
                   <button onClick={() => onApprove(s)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-medium transition"><CheckCircle2 size={14} /> Aprobar</button>
                 </div>
               </div>
@@ -849,9 +837,9 @@ export default function App() {
   }, [showSuggestions]);
 
   return (
-    <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       {/* Header */}
-      <div className="relative z-20 shrink-0 bg-sky-100 border-b border-sky-300 dark:bg-slate-800 dark:border-slate-700 px-3 sm:px-5 py-3 sm:py-4">
+      <div className="relative z-20 shrink-0 bg-sky-100 border-b border-sky-300 px-3 sm:px-5 py-3 sm:py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
         <div className="-mx-3 sm:-mx-5 -mt-3 sm:-mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -861,11 +849,11 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-lg sm:text-xl font-extrabold leading-tight tracking-tight w-fit bg-gradient-to-r from-sky-500 via-sky-400 to-orange-500 bg-clip-text text-transparent" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Rosario Access Map</h1>
-              <p className="text-xs sm:text-sm font-medium text-sky-800 dark:text-sky-300">Toda la información disponible acerca de la accesibilidad local.</p>
+              <p className="text-xs sm:text-sm font-medium text-sky-800">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
             <button onClick={toggleAdmin}
               title={admin ? "Modo edición activado — tocá para salir" : "Acceso de administrador (editar información)"}
-              className={`shrink-0 ml-1 w-8 h-8 flex items-center justify-center rounded-lg border transition ${admin ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/70 text-slate-400 border-slate-200 hover:text-sky-600 hover:border-sky-300 dark:bg-slate-700/70 dark:text-slate-400 dark:border-slate-600 dark:hover:text-sky-300"}`}>
+              className={`shrink-0 ml-1 w-8 h-8 flex items-center justify-center rounded-lg border transition ${admin ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/70 text-slate-400 border-slate-200 hover:text-sky-600 hover:border-sky-300"}`}>
               {admin ? <Unlock size={15} /> : <Lock size={15} />}
             </button>
           </div>
@@ -885,7 +873,7 @@ export default function App() {
                     onKeyDown={onSearchKeyDown}
                     placeholder="Buscar un lugar por nombre…"
                     role="combobox" aria-expanded={showSuggestions} aria-autocomplete="list"
-                    className="w-full pl-9 pr-9 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-sky-400" />
+                    className="w-full pl-9 pr-9 py-2 rounded-xl bg-white/90 border border-sky-300 text-sm text-slate-700 placeholder:text-slate-400 outline-none focus:border-sky-500 transition" />
                   {query && (
                     <button onClick={() => { setQuery(""); setShowSuggestions(false); setActiveIndex(-1); }} title="Limpiar búsqueda"
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
@@ -904,7 +892,7 @@ export default function App() {
               {showSuggestions && query.trim() && ddPos && createPortal(
                 <ul role="listbox" ref={dropdownRef}
                   style={{ position: "fixed", top: ddPos.top, left: ddPos.left, width: ddPos.width }}
-                  className="z-[3000] bg-white dark:bg-slate-800 rounded-xl border border-sky-200 dark:border-slate-700 shadow-2xl max-h-[70vh] overflow-y-auto scroll-orange">
+                  className="z-[3000] bg-white rounded-xl border border-sky-200 shadow-2xl max-h-[70vh] overflow-y-auto scroll-orange">
                   {suggestions.length === 0 ? (
                     <li className="px-3 py-2.5 text-sm text-slate-400 italic">Sin coincidencias…</li>
                   ) : (
@@ -914,9 +902,9 @@ export default function App() {
                         <li key={p.id} role="option" aria-selected={i === activeIndex}>
                           <button onClick={() => pickSuggestion(p)}
                             onMouseEnter={() => setActiveIndex(i)}
-                            className={`w-full text-left px-3 py-2 flex items-center gap-2.5 text-sm transition ${i === activeIndex ? "bg-sky-100 dark:bg-slate-700" : "hover:bg-sky-50 dark:hover:bg-slate-700/60"}`}>
+                            className={`w-full text-left px-3 py-2 flex items-center gap-2.5 text-sm transition ${i === activeIndex ? "bg-sky-100" : "hover:bg-sky-50"}`}>
                             <span className="text-base leading-none shrink-0">{TYPE_EMOJI[p.type]}</span>
-                            <span className="flex-1 truncate text-slate-700 dark:text-slate-100 font-medium">{p.name}</span>
+                            <span className="flex-1 truncate text-slate-700 font-medium">{p.name}</span>
                             <span className="text-[11px] text-slate-400 shrink-0">{TYPE_LABELS[p.type]}</span>
                             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: dot }} title="Accesibilidad" />
                           </button>
@@ -938,7 +926,7 @@ export default function App() {
             )}
             <button onClick={() => setShowRamps((v) => !v)}
               title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
-              className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-sky-300 dark:border-slate-600"}`}>
+              className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
               <Accessibility size={16} /> Rampas
             </button>
             {admin && (
@@ -951,7 +939,7 @@ export default function App() {
             {admin && (
               <button onClick={() => { setShowSuggPanel(true); refreshSuggestions(); }}
                 title="Revisar las sugerencias de accesibilidad enviadas por el público"
-                className="relative flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-white/90 hover:bg-white text-amber-700 transition text-sm font-medium border border-amber-400 shadow-sm dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-amber-300 dark:border-slate-600">
+                className="relative flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-white/90 hover:bg-white text-amber-700 transition text-sm font-medium border border-amber-400 shadow-sm">
                 <Lightbulb size={16} /> Sugerencias
                 {pendingSuggestions.length > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-orange-500 text-white text-[10px] font-bold">{pendingSuggestions.length}</span>
@@ -973,13 +961,13 @@ export default function App() {
 
         {/* Panel lateral desplegable (overlay sobre el mapa, no lo deforma) */}
         <div className={`absolute inset-y-0 left-0 z-[1050] w-[86%] max-w-xs transition-transform duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-          <div className="h-full overflow-y-auto bg-sky-100 border-r border-sky-300 dark:bg-slate-800 dark:border-slate-700 scroll-orange shadow-2xl">
-            {filtered.length === 0 && <p className="px-4 py-4 text-sm text-slate-500 dark:text-slate-400 italic">No hay lugares que coincidan con la búsqueda.</p>}
+          <div className="h-full overflow-y-auto bg-sky-100 border-r border-sky-300 scroll-orange shadow-2xl">
+            {filtered.length === 0 && <p className="px-4 py-4 text-sm text-slate-500 italic">No hay lugares que coincidan con la búsqueda.</p>}
             {filtered.map((p) => (
               <button key={p.id} onClick={() => { setSelected(p); if (typeof window !== "undefined" && window.innerWidth < 640) setSidebarOpen(false); }}
-                className={`w-full text-left px-4 py-3 border-b border-sky-200 dark:border-slate-700 border-l-4 hover:bg-sky-200 dark:hover:bg-slate-700/60 transition ${selected?.id === p.id ? "bg-sky-300 dark:bg-slate-700 border-l-orange-500" : "border-l-transparent"}`}>
+                className={`w-full text-left px-4 py-3 border-b border-sky-200 border-l-4 hover:bg-sky-200 transition ${selected?.id === p.id ? "bg-sky-300 border-l-orange-500" : "border-l-transparent"}`}>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium text-sm text-sky-700 dark:text-sky-300">{p.name}</span>
+                  <span className="font-medium text-sm text-sky-700">{p.name}</span>
                   <AccessChip wheelchair={p.wheelchair} />
                 </div>
                 <div className="flex items-center gap-2 mt-1">
@@ -1003,13 +991,13 @@ export default function App() {
 
         {/* Panel de filtros desplegable (derecha) — gemelo del de lugares, con ícono distinto */}
         <div className={`absolute inset-y-0 right-0 z-[1050] w-[86%] max-w-xs transition-transform duration-300 ease-in-out ${filtersOpen ? "translate-x-0" : "translate-x-full"}`}>
-          <div className="h-full overflow-y-auto bg-sky-100 border-l border-sky-300 dark:bg-slate-800 dark:border-slate-700 scroll-orange shadow-2xl p-4 space-y-5">
+          <div className="h-full overflow-y-auto bg-sky-100 border-l border-sky-300 scroll-orange shadow-2xl p-4 space-y-5">
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Filter size={13} /> Tipo de lugar</p>
               <div className="flex flex-wrap gap-2">
                 {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural", "salud", "transporte", "gobierno", "verde"].map((t) => (
                   <button key={t} onClick={() => setTypeFilter(t)}
-                    className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white dark:bg-slate-700 dark:text-sky-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+                    className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
                     {t === "all" ? "Todos" : TYPE_PLURAL[t]}
                   </button>
                 ))}
@@ -1020,7 +1008,7 @@ export default function App() {
               <div className="flex flex-wrap gap-2">
                 {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], ["sindato", "Sin datos"]].map(([k, l]) => (
                   <button key={k} onClick={() => setAccessFilter(k)}
-                    className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white dark:bg-slate-700 dark:text-sky-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+                    className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
                     {l}
                   </button>
                 ))}
@@ -1086,18 +1074,18 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
   return (
     <div className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()}
-        className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-800 sm:rounded-2xl rounded-t-2xl border border-sky-200 dark:border-slate-700 shadow-2xl">
+        className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white sm:rounded-2xl rounded-t-2xl border border-sky-200 shadow-2xl">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 sm:rounded-t-2xl rounded-t-2xl" />
-        <div className="sticky top-0 bg-sky-50 dark:bg-slate-800 p-5 border-b border-sky-200 dark:border-slate-700 flex items-start justify-between z-10">
+        <div className="sticky top-0 bg-sky-50 p-5 border-b border-sky-200 flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">{place.name}</h2>
+            <h2 className="text-xl font-bold text-slate-900">{place.name}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs px-2 py-0.5 rounded" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_EMOJI[place.type]} {TYPE_LABELS[place.type]}</span>
               {place.gRating && <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>}
               {avgRating && <span className="text-xs text-amber-600 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {avgRating} usuarios</span>}
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"><X size={20} /></button>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
         </div>
 
         <div className="p-5">
@@ -1115,29 +1103,29 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
           )}
 
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Detalle de accesibilidad</h3>
+            <h3 className="text-sm font-semibold text-slate-700">Detalle de accesibilidad</h3>
             {editing ? (
               <div className="flex items-center gap-2">
-                <button onClick={cancelEdit} className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200 text-xs text-slate-600 transition">Cancelar</button>
+                <button onClick={cancelEdit} className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs text-slate-600 transition">Cancelar</button>
                 <button onClick={saveEdit} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-medium transition">
                   <Save size={13} /> Guardar
                 </button>
               </div>
             ) : admin ? (
               <button onClick={() => setEditing(true)}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-xs text-sky-700 border border-sky-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-sky-300 dark:border-slate-600 transition">
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-xs text-sky-700 border border-sky-200 transition">
                 <Pencil size={13} /> Editar
               </button>
             ) : null}
           </div>
 
           {editing && (
-            <div className="mb-3 p-2.5 rounded-lg border bg-sky-50 border-sky-200 dark:bg-slate-700/50 dark:border-slate-600">
-              <span className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 mb-2"><Accessibility size={16} className="text-sky-600 dark:text-sky-400" /> Accesibilidad general (silla de ruedas)</span>
+            <div className="mb-3 p-2.5 rounded-lg border bg-sky-50 border-sky-200">
+              <span className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2"><Accessibility size={16} className="text-sky-600" /> Accesibilidad general (silla de ruedas)</span>
               <div className="grid grid-cols-2 gap-1.5">
                 {[["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], [null, "Sin datos"]].map(([v, l]) => (
                   <button key={l} onClick={() => setDraftW(v)}
-                    className={`px-2 py-1.5 rounded-lg text-xs font-medium border transition ${draftW === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+                    className={`px-2 py-1.5 rounded-lg text-xs font-medium border transition ${draftW === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "parcial" ? "bg-amber-500 text-white border-amber-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"}`}>
                     {l}
                   </button>
                 ))}
@@ -1152,12 +1140,12 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
               if (editing) {
                 const opts = [["si", "Sí"], ["no", "No"], [null, "—"]];
                 return (
-                  <div key={c.key} className="flex items-center justify-between p-2.5 rounded-lg border bg-slate-50 border-slate-200 dark:bg-slate-700/50 dark:border-slate-600">
-                    <span className="flex items-center gap-2 text-sm dark:text-slate-200"><Icon size={16} className="text-slate-500 dark:text-slate-400" /> {c.label}</span>
+                  <div key={c.key} className="flex items-center justify-between p-2.5 rounded-lg border bg-slate-50 border-slate-200">
+                    <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-500" /> {c.label}</span>
                     <div className="flex gap-1">
                       {opts.map(([v, l]) => (
                         <button key={l} onClick={() => setDraft({ ...draft, [c.key]: v })}
-                          className={`px-2 py-0.5 rounded text-xs font-medium border transition ${val === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+                          className={`px-2 py-0.5 rounded text-xs font-medium border transition ${val === v ? (v === "si" ? "bg-emerald-500 text-white border-emerald-500" : v === "no" ? "bg-rose-500 text-white border-rose-500" : "bg-slate-400 text-white border-slate-400") : "bg-white text-slate-500 border-slate-200 hover:bg-slate-100"}`}>
                           {l}
                         </button>
                       ))}
@@ -1166,8 +1154,8 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
                 );
               }
               return (
-                <div key={c.key} className={`flex items-center justify-between p-2.5 rounded-lg border ${val === "si" ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/30" : val === "no" ? "bg-rose-50 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/30" : "bg-slate-50 border-slate-200 dark:bg-slate-700/50 dark:border-slate-600"}`}>
-                  <span className="flex items-center gap-2 text-sm dark:text-slate-200"><Icon size={16} className="text-slate-500 dark:text-slate-400" /> {c.label}</span>
+                <div key={c.key} className={`flex items-center justify-between p-2.5 rounded-lg border ${val === "si" ? "bg-emerald-50 border-emerald-200" : val === "no" ? "bg-rose-50 border-rose-200" : "bg-slate-50 border-slate-200"}`}>
+                  <span className="flex items-center gap-2 text-sm"><Icon size={16} className="text-slate-500" /> {c.label}</span>
                   {val === "si" ? <CheckCircle2 size={18} className="text-emerald-500" /> : val === "no" ? <XCircle size={18} className="text-rose-400" /> : <span className="text-[11px] text-slate-400 italic">sin datos</span>}
                 </div>
               );
@@ -1180,35 +1168,35 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
           {!admin && !editing && <SuggestionForm onSubmit={(s) => onAddSuggestion(place.id, s)} />}
 
           {/* Opiniones y sugerencias */}
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2"><MessageSquare size={15} /> Opiniones y sugerencias ({reviews.length})</h3>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2">Contá tu experiencia o dejá una recomendación para mejorar la app.</p>
+          <h3 className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2"><MessageSquare size={15} /> Opiniones y sugerencias ({reviews.length})</h3>
+          <p className="text-[11px] text-slate-500 mb-2">Contá tu experiencia o dejá una recomendación para mejorar la app.</p>
           <div className="space-y-2 mb-4 max-h-44 overflow-y-auto">
-            {reviews.length === 0 && <p className="text-xs text-slate-500 dark:text-slate-400 italic">Todavía no hay opiniones. ¡Sé el primero!</p>}
+            {reviews.length === 0 && <p className="text-xs text-slate-500 italic">Todavía no hay opiniones. ¡Sé el primero!</p>}
             {reviews.map((r, i) => {
               const esSug = r.kind === "sugerencia";
               return (
-                <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-200 dark:bg-slate-700/50 dark:border-slate-600">
+                <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-200">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-slate-800 dark:text-slate-100">{r.name}</span>
+                    <span className="text-sm font-medium text-slate-800">{r.name}</span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full border flex items-center gap-1 whitespace-nowrap ${esSug ? "bg-amber-100 text-amber-700 border-amber-200" : "bg-sky-100 text-sky-700 border-sky-200"}`}>
                       {esSug ? <><Lightbulb size={10} /> Sugerencia</> : <><MessageSquare size={10} /> Experiencia</>}
                     </span>
                   </div>
                   {r.stars > 0 && <span className="flex gap-0.5 mt-1">{[1,2,3,4,5].map((s) => <Star key={s} size={12} className={s <= r.stars ? "fill-amber-400 text-amber-400" : "text-slate-300"} />)}</span>}
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">{r.text}</p>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400">{r.date}</span>
+                  <p className="text-xs text-slate-600 mt-1">{r.text}</p>
+                  <span className="text-[10px] text-slate-500">{r.date}</span>
                 </div>
               );
             })}
           </div>
 
           {/* Formulario de feedback */}
-          <div className="p-3 rounded-xl bg-sky-50 border border-sky-200 dark:bg-slate-700/50 dark:border-slate-600">
+          <div className="p-3 rounded-xl bg-sky-50 border border-sky-200">
             {/* Tipo de feedback */}
             <div className="flex gap-2 mb-2">
               {[["experiencia", "Experiencia", MessageSquare], ["sugerencia", "Sugerencia", Lightbulb]].map(([k, l, Ic]) => (
                 <button key={k} onClick={() => setKind(k)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium border transition ${kind === k ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-100 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"}`}>
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium border transition ${kind === k ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 border-slate-200 hover:bg-sky-100"}`}>
                   <Ic size={13} /> {l}
                 </button>
               ))}
@@ -1220,12 +1208,12 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
                   <Star size={24} className={(hover || stars) >= s ? "fill-amber-400 text-amber-400" : "text-slate-300"} />
                 </button>
               ))}
-              <span className="text-xs text-slate-500 dark:text-slate-400 ml-2">{stars ? `${stars}/5` : "Puntuación (opcional)"}</span>
+              <span className="text-xs text-slate-500 ml-2">{stars ? `${stars}/5` : "Puntuación (opcional)"}</span>
             </div>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre (opcional)"
-              className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-400" />
+              className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
             <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={kind === "sugerencia" ? "¿Qué te gustaría que mejoremos o agreguemos?" : "Contanos tu experiencia con la accesibilidad del lugar…"}
-              rows={2} className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500 resize-none dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-400" />
+              rows={2} className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500 resize-none" />
             <button onClick={submit} disabled={!text.trim()}
               className="w-full py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-white disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium transition">
               Enviar
@@ -1240,11 +1228,11 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
 function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
   return (
     <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-800 rounded-2xl border border-sky-200 dark:border-slate-700 shadow-2xl">
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl border border-sky-200 shadow-2xl">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 rounded-t-2xl" />
-        <div className="sticky top-0 bg-white dark:bg-slate-800 p-5 border-b border-sky-200 dark:border-slate-700 flex items-center justify-between z-10">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2"><BarChart3 size={20} className="text-sky-500" /> Análisis de Accesibilidad</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"><X size={20} /></button>
+        <div className="sticky top-0 bg-white p-5 border-b border-sky-200 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><BarChart3 size={20} className="text-sky-500" /> Análisis de Accesibilidad</h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
         </div>
         <div className="p-5">
           {/* Donut: cobertura de datos verificados de acceso */}
@@ -1254,22 +1242,22 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
               <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500" /> Acceso verificado: <b>{stats.accesible}</b></div>
               <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-amber-500" /> Acceso parcial: <b>{stats.parcial}</b></div>
               <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-slate-300" /> Sin datos: <b>{stats.sinDato}</b></div>
-              <div className="text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-700">Total de lugares: <b>{stats.total}</b></div>
+              <div className="text-slate-500 pt-1 border-t border-slate-200">Total de lugares: <b>{stats.total}</b></div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/30 text-center">
+            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
               <div className="text-3xl font-bold text-emerald-500">{stats.conDato}</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">lugares con dato real de acceso (fuente OpenStreetMap)</div>
+              <div className="text-xs text-slate-500 mt-1">lugares con dato real de acceso (fuente OpenStreetMap)</div>
             </div>
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-700/50 dark:border-slate-600 text-center">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
               <div className="text-3xl font-bold text-slate-400">{stats.sinDato}</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">a relevar (sin datos verificados todavía)</div>
+              <div className="text-xs text-slate-500 mt-1">a relevar (sin datos verificados todavía)</div>
             </div>
           </div>
 
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">Datos cargados por criterio</h3>
+          <h3 className="text-sm font-semibold text-slate-700 mb-3">Datos cargados por criterio</h3>
           <div className="space-y-3">
             {stats.byCriteria.map((c) => {
               const Icon = c.icon;
@@ -1277,10 +1265,10 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
               return (
                 <div key={c.key}>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-200"><Icon size={13} /> {c.label}</span>
-                    <span className="text-slate-500 dark:text-slate-400">{conDato}/{stats.total} con dato</span>
+                    <span className="flex items-center gap-1.5 text-slate-700"><Icon size={13} /> {c.label}</span>
+                    <span className="text-slate-500">{conDato}/{stats.total} con dato</span>
                   </div>
-                  <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
+                  <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                     <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-orange-500 transition-all" style={{ width: `${Math.round((conDato / stats.total) * 100)}%` }} />
                   </div>
                 </div>
@@ -1288,7 +1276,7 @@ function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
             })}
           </div>
 
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-5 leading-relaxed border-t border-slate-200 dark:border-slate-700 pt-3">
+          <p className="text-[11px] text-slate-500 mt-5 leading-relaxed border-t border-slate-200 pt-3">
             <b>Sobre los datos:</b> los lugares y sus ubicaciones son reales. Los datos de accesibilidad provienen de
             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline"> OpenStreetMap</a> (ODbL),
             son verificables (cada lugar con dato enlaza a su objeto en OSM) y hoy solo cubren el <b>acceso en silla de ruedas</b> de
@@ -1323,18 +1311,18 @@ function LoginModal({ onClose }) {
   };
   return (
     <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm bg-white dark:bg-slate-800 rounded-2xl border border-sky-200 dark:border-slate-700 shadow-2xl overflow-hidden">
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm bg-white rounded-2xl border border-sky-200 shadow-2xl overflow-hidden">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
         <div className="p-5">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2"><Lock size={18} className="text-sky-600 dark:text-sky-400" /> Acceso de administrador</h2>
-            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"><X size={20} /></button>
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><Lock size={18} className="text-sky-600" /> Acceso de administrador</h2>
+            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
           </div>
           <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email"
-            className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-400" />
+            className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
           <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Contraseña"
             onKeyDown={(e) => e.key === "Enter" && submit()}
-            className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-400" />
+            className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
           {err && <p className="text-xs text-rose-600 mb-2">{err}</p>}
           <button onClick={submit} disabled={loading || !email || !password}
             className="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium transition">
@@ -1354,8 +1342,8 @@ function Donut({ pct }) {
       <circle cx="70" cy="70" r={r} fill="none" stroke="#10b981" strokeWidth="16" strokeLinecap="round"
         strokeDasharray={c} strokeDashoffset={c - (c * pct) / 100} transform="rotate(-90 70 70)"
         style={{ transition: "stroke-dashoffset 0.8s ease" }} />
-      <text x="70" y="64" textAnchor="middle" className="fill-slate-800 dark:fill-slate-100" style={{ fontSize: 26, fontWeight: 700 }}>{pct}%</text>
-      <text x="70" y="84" textAnchor="middle" className="fill-slate-500 dark:fill-slate-400" style={{ fontSize: 11 }}>con datos</text>
+      <text x="70" y="64" textAnchor="middle" className="fill-slate-800" style={{ fontSize: 26, fontWeight: 700 }}>{pct}%</text>
+      <text x="70" y="84" textAnchor="middle" className="fill-slate-500" style={{ fontSize: 11 }}>con datos</text>
     </svg>
   );
 }

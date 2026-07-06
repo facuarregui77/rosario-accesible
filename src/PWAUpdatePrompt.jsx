@@ -23,12 +23,12 @@ export default function PWAUpdatePrompt() {
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[2000] w-[92%] max-w-sm">
-      <div className="flex items-center gap-3 rounded-2xl bg-white border border-sky-300 dark:bg-slate-800 dark:border-slate-700 shadow-2xl px-4 py-3">
-        <div className="shrink-0 p-1.5 rounded-lg bg-sky-100 text-sky-600 dark:bg-slate-700 dark:text-sky-400">
+      <div className="flex items-center gap-3 rounded-2xl bg-white border border-sky-300 shadow-2xl px-4 py-3">
+        <div className="shrink-0 p-1.5 rounded-lg bg-sky-100 text-sky-600">
           <RefreshCw size={16} />
         </div>
-        <p className="flex-1 text-sm text-slate-700 dark:text-slate-200 leading-snug">
-          Hay una <span className="font-semibold text-sky-700 dark:text-sky-400">versión nueva</span> de la app.
+        <p className="flex-1 text-sm text-slate-700 leading-snug">
+          Hay una <span className="font-semibold text-sky-700">versión nueva</span> de la app.
         </p>
         <button
           onClick={() => updateServiceWorker(true)}
