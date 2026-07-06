@@ -992,7 +992,6 @@ export default function App() {
         {/* Panel de filtros desplegable (derecha) — gemelo del de lugares, con ícono distinto */}
         <div className={`absolute inset-y-0 right-0 z-[1050] w-[86%] max-w-xs transition-transform duration-300 ease-in-out ${filtersOpen ? "translate-x-0" : "translate-x-full"}`}>
           <div className="h-full overflow-y-auto bg-sky-100 border-l border-sky-300 scroll-orange shadow-2xl p-4 space-y-5">
-            <h3 className="text-base font-bold text-sky-800 flex items-center gap-2"><SlidersHorizontal size={18} /> Filtros</h3>
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Filter size={13} /> Tipo de lugar</p>
               <div className="flex flex-wrap gap-2">
