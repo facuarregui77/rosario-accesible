@@ -110,12 +110,12 @@ const PLACES = [
   // Educativo
   { id: "ucel", name: "Universidad UCEL", type: "educativo", lat: -32.956198, lng: -60.644333, a: { ...SIN_DATOS } },
   { id: "univ_gran_rosario", name: "Universidad del Gran Rosario", type: "educativo", lat: -32.951308, lng: -60.644125, a: { ...SIN_DATOS } },
-  { id: "fceia", name: "UNR · Cs. Exactas, Ingeniería y Agrimensura", type: "educativo", lat: -32.958963, lng: -60.628577, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "383917146") },
+  { id: "fceia", name: "UNR · Cs. Exactas, Ingeniería y Agrimensura", type: "educativo", lat: -32.958963, lng: -60.628577, a: { ...SIN_DATOS, bano: "no" }, wheelchair: "si", src: osm("way", "383917146") },
   // Salud
   { id: "hosp_ninos_vilela", name: "Hospital de Niños Víctor J. Vilela", type: "salud", lat: -32.968649, lng: -60.654601, a: { ...SIN_DATOS } },
   { id: "hosp_saenz_pena", name: "Hospital Roque Sáenz Peña", type: "salud", lat: -32.999247, lng: -60.646419, a: { ...SIN_DATOS } },
   { id: "sanatorio_mujer", name: "Sanatorio de la Mujer", type: "salud", lat: -32.945904, lng: -60.657868, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "1200690659") },
-  { id: "hosp_privado", name: "Hospital Privado de Rosario", type: "salud", lat: -32.964599, lng: -60.650557, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "489463349") },
+  { id: "hosp_privado", name: "Hospital Privado de Rosario", type: "salud", lat: -32.964599, lng: -60.650557, a: { ...SIN_DATOS, bano: "si" }, wheelchair: "parcial", src: osm("way", "489463349") },
   { id: "cemar", name: "CEMAR (Especialidades Médicas)", type: "salud", lat: -32.946405, lng: -60.651850, a: { ...SIN_DATOS } },
   { id: "hosp_carrasco", name: "Hospital Intendente Carrasco", type: "salud", lat: -32.946424, lng: -60.681742, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "475554308") },
   // Espacios verdes
