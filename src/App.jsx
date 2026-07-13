@@ -96,6 +96,37 @@ const PLACES = [
   { id: "parque_urquiza", name: "Parque Urquiza", type: "verde", lat: -32.957749, lng: -60.623346, a: { ...SIN_DATOS } },
   { id: "parque_italia", name: "Parque Italia", type: "verde", lat: -32.97208, lng: -60.624632, a: { ...SIN_DATOS } },
   { id: "plaza_montenegro", name: "Plaza Montenegro", type: "verde", lat: -32.9476, lng: -60.6386, a: { ...SIN_DATOS } },
+  // ===== Lugares emblemáticos agregados (ubicaciones reales de OpenStreetMap; wheelchair/src verificables) =====
+  // Cultural
+  { id: "museo_castagnino", name: "Museo Castagnino (Bellas Artes)", type: "cultural", lat: -32.953872, lng: -60.656595, a: { ...SIN_DATOS } },
+  { id: "macro", name: "Museo de Arte Contemporáneo (MACRO)", type: "cultural", lat: -32.930124, lng: -60.650628, a: { ...SIN_DATOS } },
+  { id: "museo_marc", name: "Museo Histórico Provincial Julio Marc", type: "cultural", lat: -32.956671, lng: -60.659848, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "186904987") },
+  { id: "museo_memoria", name: "Museo de la Memoria", type: "cultural", lat: -32.944304, lng: -60.651009, a: { ...SIN_DATOS } },
+  { id: "teatro_circulo", name: "Teatro El Círculo", type: "cultural", lat: -32.952543, lng: -60.635059, a: { ...SIN_DATOS } },
+  { id: "teatro_comedia", name: "Teatro La Comedia", type: "cultural", lat: -32.948058, lng: -60.640207, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("node", "4549337118") },
+  { id: "teatro_vorterix", name: "Teatro Vorterix Rosario", type: "cultural", lat: -32.933611, lng: -60.669631, a: { ...SIN_DATOS } },
+  { id: "monumento_bandera", name: "Monumento Nacional a la Bandera", type: "cultural", lat: -32.947587, lng: -60.630524, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("relation", "6804977") },
+  { id: "casa_che", name: "Casa natal de Ernesto Che Guevara", type: "cultural", lat: -32.942117, lng: -60.640103, a: { ...SIN_DATOS } },
+  // Educativo
+  { id: "ucel", name: "Universidad UCEL", type: "educativo", lat: -32.956198, lng: -60.644333, a: { ...SIN_DATOS } },
+  { id: "univ_gran_rosario", name: "Universidad del Gran Rosario", type: "educativo", lat: -32.951308, lng: -60.644125, a: { ...SIN_DATOS } },
+  { id: "fceia", name: "UNR · Cs. Exactas, Ingeniería y Agrimensura", type: "educativo", lat: -32.958963, lng: -60.628577, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "383917146") },
+  // Salud
+  { id: "hosp_ninos_vilela", name: "Hospital de Niños Víctor J. Vilela", type: "salud", lat: -32.968649, lng: -60.654601, a: { ...SIN_DATOS } },
+  { id: "hosp_saenz_pena", name: "Hospital Roque Sáenz Peña", type: "salud", lat: -32.999247, lng: -60.646419, a: { ...SIN_DATOS } },
+  { id: "sanatorio_mujer", name: "Sanatorio de la Mujer", type: "salud", lat: -32.945904, lng: -60.657868, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "1200690659") },
+  { id: "hosp_privado", name: "Hospital Privado de Rosario", type: "salud", lat: -32.964599, lng: -60.650557, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "489463349") },
+  { id: "cemar", name: "CEMAR (Especialidades Médicas)", type: "salud", lat: -32.946405, lng: -60.651850, a: { ...SIN_DATOS } },
+  { id: "hosp_carrasco", name: "Hospital Intendente Carrasco", type: "salud", lat: -32.946424, lng: -60.681742, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("way", "475554308") },
+  // Espacios verdes
+  { id: "parque_espana", name: "Parque de España", type: "verde", lat: -32.939808, lng: -60.636117, a: { ...SIN_DATOS } },
+  { id: "parque_scalabrini", name: "Parque Scalabrini Ortiz", type: "verde", lat: -32.930017, lng: -60.667668, a: { ...SIN_DATOS } },
+  { id: "parque_colectividades", name: "Parque de las Colectividades", type: "verde", lat: -32.932318, lng: -60.647165, a: { ...SIN_DATOS } },
+  { id: "parque_moreno", name: "Parque Mariano Moreno", type: "verde", lat: -32.939027, lng: -60.675550, a: { ...SIN_DATOS } },
+  { id: "plaza_san_martin", name: "Plaza San Martín", type: "verde", lat: -32.943635, lng: -60.649713, a: { ...SIN_DATOS } },
+  { id: "plaza_sarmiento", name: "Plaza Sarmiento", type: "verde", lat: -32.948971, lng: -60.642402, a: { ...SIN_DATOS } },
+  { id: "plaza_25mayo", name: "Plaza 25 de Mayo", type: "verde", lat: -32.947081, lng: -60.633218, a: { ...SIN_DATOS } },
+  { id: "plaza_pringles", name: "Plaza Pringles", type: "verde", lat: -32.945096, lng: -60.644353, a: { ...SIN_DATOS } },
 ];
 
 const CRITERIA = [
