@@ -673,7 +673,9 @@ function SuggestionsPanel({ suggestions, places, onApprove, onReject, onClose, o
 }
 
 // ---- Ruteo accesible (OpenRouteService, perfil "wheelchair") ----
-const ORS_KEY = import.meta.env.VITE_ORS_API_KEY;
+// Sanitizamos la clave: dejamos solo ASCII imprimible (saca BOM/espacios invisibles que rompen
+// el header de fetch con "String contains non ISO-8859-1 code point").
+const ORS_KEY = (import.meta.env.VITE_ORS_API_KEY || "").replace(/[^\x21-\x7E]/g, "");
 const ROUTING_ON = Boolean(ORS_KEY);
 
 // Pide a ORS una ruta en silla de ruedas entre dos puntos [lng,lat]. Devuelve { coords:[[lat,lng]], distance, duration }.
