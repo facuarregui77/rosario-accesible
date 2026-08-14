@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal, Share2, Image as ImageIcon } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal, Share2, Image as ImageIcon, Navigation } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -196,11 +196,12 @@ const loadLeaflet = () => {
   return leafletPromise;
 };
 
-function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm, sidebarOpen }) {
+function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm, sidebarOpen, route }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
   const rampsLayerRef = useRef(null);
+  const routeLayerRef = useRef(null);
   const isMobileRef = useRef(false);
   const [ready, setReady] = useState(false);
   const onSelectRef = useRef(onSelect);
@@ -339,6 +340,24 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
       rampsLayerRef.current.remove();
     }
   }, [showRamps, ready]);
+
+  // Dibujar la ruta accesible (línea celeste + punto de origen) cuando hay una calculada.
+  useEffect(() => {
+    if (!ready || !window.L || !mapRef.current) return;
+    const L = window.L;
+    if (routeLayerRef.current) { routeLayerRef.current.remove(); routeLayerRef.current = null; }
+    if (route && route.coords && route.coords.length) {
+      const line = L.polyline(route.coords, { color: "#0284c7", weight: 5, opacity: 0.9 });
+      const grp = L.layerGroup([line]);
+      if (route.origin) {
+        L.circleMarker(route.origin, { radius: 7, color: "#fff", weight: 2, fillColor: "#0284c7", fillOpacity: 1 })
+          .bindTooltip("Tu ubicación", { direction: "top" }).addTo(grp);
+      }
+      grp.addTo(mapRef.current);
+      routeLayerRef.current = grp;
+      try { mapRef.current.fitBounds(line.getBounds(), { padding: [60, 60], maxZoom: 17 }); } catch (e) {}
+    }
+  }, [route, ready]);
 
   // Volver a la vista inicial de toda la ciudad
   const resetView = () => {
@@ -653,6 +672,31 @@ function SuggestionsPanel({ suggestions, places, onApprove, onReject, onClose, o
   );
 }
 
+// ---- Ruteo accesible (OpenRouteService, perfil "wheelchair") ----
+const ORS_KEY = import.meta.env.VITE_ORS_API_KEY;
+const ROUTING_ON = Boolean(ORS_KEY);
+
+// Pide a ORS una ruta en silla de ruedas entre dos puntos [lng,lat]. Devuelve { coords:[[lat,lng]], distance, duration }.
+async function fetchRoute(start, end) {
+  if (!ORS_KEY) throw new Error("El ruteo todavía no está configurado.");
+  const res = await fetch("https://api.openrouteservice.org/v2/directions/wheelchair/geojson", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: ORS_KEY },
+    body: JSON.stringify({ coordinates: [start, end] }),
+  });
+  if (!res.ok) {
+    if (res.status === 404) throw new Error("No se encontró una ruta accesible para este tramo.");
+    if (res.status === 403 || res.status === 401) throw new Error("La clave de ruteo no es válida.");
+    throw new Error("No se pudo calcular la ruta (servicio de ruteo).");
+  }
+  const data = await res.json();
+  const f = data.features && data.features[0];
+  if (!f) throw new Error("No se encontró una ruta.");
+  const coords = f.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+  const sum = f.properties.summary || {};
+  return { coords, distance: sum.distance || 0, duration: sum.duration || 0 };
+}
+
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [query, setQuery] = useState("");
@@ -670,6 +714,7 @@ export default function App() {
   const [showSuggPanel, setShowSuggPanel] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [criteriaFilter, setCriteriaFilter] = useState([]); // criterios que el lugar DEBE tener ("si")
+  const [route, setRoute] = useState(null); // ruta accesible: {loading|error|coords, origin, distance, duration, to}
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
   const [showLogin, setShowLogin] = useState(false);
@@ -867,6 +912,27 @@ export default function App() {
     setShowSuggestions(false);
   };
 
+  // "Cómo llego": traza una ruta accesible desde la ubicación del usuario hasta el lugar.
+  const requestRoute = (place) => {
+    setSelected(null);          // cerrar la ficha para ver el mapa y la ruta
+    setSidebarOpen(false);
+    setRoute({ loading: true, to: place });
+    if (!navigator.geolocation) { setRoute({ error: "Tu dispositivo no permite ubicación.", to: place }); return; }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const start = [pos.coords.longitude, pos.coords.latitude];
+          const r = await fetchRoute(start, [place.lng, place.lat]);
+          setRoute({ ...r, origin: [pos.coords.latitude, pos.coords.longitude], to: place });
+        } catch (e) {
+          setRoute({ error: e.message || "No se pudo calcular la ruta.", to: place });
+        }
+      },
+      () => setRoute({ error: "Necesitamos tu ubicación para trazar la ruta.", to: place }),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
   // Navegación del desplegable con el teclado (flechas / Enter / Esc).
   const onSearchKeyDown = (e) => {
     if (e.key === "ArrowDown") { e.preventDefault(); setShowSuggestions(true); setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1)); }
@@ -1027,7 +1093,22 @@ export default function App() {
 
       {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
       <div className="relative flex-1 min-h-0">
-        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} searchTerm={query} sidebarOpen={sidebarOpen} />
+        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating} showRamps={showRamps} searchTerm={query} sidebarOpen={sidebarOpen} route={route} />
+
+        {/* Banner de la ruta accesible (arriba, centrado) */}
+        {route && (
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[600] w-[92%] max-w-sm">
+            <div className="flex items-center gap-2 rounded-xl bg-white/95 border border-sky-300 shadow-lg px-3 py-2 backdrop-blur">
+              <Navigation size={16} className="text-sky-600 shrink-0" />
+              <div className="flex-1 min-w-0 text-xs text-slate-700 leading-snug">
+                {route.loading ? "Calculando ruta accesible…"
+                  : route.error ? <span className="text-rose-600">{route.error}</span>
+                  : <>Ruta accesible a <b>{route.to?.name}</b>: <b>{(route.distance / 1000).toFixed(2)} km</b> · ~{Math.round(route.duration / 60)} min<br /><span className="text-[10px] text-slate-400">Ruta sugerida — verificá el terreno.</span></>}
+              </div>
+              <button onClick={() => setRoute(null)} aria-label="Cerrar ruta" className="shrink-0 p-1 rounded-lg hover:bg-slate-100 text-slate-500"><X size={16} /></button>
+            </div>
+          </div>
+        )}
 
         {/* Fondo oscuro al abrir el panel en celular */}
         {sidebarOpen && <div className="sm:hidden absolute inset-0 bg-black/30 z-[1040]" onClick={() => setSidebarOpen(false)} />}
@@ -1125,6 +1206,7 @@ export default function App() {
           onAddReview={(rev) => addReview(selectedLive.id, rev)}
           onSaveAccess={(newA, newW) => saveAccess(selectedLive.id, newA, newW)}
           onAddSuggestion={addSuggestion}
+          onRoute={requestRoute} routingEnabled={ROUTING_ON}
           avgRating={avgRating(selectedLive.id)} />
       )}
       {showAnalysis && admin && <AnalysisPanel stats={stats} onClose={() => setShowAnalysis(false)} onReset={resetAccess} hasOverrides={!db.cloud && Object.keys(overrides).length > 0} />}
@@ -1142,7 +1224,7 @@ export default function App() {
   );
 }
 
-function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAddSuggestion, avgRating, admin }) {
+function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAddSuggestion, onRoute, routingEnabled, avgRating, admin }) {
   const [stars, setStars] = useState(0);
   const [hover, setHover] = useState(0);
   const [name, setName] = useState("");
@@ -1222,6 +1304,12 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
         </div>
 
         <div className="p-5">
+          {routingEnabled && !editing && (
+            <button onClick={() => onRoute(place)}
+              className="w-full mb-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-sm font-semibold shadow-sm transition">
+              <Navigation size={16} /> Cómo llego (ruta accesible)
+            </button>
+          )}
           {place.wheelchair && !editing && (
             <div className={`mb-4 p-3 rounded-xl border text-sm ${place.wheelchair === "si" ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
               <div className="flex items-center gap-2 font-medium">
