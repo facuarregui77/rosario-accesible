@@ -65,6 +65,7 @@ async function cloudLoadAll() {
     overrides[r.place_id] = {
       ...Object.fromEntries(ACCESS_KEYS.map((k) => [k, r[k] ?? null])),
       wheelchair: r.wheelchair ?? null, // estado general (semáforo); null = sin dato → se mantiene el de OSM
+      _updatedAt: r.updated_at ?? null, // cuándo se cargó/actualizó (para mostrar "última actualización")
     };
   });
   (rev.data || []).forEach((r) => {
@@ -180,4 +181,41 @@ export function onAuthChange(cb) {
     unsub = () => data.subscription.unsubscribe();
   });
   return () => { cancelled = true; unsub(); };
+}
+
+// ---- Fotos por lugar (Supabase Storage, bucket "place-photos") ----
+const PHOTO_BUCKET = "place-photos";
+
+// Listar las fotos de un lugar (URLs públicas). Devuelve [] si no hay nube o no hay fotos.
+export async function loadPhotos(placeId) {
+  if (!cloud) return [];
+  try {
+    const sb = await getClient();
+    const { data, error } = await sb.storage.from(PHOTO_BUCKET).list(placeId, { sortBy: { column: "created_at", order: "asc" } });
+    if (error || !data) return [];
+    return data.filter((f) => f.name && f.id).map((f) => ({
+      name: f.name,
+      path: `${placeId}/${f.name}`,
+      url: sb.storage.from(PHOTO_BUCKET).getPublicUrl(`${placeId}/${f.name}`).data.publicUrl,
+    }));
+  } catch (e) { return []; }
+}
+
+// Subir una foto para un lugar (solo admin logueado). Devuelve { error }.
+export async function uploadPhoto(placeId, file) {
+  if (!cloud) return { error: { message: "Supabase no está configurado." } };
+  const sb = await getClient();
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const path = `${placeId}/${Date.now()}.${ext}`;
+  const { error } = await sb.storage.from(PHOTO_BUCKET).upload(path, file, { cacheControl: "3600", upsert: false });
+  if (error) console.error("Supabase uploadPhoto:", error.message);
+  return { error };
+}
+
+// Borrar una foto (solo admin).
+export async function deletePhoto(path) {
+  if (!cloud) return;
+  const sb = await getClient();
+  const { error } = await sb.storage.from(PHOTO_BUCKET).remove([path]);
+  if (error) console.error("Supabase deletePhoto:", error.message);
 }

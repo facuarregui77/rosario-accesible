@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal, Share2 } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal, Share2, Image as ImageIcon } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -168,11 +168,12 @@ function AccessChip({ wheelchair }) {
 const mergePlaces = (overrides) => PLACES.map((p) => {
   const o = overrides[p.id];
   if (!o) return p;
-  const { wheelchair, ...a } = o; // separamos el estado general de los 5 criterios
+  const { wheelchair, _updatedAt, ...a } = o; // separamos el estado general y la fecha de los 5 criterios
   return {
     ...p,
     a: { ...p.a, ...a },
     wheelchair: wheelchair != null ? wheelchair : p.wheelchair, // null = sin dato → se mantiene el de OSM
+    updatedAt: _updatedAt || null,
   };
 });
 
@@ -559,9 +560,9 @@ function SuggestionForm({ onSubmit }) {
   const WOPTS = [["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"]];
 
   return (
-    <div className="mt-4 p-3 rounded-xl bg-sky-50 border border-sky-200">
-      <p className="text-sm font-semibold text-slate-700 flex items-center gap-2"><Lightbulb size={15} className="text-amber-500" /> Sugerir datos de accesibilidad</p>
-      <p className="text-[11px] text-slate-500 mb-2.5">Completá solo lo que sepas. El equipo lo revisa antes de publicarlo.</p>
+    <div className="mt-4 p-3 rounded-xl bg-gradient-to-br from-sky-50 to-orange-50 border-2 border-sky-300 shadow-sm">
+      <p className="text-sm font-bold text-sky-800 flex items-center gap-2"><Lightbulb size={16} className="text-amber-500" /> ¿Conocés este lugar? ¡Ayudanos! 💙</p>
+      <p className="text-[11px] text-slate-600 mb-2.5">Sumá lo que sepas de su accesibilidad. Completá solo lo que conozcas; el equipo lo revisa antes de publicarlo.</p>
 
       <div className="mb-2">
         <span className="text-xs text-slate-600">Acceso en silla de ruedas</span>
@@ -1153,6 +1154,30 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
 
   useEffect(() => { setDraft(place.a); setDraftW(place.wheelchair ?? null); setEditing(false); }, [place.id, place.a, place.wheelchair]);
 
+  // Fotos del lugar (Supabase Storage): se cargan al abrir la ficha.
+  const [photos, setPhotos] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  useEffect(() => {
+    let ok = true;
+    db.loadPhotos(place.id).then((ph) => { if (ok) setPhotos(ph); });
+    return () => { ok = false; };
+  }, [place.id]);
+  const addPhoto = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const { error } = await db.uploadPhoto(place.id, file);
+    if (!error) setPhotos(await db.loadPhotos(place.id));
+    else window.alert("No se pudo subir la foto. ¿Está creado el bucket en Supabase?");
+    setUploading(false);
+    e.target.value = "";
+  };
+  const removePhoto = async (p) => {
+    if (!window.confirm("¿Borrar esta foto?")) return;
+    await db.deletePhoto(p.path);
+    setPhotos((list) => list.filter((x) => x.path !== p.path));
+  };
+
   const submit = () => {
     if (!text.trim()) return; // las estrellas son opcionales (una sugerencia puede no llevar puntaje)
     onAddReview({ stars, kind, name: name.trim() || "Anónimo", text: text.trim(), date: new Date().toLocaleDateString("es-AR") });
@@ -1270,7 +1295,40 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
             })}
             {editing && <p className="text-[11px] text-slate-500 italic">Elegí Sí / No / — (sin datos) en cada criterio y tocá "Guardar". {db.cloud ? "Tus datos se comparten con toda la comunidad (se guardan en la nube)." : "Tus datos se guardan en este navegador como relevamiento manual."}</p>}
             {admin && !editing && !hasAnyData(place) && <p className="text-[11px] text-slate-500 italic">Todavía no hay datos verificados de este lugar. Podés cargarlos con "Editar".</p>}
+            {/* Fuente y última actualización */}
+            {!editing && (place.src || place.updatedAt) && (
+              <p className="text-[11px] text-slate-400 mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                {place.src && <a href={place.src} target="_blank" rel="noreferrer" className="underline hover:text-slate-600">Fuente: OpenStreetMap ↗</a>}
+                {place.updatedAt && <span>Actualizado el {new Date(place.updatedAt).toLocaleDateString("es-AR")}</span>}
+              </p>
+            )}
           </div>
+
+          {/* Fotos del lugar */}
+          {!editing && (photos.length > 0 || admin) && (
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"><ImageIcon size={15} /> Fotos</h3>
+              {photos.length === 0 && <p className="text-xs text-slate-400 italic mb-2">Todavía no hay fotos de este lugar.</p>}
+              {photos.length > 0 && (
+                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                  {photos.map((ph) => (
+                    <div key={ph.path} className="relative shrink-0">
+                      <a href={ph.url} target="_blank" rel="noreferrer">
+                        <img src={ph.url} alt={`Foto de ${place.name}`} loading="lazy" className="h-28 w-28 object-cover rounded-lg border border-slate-200" />
+                      </a>
+                      {admin && <button onClick={() => removePhoto(ph)} aria-label="Borrar foto" className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full p-0.5"><X size={12} /></button>}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {admin && (
+                <label className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-medium cursor-pointer transition">
+                  <ImageIcon size={13} /> {uploading ? "Subiendo…" : "Agregar foto"}
+                  <input type="file" accept="image/*" onChange={addPhoto} disabled={uploading} className="hidden" />
+                </label>
+              )}
+            </div>
+          )}
 
           {/* Sugerir datos de accesibilidad (público, no admin) */}
           {!admin && !editing && <SuggestionForm onSubmit={(s) => onAddSuggestion(place.id, s)} />}
