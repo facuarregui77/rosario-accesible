@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal, Share2 } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
@@ -346,9 +346,9 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
 
   return (
     <>
-      <div ref={containerRef} className="absolute inset-0 w-full h-full"
+      <div ref={containerRef} role="application" aria-label="Mapa de accesibilidad de Rosario" className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
-      <button onClick={resetView} title="Volver a la vista inicial del mapa"
+      <button onClick={resetView} title="Volver a la vista inicial del mapa" aria-label="Volver a la vista inicial del mapa"
         className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[500] bottom-3 left-3"}`}>
         <RotateCcw size={16} />
       </button>
@@ -423,7 +423,7 @@ function SurveyMode({ places, onSaveAccess, onClose }) {
           <h2 className="text-base font-bold text-slate-800 leading-tight">Modo relevamiento</h2>
           <p className="text-xs text-slate-500">{done} de {places.length} lugares con datos</p>
         </div>
-        <button onClick={onClose} className="p-2 rounded-lg hover:bg-sky-200 text-slate-600"><X size={20} /></button>
+        <button onClick={onClose} aria-label="Cerrar relevamiento" className="p-2 rounded-lg hover:bg-sky-200 text-slate-600"><X size={20} /></button>
       </div>
 
       {!active ? (
@@ -618,13 +618,13 @@ function SuggestionsPanel({ suggestions, places, onApprove, onReject, onClose, o
   );
   return (
     <div className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()}
+      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Sugerencias pendientes"
         className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white sm:rounded-2xl rounded-t-2xl border border-sky-200 shadow-2xl scroll-orange">
         <div className="sticky top-0 bg-sky-50 p-4 border-b border-sky-200 flex items-center justify-between">
           <h2 className="text-base font-bold text-slate-800 flex items-center gap-2"><Lightbulb size={18} className="text-amber-500" /> Sugerencias pendientes ({suggestions.length})</h2>
           <div className="flex items-center gap-1">
-            <button onClick={onRefresh} title="Actualizar" className="p-1.5 rounded-lg hover:bg-sky-100 text-slate-500"><RotateCcw size={16} /></button>
-            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
+            <button onClick={onRefresh} title="Actualizar" aria-label="Actualizar" className="p-1.5 rounded-lg hover:bg-sky-100 text-slate-500"><RotateCcw size={16} /></button>
+            <button onClick={onClose} aria-label="Cerrar" className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
           </div>
         </div>
         <div className="p-4 space-y-3">
@@ -668,6 +668,7 @@ export default function App() {
   const [pendingSuggestions, setPendingSuggestions] = useState([]);
   const [showSuggPanel, setShowSuggPanel] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [criteriaFilter, setCriteriaFilter] = useState([]); // criterios que el lugar DEBE tener ("si")
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
   const [showLogin, setShowLogin] = useState(false);
@@ -774,6 +775,44 @@ export default function App() {
     [selected, data]
   );
 
+  // Compartir lugar por URL: al abrir con ?lugar=<id> se selecciona ese lugar automáticamente.
+  // Capturamos el parámetro inicial ANTES de que el efecto de sincronía pueda borrarlo.
+  const initialLugarRef = useRef(typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("lugar") : null);
+  const urlAppliedRef = useRef(false);
+  useEffect(() => {
+    if (urlAppliedRef.current || loading || !data.length) return;
+    urlAppliedRef.current = true;
+    const id = initialLugarRef.current;
+    const found = id && data.find((p) => p.id === id);
+    if (found) setSelected(found);
+  }, [loading, data]);
+
+  // Mantener la URL en sincronía con el lugar abierto (para poder compartir el enlace).
+  // Solo actúa una vez aplicado el deep-link inicial (para no pisar el ?lugar antes de leerlo).
+  useEffect(() => {
+    if (!urlAppliedRef.current) return;
+    try {
+      const url = selected ? `${window.location.pathname}?lugar=${selected.id}` : window.location.pathname;
+      window.history.replaceState(null, "", url);
+    } catch (e) { /* ignorar */ }
+  }, [selected]);
+
+  // Accesibilidad: la tecla Escape cierra el panel/modal abierto (de arriba hacia abajo).
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      if (showSuggestions) { setShowSuggestions(false); return; }
+      if (showLogin) { setShowLogin(false); return; }
+      if (showSuggPanel) { setShowSuggPanel(false); return; }
+      if (showAnalysis) { setShowAnalysis(false); return; }
+      if (showSurvey) { setShowSurvey(false); return; }
+      if (selected) { setSelected(null); return; }
+      if (filtersOpen) { setFiltersOpen(false); return; }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showSuggestions, showLogin, showSuggPanel, showAnalysis, showSurvey, selected, filtersOpen]);
+
   const filtered = useMemo(() => {
     const q = norm(query.trim());
     return data.filter((p) => {
@@ -783,9 +822,10 @@ export default function App() {
       if (accessFilter === "parcial" && p.wheelchair !== "parcial") return false;
       if (accessFilter === "no" && p.wheelchair !== "no") return false;
       if (accessFilter === "sindato" && hasAnyData(p)) return false;
+      if (criteriaFilter.length && !criteriaFilter.every((k) => p.a[k] === "si")) return false;
       return true;
     });
-  }, [query, typeFilter, accessFilter, data]);
+  }, [query, typeFilter, accessFilter, criteriaFilter, data]);
 
   const stats = useMemo(() => {
     const total = data.length;
@@ -884,6 +924,7 @@ export default function App() {
             </div>
             <button onClick={toggleAdmin}
               title={admin ? "Modo edición activado — tocá para salir" : "Acceso de administrador (editar información)"}
+              aria-label={admin ? "Salir del modo administrador" : "Acceso de administrador"} aria-pressed={admin}
               className={`shrink-0 ml-1 w-8 h-8 flex items-center justify-center rounded-lg border transition ${admin ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/70 text-slate-400 border-slate-200 hover:text-sky-600 hover:border-sky-300"}`}>
               {admin ? <Unlock size={15} /> : <Lock size={15} />}
             </button>
@@ -955,7 +996,7 @@ export default function App() {
                 <BarChart3 size={16} /> Análisis
               </button>
             )}
-            <button onClick={() => setShowRamps((v) => !v)}
+            <button onClick={() => setShowRamps((v) => !v)} aria-pressed={showRamps}
               title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
               className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-500 hover:bg-sky-400 text-white border-sky-500" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
               <Accessibility size={16} /> Rampas
@@ -1011,7 +1052,7 @@ export default function App() {
           </div>
           {/* Tirador para abrir/cerrar el panel */}
           <button onClick={() => setSidebarOpen((v) => !v)}
-            title={sidebarOpen ? "Ocultar la lista de lugares" : "Ver la lista de lugares"}
+            title={sidebarOpen ? "Ocultar la lista de lugares" : "Ver la lista de lugares"} aria-label={sidebarOpen ? "Ocultar la lista de lugares" : "Ver la lista de lugares"} aria-expanded={sidebarOpen}
             className="absolute top-3 -right-10 w-10 h-14 rounded-r-xl bg-sky-500 hover:bg-sky-400 text-white shadow-lg flex items-center justify-center">
             {sidebarOpen ? <ChevronLeft size={20} /> : <List size={18} />}
           </button>
@@ -1027,7 +1068,7 @@ export default function App() {
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Filter size={13} /> Tipo de lugar</p>
               <div className="flex flex-wrap gap-2">
                 {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural", "salud", "transporte", "gobierno", "verde"].map((t) => (
-                  <button key={t} onClick={() => setTypeFilter(t)}
+                  <button key={t} onClick={() => setTypeFilter(t)} aria-pressed={typeFilter === t}
                     className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-500 text-white border-sky-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
                     {t === "all" ? "Todos" : TYPE_PLURAL[t]}
                   </button>
@@ -1038,20 +1079,39 @@ export default function App() {
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Accessibility size={13} /> Accesibilidad</p>
               <div className="flex flex-wrap gap-2">
                 {[["all", "Todos"], ["si", "Accesible"], ["parcial", "Parcial"], ["no", "Sin acceso"], ["sindato", "Sin datos"]].map(([k, l]) => (
-                  <button key={k} onClick={() => setAccessFilter(k)}
+                  <button key={k} onClick={() => setAccessFilter(k)} aria-pressed={accessFilter === k}
                     className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${accessFilter === k ? "bg-orange-500 text-white border-orange-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
                     {l}
                   </button>
                 ))}
               </div>
             </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><CheckCircle2 size={13} /> Servicios (que tenga…)</p>
+              <div className="flex flex-wrap gap-2">
+                {CRITERIA.map((c) => {
+                  const on = criteriaFilter.includes(c.key);
+                  const Icon = c.icon;
+                  return (
+                    <button key={c.key} aria-pressed={on}
+                      onClick={() => setCriteriaFilter((prev) => on ? prev.filter((k) => k !== c.key) : [...prev, c.key])}
+                      className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border flex items-center gap-1 ${on ? "bg-emerald-500 text-white border-emerald-500" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
+                      <Icon size={12} /> {c.label}
+                    </button>
+                  );
+                })}
+              </div>
+              {criteriaFilter.length > 0 && (
+                <button onClick={() => setCriteriaFilter([])} className="mt-2 text-[11px] text-slate-500 underline hover:text-slate-700">Limpiar servicios</button>
+              )}
+            </div>
           </div>
           {/* Tirador para abrir/cerrar los filtros (ícono distinto al de lugares) */}
           <button onClick={() => setFiltersOpen((v) => !v)}
-            title={filtersOpen ? "Ocultar filtros" : "Ver filtros"}
+            title={filtersOpen ? "Ocultar filtros" : "Ver filtros"} aria-label={filtersOpen ? "Ocultar filtros" : "Ver filtros"} aria-expanded={filtersOpen}
             className="absolute top-20 -left-10 w-10 h-14 rounded-l-xl bg-orange-500 hover:bg-orange-400 text-white shadow-lg flex items-center justify-center">
             {filtersOpen ? <ChevronRight size={20} /> : <SlidersHorizontal size={18} />}
-            {!filtersOpen && (typeFilter !== "all" || accessFilter !== "all") && (
+            {!filtersOpen && (typeFilter !== "all" || accessFilter !== "all" || criteriaFilter.length > 0) && (
               <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white border-2 border-orange-500" title="Hay filtros activos" />
             )}
           </button>
@@ -1102,9 +1162,19 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
   const saveEdit = () => { onSaveAccess(draft, draftW); setEditing(false); };
   const cancelEdit = () => { setDraft(place.a); setDraftW(place.wheelchair ?? null); setEditing(false); };
 
+  // Compartir: usa el menú nativo del celular si existe; si no, copia el link al portapapeles.
+  const [shared, setShared] = useState(false);
+  const share = async () => {
+    const url = `${window.location.origin}${window.location.pathname}?lugar=${place.id}`;
+    try {
+      if (navigator.share) await navigator.share({ title: place.name, text: `Accesibilidad de ${place.name} en Rosario Access Map`, url });
+      else { await navigator.clipboard.writeText(url); setShared(true); setTimeout(() => setShared(false), 2000); }
+    } catch (e) { /* cancelado por el usuario */ }
+  };
+
   return (
     <div className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()}
+      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={place.name}
         className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white sm:rounded-2xl rounded-t-2xl border border-sky-200 shadow-2xl">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 sm:rounded-t-2xl rounded-t-2xl" />
         <div className="sticky top-0 bg-sky-50 p-5 border-b border-sky-200 flex items-start justify-between">
@@ -1116,7 +1186,14 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
               {avgRating && <span className="text-xs text-amber-600 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {avgRating} usuarios</span>}
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
+          <div className="flex items-center gap-1 shrink-0">
+            <button onClick={share} title="Compartir este lugar" aria-label="Compartir este lugar"
+              className="relative p-1.5 rounded-lg hover:bg-sky-100 text-sky-600">
+              <Share2 size={18} />
+              {shared && <span className="absolute -bottom-6 right-0 whitespace-nowrap text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full">¡Link copiado!</span>}
+            </button>
+            <button onClick={onClose} aria-label="Cerrar" className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
+          </div>
         </div>
 
         <div className="p-5">
@@ -1259,11 +1336,11 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
 function AnalysisPanel({ stats, onClose, onReset, hasOverrides }) {
   return (
     <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl border border-sky-200 shadow-2xl">
+      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Análisis de accesibilidad" className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl border border-sky-200 shadow-2xl">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400 rounded-t-2xl" />
         <div className="sticky top-0 bg-white p-5 border-b border-sky-200 flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><BarChart3 size={20} className="text-sky-500" /> Análisis de Accesibilidad</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
+          <button onClick={onClose} aria-label="Cerrar" className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
         </div>
         <div className="p-5">
           {/* Donut: cobertura de datos verificados de acceso */}
@@ -1342,12 +1419,12 @@ function LoginModal({ onClose }) {
   };
   return (
     <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm bg-white rounded-2xl border border-sky-200 shadow-2xl overflow-hidden">
+      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Acceso de administrador" className="w-full max-w-sm bg-white rounded-2xl border border-sky-200 shadow-2xl overflow-hidden">
         <div className="h-1.5 bg-gradient-to-r from-sky-400 via-sky-300 to-orange-400" />
         <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><Lock size={18} className="text-sky-600" /> Acceso de administrador</h2>
-            <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
+            <button onClick={onClose} aria-label="Cerrar" className="p-1.5 rounded-lg hover:bg-slate-100"><X size={20} /></button>
           </div>
           <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email"
             className="w-full mb-2 px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm text-slate-800 outline-none focus:border-sky-500" />
