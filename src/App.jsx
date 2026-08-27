@@ -287,13 +287,13 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
     layerRef.current.clearLayers();
     places.forEach((p) => {
       const isSel = selected?.id === p.id;
-      // Color = ACCESIBILIDAD (semáforo: verde/ámbar/rojo/gris). El ÍCONO indica el tipo de lugar.
-      const color = p.wheelchair === "si" ? "#10b981" : p.wheelchair === "parcial" ? "#f59e0b" : p.wheelchair === "no" ? "#ef4444" : "#94a3b8";
+      // Color del PIN = TIPO de lugar (bar naranja, restaurante verde, etc.).
+      // Puntito central = ACCESIBILIDAD (semáforo verde/ámbar/rojo/gris), para no perder ese dato.
+      const typeColor = TYPE_COLORS[p.type] || "#64748b";
+      const accColor = p.wheelchair === "si" ? "#10b981" : p.wheelchair === "parcial" ? "#f59e0b" : p.wheelchair === "no" ? "#ef4444" : "#94a3b8";
       const size = isSel ? 38 : 28;
-      const stroke = isSel ? "#0284c7" : "white";   // selección: anillo celeste + más grande
-      const strokeW = isSel ? 3 : 1.5;
-      const emoji = TYPE_EMOJI[p.type] || "📍";
-      const F = Math.round(size * 0.4);
+      const stroke = isSel ? "#0f172a" : "white";   // selección: contorno oscuro + más grande
+      const strokeW = isSel ? 2.5 : 1.5;
       // En celular evitamos `filter:drop-shadow` (repinta cada frame al panear/zoom → laguea).
       // Usamos una sombra "barata": un óvalo gris dibujado dentro del SVG, sin filtro.
       const mobile = isMobileRef.current;
@@ -304,13 +304,13 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
       const icon = L.divIcon({
         className: "",
         html: `<div style="transform:translate(-50%,-100%);position:relative;width:${size}px;height:${size}px;">
-          <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" stroke="${stroke}" stroke-width="${strokeW}"
+          <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${typeColor}" stroke="${stroke}" stroke-width="${strokeW}"
             style="${svgFilter}">
             ${svgShadow}
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-            <circle cx="12" cy="9" r="5" fill="white"/>
+            <circle cx="12" cy="9" r="4.6" fill="white" stroke="none"/>
+            <circle cx="12" cy="9" r="2.4" fill="${accColor}" stroke="none"/>
           </svg>
-          <span style="position:absolute;left:0;width:${size}px;text-align:center;top:${Math.round(size * 0.375 - F / 2)}px;font-size:${F}px;line-height:${F}px;">${emoji}</span>
         </div>`,
         iconSize: [size, size],
         iconAnchor: [0, 0],
