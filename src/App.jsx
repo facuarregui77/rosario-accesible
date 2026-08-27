@@ -233,10 +233,13 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
         markerZoomAnimation: !isMobile, // celular: los pines no se animan al pellizcar → menos repintado por frame
         tap: false,                  // mejor respuesta táctil en celulares modernos
       }).setView([-32.945, -60.66], 13);
-      // Mapa con calles (Esri — muy confiable, sin bloqueos)
-      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 19,
-        attribution: "Tiles &copy; Esri",
+      // Mapa con calles (CARTO Voyager — estilo limpio y moderno, con tiles @2x de alta resolución).
+      // {r} + detectRetina cargan tiles al doble de resolución en pantallas nítidas → se ve mucho más nítido.
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+        maxZoom: 20,
+        subdomains: "abcd",
+        detectRetina: true,
+        attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
         keepBuffer: isMobile ? 2 : 6,   // celular: menos tiles en memoria → arrastre mucho más liviano
         updateWhenIdle: isMobile,       // celular: carga tiles al SOLTAR (arrastre fluido); escritorio: mientras se mueve
         updateWhenZooming: false,
