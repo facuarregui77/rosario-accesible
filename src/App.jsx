@@ -1160,7 +1160,7 @@ export default function App() {
                   <AccessChip wheelchair={p.wheelchair} />
                 </div>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_EMOJI[p.type]} {TYPE_LABELS[p.type]}</span>
+                  <span className="text-[11px] px-1.5 py-0.5 rounded font-medium" style={{ background: TYPE_COLORS[p.type] + "22", color: TYPE_COLORS[p.type] }}>{TYPE_LABELS[p.type]}</span>
                   {p.gRating && <span className="text-[11px] text-slate-500 flex items-center gap-0.5"><Star size={10} className="fill-amber-400 text-amber-400" /> {p.gRating}</span>}
                   {admin && !hasAnyData(p) && <span className="text-[11px] text-slate-400 italic">a relevar</span>}
                 </div>
