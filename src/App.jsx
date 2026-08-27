@@ -196,6 +196,28 @@ const loadLeaflet = () => {
   return leafletPromise;
 };
 
+// Reverse-geocoding (coordenadas → dirección aproximada) con OpenStreetMap/Nominatim. Gratis, sin clave.
+// Cachea resultados para no repetir consultas al tocar la misma rampa.
+const geoCache = new Map();
+const escapeH = (s) => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+async function reverseGeocode(lat, lng) {
+  const key = lat.toFixed(5) + "," + lng.toFixed(5);
+  if (geoCache.has(key)) return geoCache.get(key);
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=es`);
+    const d = await res.json();
+    const a = d.address || {};
+    const parts = [];
+    const street = a.road || a.pedestrian || a.footway || a.path || a.cycleway;
+    if (street) parts.push(street + (a.house_number ? " " + a.house_number : ""));
+    const area = a.neighbourhood || a.suburb || a.quarter || a.city_district || a.residential;
+    if (area) parts.push(area);
+    const text = parts.join(" · ") || d.display_name || "Dirección no disponible";
+    geoCache.set(key, text);
+    return text;
+  } catch (e) { return "No se pudo obtener la dirección."; }
+}
+
 function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm, sidebarOpen, route }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -333,8 +355,16 @@ function RealMap({ places, selected, onSelect, avgRating, showRamps, searchTerm,
       if (!rampsLayerRef.current) {
         rampsLayerRef.current = L.layerGroup(
           RAMPS.points.map(([lat, lng]) =>
-            L.circleMarker([lat, lng], { radius: 3.5, color: "#0284c7", weight: 1, fillColor: "#38bdf8", fillOpacity: 0.85 })
-              .bindTooltip("Rampa / cruce accesible (OSM)", { direction: "top" })
+            L.circleMarker([lat, lng], { radius: 4, color: "#0284c7", weight: 1, fillColor: "#38bdf8", fillOpacity: 0.85 })
+              .bindTooltip("Rampa / cruce accesible — tocá para ver la dirección", { direction: "top" })
+              .bindPopup("Buscando dirección…", { minWidth: 180 })
+              .on("click", function () {
+                const m = this;
+                m.setPopupContent("🦽 <b>Rampa / cruce accesible</b><br>📍 Buscando dirección…");
+                reverseGeocode(lat, lng).then((addr) => {
+                  m.setPopupContent(`🦽 <b>Rampa / cruce accesible</b><br>📍 ${escapeH(addr)}<br><span style="color:#64748b;font-size:11px">Ubicación aproximada · fuente OpenStreetMap</span>`);
+                });
+              })
           )
         );
       }
