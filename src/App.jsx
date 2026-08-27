@@ -1016,15 +1016,15 @@ export default function App() {
       {/* Header */}
       <div className="relative z-20 shrink-0 bg-sky-100 border-b border-sky-300 px-3 sm:px-5 py-3 sm:py-4">
         {/* Detalle decorativo superior: franja celeste → naranja */}
-        <div className="-mx-3 sm:-mx-5 -mt-3 sm:-mt-4 mb-3 h-1.5 bg-gradient-to-r from-sky-400 via-orange-300 to-orange-400" />
+        <div className="-mx-3 sm:-mx-5 -mt-3 sm:-mt-4 mb-3 h-1.5 bg-gradient-to-r from-blue-800 via-sky-400 to-orange-400" />
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white shrink-0">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-blue-700 via-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white shrink-0">
               <Accessibility size={28} />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-extrabold leading-tight tracking-tight w-fit bg-gradient-to-r from-sky-500 via-sky-400 to-orange-500 bg-clip-text text-transparent" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Rosario Access Map</h1>
-              <p className="text-xs sm:text-sm font-medium text-sky-800">Toda la información disponible acerca de la accesibilidad local.</p>
+              <h1 className="text-lg sm:text-xl font-extrabold leading-tight tracking-tight w-fit bg-gradient-to-r from-blue-800 via-sky-500 to-orange-500 bg-clip-text text-transparent" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Rosario Access Map</h1>
+              <p className="text-xs sm:text-sm font-medium text-blue-900">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
             <button onClick={toggleAdmin}
               title={admin ? "Modo edición activado — tocá para salir" : "Acceso de administrador (editar información)"}
@@ -1058,7 +1058,7 @@ export default function App() {
                   )}
                 </div>
                 <button onClick={handleSearch} title="Buscar y resaltar el lugar en el mapa"
-                  className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-sm font-medium border border-sky-500 shadow-sm transition">
+                  className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-blue-800 hover:bg-blue-700 text-white text-sm font-medium border border-blue-800 shadow-sm transition">
                   <Search size={15} /> <span className="hidden sm:inline">Buscar</span>
                 </button>
               </div>
