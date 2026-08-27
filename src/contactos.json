@@ -1,0 +1,233 @@
+{
+ "granlago": {
+  "direccion": "Avenida Intendente Morcillo 2351",
+  "telefono": "+54 341 447-3305",
+  "web": null,
+  "instagram": "https://instagram.com/granlago",
+  "facebook": null
+ },
+ "unr_derecho": {
+  "direccion": "Córdoba 2020",
+  "telefono": "+54 341 480-2634",
+  "web": "https://www.fder.unr.edu.ar/",
+  "instagram": "https://instagram.com/fder.unr",
+  "facebook": null
+ },
+ "utn_rosario": {
+  "direccion": "Zeballos 1341",
+  "telefono": "+54 341 448-0158",
+  "web": "http://www.frro.utn.edu.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "normal_2": {
+  "direccion": "Córdoba 2084",
+  "telefono": "+54 341 472-1412",
+  "web": "http://ens35.sfe.infd.edu.ar/sitio/",
+  "instagram": null,
+  "facebook": null
+ },
+ "newells": {
+  "direccion": null,
+  "telefono": "+54 341 425-4422",
+  "web": "http://www.newellsoldboys.com.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "cc_fontanarrosa": {
+  "direccion": "Peatonal San Martín 1080",
+  "telefono": null,
+  "web": "http://www.rosario.gov.ar/web/ciudad/cultura/centros-culturales/centro-cultural-roberto-fontanarrosa",
+  "instagram": null,
+  "facebook": null
+ },
+ "cec": {
+  "direccion": "Paseo de las Artes 310",
+  "telefono": null,
+  "web": "http://www.cecrosario.gob.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "hosp_centenario": {
+  "direccion": "Justo José de Urquiza 3101",
+  "telefono": "+54 341 472-4643",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "heca": {
+  "direccion": "Avenida Carlos Pellegrini 3205",
+  "telefono": "+54 341 480-8111",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "hosp_provincial": {
+  "direccion": "Leandro N. Alem 1450",
+  "telefono": "+54 341 480-1402",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "hosp_italiano": {
+  "direccion": "Benjamín Virasoro 1249",
+  "telefono": null,
+  "web": "http://www.iunir.edu.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "hosp_espanol": {
+  "direccion": "Sarmiento 3150",
+  "telefono": "+54 341 485-8700",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "sanatorio_parque": {
+  "direccion": "Bulevar Nicasio Oroño 860",
+  "telefono": "+54 341 527-8463",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "sanatorio_ninos": {
+  "direccion": "Alvear",
+  "telefono": null,
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "palacio_leones": {
+  "direccion": "Buenos Aires 711",
+  "telefono": null,
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "museo_marc": {
+  "direccion": "Avenida del Museo 1858",
+  "telefono": "+54 341 472-1457",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "teatro_comedia": {
+  "direccion": "Bartolomé Mitre 958",
+  "telefono": "+54 341 480-2991",
+  "web": "http://teatrolacomedia.com.ar/",
+  "instagram": null,
+  "facebook": "https://facebook.com/TeatroLaComediaRosario"
+ },
+ "monumento_bandera": {
+  "direccion": "Santa Fe 581",
+  "telefono": "+54 341 480-2238",
+  "web": "http://www.monumentoalabandera.gob.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "fceia": {
+  "direccion": "Avenida Carlos Pellegrini 250",
+  "telefono": "+54 341 480-2649",
+  "web": "http://www.fceia.unr.edu.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "sanatorio_mujer": {
+  "direccion": "San Luis 2493",
+  "telefono": "+54 341 568-3400",
+  "web": "https://www.sanatoriodelamujer.com.ar/",
+  "instagram": "https://instagram.com/sanatorio_de_la_mujer",
+  "facebook": "https://facebook.com/SanatorioDeLaMujerRosario"
+ },
+ "hosp_privado": {
+  "direccion": "Presidente Roca 2440",
+  "telefono": "+54 341 489-3500",
+  "web": "https://grupogamma.com/",
+  "instagram": null,
+  "facebook": null
+ },
+ "hosp_carrasco": {
+  "direccion": "Bulevar Nicolás Avellaneda 1402",
+  "telefono": "+54 341 480-4155",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "elcairo": {
+  "direccion": "Sarmiento",
+  "telefono": "+54 341 449-0714",
+  "web": "https://www.barelcairo.com/",
+  "instagram": null,
+  "facebook": "https://facebook.com/elcairorosario"
+ },
+ "wembley": {
+  "direccion": "Avenida Manuel Belgrano 2012",
+  "telefono": "+54 341 481-1090",
+  "web": "http://www.wembleyrestaurant.com.ar",
+  "instagram": null,
+  "facebook": null
+ },
+ "rockfellers": {
+  "direccion": "San Lorenzo 1022",
+  "telefono": "+54 341 546-7000",
+  "web": "https://rockandfellers.com.ar/",
+  "instagram": "https://instagram.com/rockandfellersrosario",
+  "facebook": null
+ },
+ "est_rosario_norte": {
+  "direccion": "Avenida Aristóbulo del Valle 2734",
+  "telefono": null,
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "museo_castagnino": {
+  "direccion": "Avenida Carlos Pellegrini 2202",
+  "telefono": "+54 341 480-2542",
+  "web": "http://www.museocastagnino.org.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "macro": {
+  "direccion": "Avenida de la Costa Estanislao López 2250",
+  "telefono": "+54 341 480-4981",
+  "web": "http://www.macromuseo.org.ar/index.htm",
+  "instagram": null,
+  "facebook": null
+ },
+ "museo_memoria": {
+  "direccion": "Córdoba 2019",
+  "telefono": "+54 341 480-2060",
+  "web": "http://www.museodelamemoria.gob.ar/",
+  "instagram": null,
+  "facebook": null
+ },
+ "teatro_circulo": {
+  "direccion": "Francisco Narciso Laprida 1223",
+  "telefono": "+54 341 424-5349",
+  "web": "https://www.teatroelcirculo.com/",
+  "instagram": "https://instagram.com/teatroelcirculo",
+  "facebook": null
+ },
+ "hosp_ninos_vilela": {
+  "direccion": "Benjamín Virasoro 1855",
+  "telefono": "+54 341 480-8125",
+  "web": "http://www.fundacionvilela.org/hospital/",
+  "instagram": null,
+  "facebook": null
+ },
+ "hosp_saenz_pena": {
+  "direccion": "Fransisco Narciso Laprida 5381",
+  "telefono": "+54 341 480-9144",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ },
+ "cemar": {
+  "direccion": "San Luis 2020",
+  "telefono": "+54 341 480-2555",
+  "web": null,
+  "instagram": null,
+  "facebook": null
+ }
+}

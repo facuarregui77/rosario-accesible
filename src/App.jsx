@@ -1,8 +1,10 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal, Share2, Image as ImageIcon, Navigation } from "lucide-react";
+import { MapPin, Accessibility, Star, X, Filter, BarChart3, CheckCircle2, XCircle, MessageSquare, Bath, MoveUp, BookOpen, Hand, ArrowUpDown, Pencil, RotateCcw, Save, Search, ChevronLeft, List, Lock, Unlock, Lightbulb, ClipboardList, LocateFixed, ChevronRight, SlidersHorizontal, Share2, Image as ImageIcon, Navigation, Phone, Globe, Instagram, Facebook } from "lucide-react";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
+// Contacto por lugar (dirección, teléfono, web, redes) — datos reales de OpenStreetMap
+import CONTACTOS from "./contactos.json";
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
 import * as db from "./db";
 
@@ -1294,6 +1296,17 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
     setPhotos((list) => list.filter((x) => x.path !== p.path));
   };
 
+  // Contacto y ubicación: dirección/teléfono/web/redes de OSM; la dirección se completa por
+  // geolocalización inversa si no está en los datos.
+  const contact = CONTACTOS[place.id] || {};
+  const [addr, setAddr] = useState(contact.direccion || null);
+  useEffect(() => {
+    const c = CONTACTOS[place.id] || {};
+    if (c.direccion) { setAddr(c.direccion); return; }
+    setAddr(null);
+    reverseGeocode(place.lat, place.lng).then(setAddr);
+  }, [place.id]);
+
   const submit = () => {
     if (!text.trim()) return; // las estrellas son opcionales (una sugerencia puede no llevar puntaje)
     onAddReview({ stars, kind, name: name.trim() || "Anónimo", text: text.trim(), date: new Date().toLocaleDateString("es-AR") });
@@ -1354,6 +1367,40 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
                   Dato verificable en OpenStreetMap ↗
                 </a>
               )}
+            </div>
+          )}
+
+          {/* Contacto y ubicación */}
+          {!editing && (addr || contact.telefono || contact.web || contact.instagram || contact.facebook) && (
+            <div className="mb-4 p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-1.5">
+              {addr && (
+                <div className="flex items-start gap-2 text-sm text-slate-700">
+                  <MapPin size={15} className="text-slate-400 shrink-0 mt-0.5" />
+                  <span>{addr}{!contact.direccion && <span className="text-[11px] text-slate-400"> (aprox.)</span>}</span>
+                </div>
+              )}
+              {contact.telefono && (
+                <a href={`tel:${contact.telefono.replace(/\s/g, "")}`} className="flex items-center gap-2 text-sm text-sky-700 hover:underline">
+                  <Phone size={15} className="text-slate-400 shrink-0" /> {contact.telefono}
+                </a>
+              )}
+              {contact.web && (
+                <a href={contact.web} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-sky-700 hover:underline">
+                  <Globe size={15} className="text-slate-400 shrink-0" /> Sitio web
+                </a>
+              )}
+              <div className="flex items-center gap-3 pt-0.5">
+                {contact.instagram && (
+                  <a href={contact.instagram} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm text-pink-600 hover:underline">
+                    <Instagram size={15} /> Instagram
+                  </a>
+                )}
+                {contact.facebook && (
+                  <a href={contact.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm text-blue-600 hover:underline">
+                    <Facebook size={15} /> Facebook
+                  </a>
+                )}
+              </div>
             </div>
           )}
 
