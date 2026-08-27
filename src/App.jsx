@@ -1077,9 +1077,8 @@ export default function App() {
                           <button onClick={() => pickSuggestion(p)}
                             onMouseEnter={() => setActiveIndex(i)}
                             className={`w-full text-left px-3 py-2 flex items-center gap-2.5 text-sm transition ${i === activeIndex ? "bg-sky-100" : "hover:bg-sky-50"}`}>
-                            <span className="text-base leading-none shrink-0">{TYPE_EMOJI[p.type]}</span>
                             <span className="flex-1 truncate text-slate-700 font-medium">{p.name}</span>
-                            <span className="text-[11px] text-slate-400 shrink-0">{TYPE_LABELS[p.type]}</span>
+                            <span className="text-[11px] shrink-0 font-medium" style={{ color: TYPE_COLORS[p.type] }}>{TYPE_LABELS[p.type]}</span>
                             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: dot }} title="Accesibilidad" />
                           </button>
                         </li>
@@ -1323,7 +1322,7 @@ function DetailPanel({ place, onClose, reviews, onAddReview, onSaveAccess, onAdd
           <div>
             <h2 className="text-xl font-bold text-slate-900">{place.name}</h2>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs px-2 py-0.5 rounded" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_EMOJI[place.type]} {TYPE_LABELS[place.type]}</span>
+              <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_LABELS[place.type]}</span>
               {place.gRating && <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>}
               {avgRating && <span className="text-xs text-amber-600 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {avgRating} usuarios</span>}
             </div>
