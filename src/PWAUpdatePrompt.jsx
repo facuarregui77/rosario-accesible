@@ -32,13 +32,13 @@ export default function PWAUpdatePrompt() {
         </p>
         <button
           onClick={() => updateServiceWorker(true)}
-          className="shrink-0 px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-sm font-medium transition">
+          className="shrink-0 px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-600 text-white text-sm font-medium transition">
           Actualizar
         </button>
         <button
           onClick={() => setNeedRefresh(false)}
           aria-label="Cerrar aviso"
-          className="shrink-0 text-slate-400 hover:text-slate-600 transition">
+          className="shrink-0 text-slate-500 hover:text-slate-600 transition">
           <X size={16} />
         </button>
       </div>

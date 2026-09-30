@@ -34,7 +34,14 @@ const local = {
       const rv = await window.storage.get("reviews_all");
       if (rv && rv.value) out.reviews = JSON.parse(rv.value);
     } catch (e) { /* sin datos */ }
+    try {
+      const pl = await window.storage.get("places_custom");
+      out.places = pl && pl.value ? JSON.parse(pl.value) : [];
+    } catch (e) { out.places = []; }
     return out;
+  },
+  async savePlaces(arr) {
+    try { await window.storage.set("places_custom", JSON.stringify(arr || [])); } catch (e) {}
   },
   async saveAccess(overrides) {
     try { await window.storage.set("access_overrides", JSON.stringify(overrides)); } catch (e) {}
@@ -57,9 +64,10 @@ const local = {
 async function cloudLoadAll() {
   const overrides = {}, reviews = {};
   const sb = await getClient();
-  const [acc, rev] = await Promise.all([
+  const [acc, rev, pl] = await Promise.all([
     sb.from("place_access").select("*"),
     sb.from("reviews").select("*").order("created_at", { ascending: true }),
+    sb.from("places").select("*").order("created_at", { ascending: true }), // lugares sumados desde la app (si la tabla no existe, viene error y se ignora)
   ]);
   (acc.data || []).forEach((r) => {
     overrides[r.place_id] = {
@@ -69,9 +77,10 @@ async function cloudLoadAll() {
     };
   });
   (rev.data || []).forEach((r) => {
-    (reviews[r.place_id] ||= []).push({ stars: r.stars, kind: r.kind || "experiencia", name: r.name, text: r.text, date: r.date });
+    (reviews[r.place_id] ||= []).push({ id: r.id, stars: r.stars, kind: r.kind || "experiencia", name: r.name, text: r.text, date: r.date });
   });
-  return { overrides, reviews };
+  const places = (pl.data || []).map((r) => ({ id: r.id, name: r.name, type: r.type, lat: Number(r.lat), lng: Number(r.lng), a: { bano: null, rampa: null, ascensor: null, braille: null, senas: null }, custom: true }));
+  return { overrides, reviews, places };
 }
 
 // ---- API pública (la app usa esto, sin saber qué modo está activo) ----
@@ -218,4 +227,56 @@ export async function deletePhoto(path) {
   const sb = await getClient();
   const { error } = await sb.storage.from(PHOTO_BUCKET).remove([path]);
   if (error) console.error("Supabase deletePhoto:", error.message);
+}
+
+// ---- Lugares agregados desde la app (tabla "places"; solo admin puede escribir) ----
+// `nextLocal` es la lista completa de lugares propios (modo local).
+export async function addPlace(place, nextLocal) {
+  if (!cloud) { await local.savePlaces(nextLocal); return { error: null }; }
+  const sb = await getClient();
+  const { error } = await sb.from("places").insert({ id: place.id, name: place.name, type: place.type, lat: place.lat, lng: place.lng });
+  if (error) console.error("Supabase addPlace:", error.message);
+  return { error };
+}
+export async function deletePlace(id, nextLocal) {
+  if (!cloud) { await local.savePlaces(nextLocal); return { error: null }; }
+  const sb = await getClient();
+  const { error } = await sb.from("places").delete().eq("id", id);
+  if (error) console.error("Supabase deletePlace:", error.message);
+  return { error };
+}
+
+// Borrar una opinión (solo admin). `nextReviews` es el objeto completo (modo local).
+export async function deleteReview(id, nextReviews) {
+  if (!cloud) { await local.saveReviews(nextReviews); return { error: null }; }
+  const sb = await getClient();
+  const { error } = await sb.from("reviews").delete().eq("id", id);
+  if (error) console.error("Supabase deleteReview:", error.message);
+  return { error };
+}
+
+// ---- Registro de errores (para enterarse si algo se rompe en el celular de alguien) ----
+// Guarda como mucho 3 errores por sesión en la tabla "app_errors". Nunca rompe la app si falla.
+let errorsSent = 0;
+export async function logError(message, extra) {
+  if (!cloud || errorsSent >= 3) return;
+  errorsSent++;
+  try {
+    const sb = await getClient();
+    await sb.from("app_errors").insert({
+      message: String(message || "").slice(0, 500),
+      detail: String(extra || "").slice(0, 2000),
+      url: location.href.slice(0, 300),
+      agent: navigator.userAgent.slice(0, 300),
+    });
+  } catch (e) { /* silencioso */ }
+}
+// Últimos errores registrados (solo admin, para el panel de Análisis).
+export async function loadErrors(limit = 20) {
+  if (!cloud) return [];
+  try {
+    const sb = await getClient();
+    const { data } = await sb.from("app_errors").select("*").order("created_at", { ascending: false }).limit(limit);
+    return data || [];
+  } catch (e) { return []; }
 }

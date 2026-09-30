@@ -70,3 +70,48 @@ body,
 .leaflet-control-zoom {
   margin-bottom: 14px !important;
 }
+
+/* Solo para lectores de pantalla (invisible, pero se anuncia) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Accesibilidad: si el sistema pide "reducir animaciones", las apagamos todas */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Modo ALTO CONTRASTE (se activa desde "Acerca de" → Ajustes de accesibilidad, o solo si el sistema lo pide).
+   Textos más oscuros, bordes bien marcados, sin transparencias ni degradés en el texto. */
+html.hc body { background: #fff; }
+html.hc .text-slate-500, html.hc .text-slate-600, html.hc .text-slate-700,
+html.hc .text-sky-600, html.hc .text-sky-700, html.hc .text-sky-800, html.hc .text-blue-800, html.hc .text-blue-900,
+html.hc .text-amber-800, html.hc .text-emerald-800 { color: #0f172a !important; }
+html.hc .text-rose-600, html.hc .text-rose-700 { color: #9f1239 !important; }
+html.hc .bg-sky-600, html.hc .bg-sky-500, html.hc .bg-blue-700, html.hc .bg-blue-800 { background-color: #0c4a6e !important; }
+html.hc .bg-orange-600, html.hc .bg-orange-500 { background-color: #9a3412 !important; }
+html.hc .bg-emerald-600, html.hc .bg-emerald-500 { background-color: #065f46 !important; }
+html.hc .bg-amber-600 { background-color: #92400e !important; }
+html.hc .bg-rose-600 { background-color: #9f1239 !important; }
+html.hc .bg-slate-600 { background-color: #1e293b !important; }
+html.hc .bg-sky-100, html.hc .bg-sky-50, html.hc .bg-slate-50, html.hc .bg-blue-50 { background-color: #fff !important; }
+html.hc .bg-white\/90, html.hc .bg-white\/95, html.hc .bg-white\/70 { background-color: #fff !important; }
+html.hc [class*="border-"] { border-color: #0f172a !important; }
+html.hc [class*="border-l-transparent"] { border-left-color: transparent !important; }
+html.hc .bg-clip-text { -webkit-text-fill-color: #0c4a6e; color: #0c4a6e; background: none !important; }
+html.hc .placeholder\:text-slate-500::placeholder { color: #334155 !important; }
+html.hc :focus-visible { outline: 3px solid #000 !important; outline-offset: 2px; }
+html.hc .leaflet-tooltip { color: #000 !important; border: 2px solid #000; }
