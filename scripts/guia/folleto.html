@@ -16,24 +16,27 @@
   .cab { display: flex; justify-content: space-between; align-items: center; padding-top: 8mm; }
   .cab .para { font-size: 7.6pt; color: var(--suave); text-align: right; line-height: 1.4; }
 
-  .heroe { display: flex; gap: 12mm; align-items: center; margin-top: 7mm; }
-  .heroe .txt { flex: 0 0 88mm; }
-  .heroe h1 { font-size: 21.5pt; line-height: 1.08; letter-spacing: -0.8pt; margin: 2mm 0 3.2mm; }
-  .heroe .lead { font-size: 9.6pt; line-height: 1.5; color: var(--texto); margin-bottom: 2.2mm; }
+  /* Titular a la izquierda y texto a la derecha */
+  .heroe { display: flex; gap: 10mm; align-items: flex-end; margin-top: 5.5mm; }
+  .heroe .titular { flex: 0 0 86mm; }
+  .heroe h1 { font-size: 21.5pt; line-height: 1.08; letter-spacing: -0.8pt; margin: 2mm 0 0; }
+  .heroe .txt { flex: 1; min-width: 0; }
+  .heroe .lead { font-size: 9.5pt; line-height: 1.5; color: var(--texto); margin-bottom: 2mm; }
   .heroe .porque { font-size: 8.3pt; line-height: 1.5; color: var(--suave); margin: 0; }
-  .heroe .vis { flex: 1; position: relative; height: 62mm; }
-  .heroe .pc { position: absolute; left: 0; right: -30mm; top: 2mm; border-radius: 2.6mm; overflow: hidden; border: 0.6px solid #cfd8e3; box-shadow: 0 2.5mm 8mm rgba(11, 27, 63, .16); }
-  .heroe .pc img { display: block; width: 100%; }
-  .heroe .cel { position: absolute; left: -8mm; bottom: -2mm; width: 25mm; border-radius: 3.6mm; overflow: hidden; border: 1.5mm solid #0b1b3f; box-shadow: 0 3mm 8mm rgba(11, 27, 63, .28); background: #0b1b3f; }
-  .heroe .cel img { display: block; width: 100%; border-radius: 2mm; }
 
-  .cifras { display: flex; margin-top: 7mm; border-top: 1.1px solid var(--tinta); border-bottom: 0.6px solid var(--linea); }
-  .cifras > div { flex: 1; padding: 2.8mm 4mm 2.8mm 0; }
-  .cifras > div + div { padding-left: 4.5mm; border-left: 0.6px solid var(--linea); }
-  .cifras b { display: block; font-size: 17pt; font-weight: 800; letter-spacing: -0.6pt; line-height: 1.1; color: var(--tinta); }
-  .cifras span { font-size: 7.9pt; color: var(--suave); line-height: 1.35; display: block; margin-top: 0.8mm; }
+  /* La app en computadora y en celular, ENTERAS (sin salirse de la hoja ni taparse), y al lado las cifras */
+  .muestra { display: flex; gap: 5mm; align-items: stretch; margin-top: 6mm; }
+  .muestra .pc { flex: none; width: 79mm; align-self: flex-start; border-radius: 2.2mm; overflow: hidden; border: 0.6px solid #cfd8e3; box-shadow: 0 2.5mm 8mm rgba(11, 27, 63, .16); }
+  .muestra .pc img { display: block; width: 100%; }
+  .muestra .cel { flex: none; width: 29mm; align-self: flex-start; border-radius: 3.6mm; overflow: hidden; border: 1.2mm solid #0b1b3f; box-shadow: 0 2.5mm 7mm rgba(11, 27, 63, .25); background: #0b1b3f; }
+  .muestra .cel img { display: block; width: 100%; border-radius: 2.2mm; }
+  .cifras { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding-left: 3mm; }
+  .cifras > div { border-top: 0.6px solid var(--linea); padding: 1.9mm 0 0; }
+  .cifras > div:first-child { border-top: 1.1px solid var(--tinta); }
+  .cifras b { display: block; font-size: 15.5pt; font-weight: 800; letter-spacing: -0.5pt; line-height: 1.05; color: var(--tinta); }
+  .cifras span { font-size: 7.6pt; color: var(--suave); line-height: 1.3; display: block; margin-top: 0.6mm; }
 
-  .tit { display: flex; align-items: baseline; gap: 3mm; margin: 6mm 0 3.6mm; }
+  .tit { display: flex; align-items: baseline; gap: 3mm; margin: 5.5mm 0 3.4mm; }
   .tit h2 { font-size: 13pt; margin: 0; padding: 0; break-before: auto; letter-spacing: -0.2pt; }
   .tit h2::after { display: none; }
   .tit .raya { flex: 1; height: 0.6px; background: var(--linea); }
@@ -81,24 +84,26 @@
   </div>
 
   <div class="pad heroe">
-    <div class="txt">
+    <div class="titular">
       <div class="sobre">Rosario · Santa Fe</div>
       <h1>Saber si un lugar es accesible antes de salir de casa.</h1>
+    </div>
+    <div class="txt">
       <p class="lead">Un mapa <b>gratuito y abierto</b> que muestra qué tan accesibles son los bares, hospitales, escuelas, museos, parques y oficinas de Rosario para <b>personas con discapacidad o movilidad reducida</b>.</p>
       <p class="porque">Salir sin saber si hay rampa o baño adaptado es una barrera diaria. Este mapa reúne esa información y crece con la comunidad.</p>
     </div>
-    <div class="vis">
-      <div class="pc"><img src="img/inicio.jpg" alt=""></div>
-      <div class="cel"><img src="img/movil.jpg" alt=""></div>
-    </div>
   </div>
 
-  <div class="pad"><div class="cifras">
-    <div><b>96</b><span>lugares de la ciudad</span></div>
-    <div><b>1.003</b><span>rampas y cruces accesibles</span></div>
-    <div><b>10</b><span>tipos de lugar, de salud a gastronomía</span></div>
-    <div><b>$ 0</b><span>gratuito, sin publicidad ni registro</span></div>
-  </div></div>
+  <div class="pad muestra">
+    <div class="pc"><img src="img/inicio-folleto.jpg" alt="La app en una computadora"></div>
+    <div class="cel"><img src="img/movil.jpg" alt="La app en un celular"></div>
+    <div class="cifras">
+      <div><b>96</b><span>lugares de la ciudad</span></div>
+      <div><b>1.003</b><span>rampas y cruces accesibles</span></div>
+      <div><b>10</b><span>tipos de lugar, de salud a gastronomía</span></div>
+      <div><b>$ 0</b><span>gratuito, sin publicidad ni registro</span></div>
+    </div>
+  </div>
 
   <div class="pad">
     <div class="tit"><h2>Qué ofrece</h2><div class="raya"></div></div>
