@@ -150,6 +150,7 @@
   <tr><td>Contar cómo me fue en un lugar</td><td>Opiniones en la ficha</td><td>Cualquiera</td><td>3.7</td></tr>
   <tr><td>Proponer un dato de accesibilidad</td><td>"¿Conocés este lugar?"</td><td>Cualquiera</td><td>3.7</td></tr>
   <tr><td>Mandarle un lugar a alguien</td><td>Botón compartir de la ficha</td><td>Cualquiera</td><td>3.5</td></tr>
+  <tr><td>Hacer una consulta al responsable</td><td>Botones "WhatsApp" o "Escribinos"</td><td>Cualquiera</td><td>3.1</td></tr>
   <tr><td>Sumar a alguien al equipo</td><td>Crear usuario en Supabase</td><td>Vos</td><td>4.2</td></tr>
   <tr><td>Cargar datos parado frente al lugar</td><td>Botón "Relevar"</td><td>Admin</td><td>4.4</td></tr>
   <tr><td>Cargar datos desde casa</td><td>Google Maps + "Editar"</td><td>Admin</td><td>4.5</td></tr>
@@ -167,11 +168,12 @@
 
 <h3>3.1 La barra de arriba</h3>
 <ul>
-  <li><b>Botón ⓘ (Acerca de).</b> Explica el proyecto, de dónde salen los datos y cómo colaborar. Tiene los botones "Compartir el mapa", "Escribinos" (abre un mail) y "WhatsApp" (abre un chat con el responsable del proyecto), y el ajuste de <b>Alto contraste</b>.</li>
+  <li><b>Botón ⓘ (Acerca de).</b> Explica el proyecto, de dónde salen los datos y cómo colaborar. Tiene el botón "Compartir el mapa" y el ajuste de <b>Alto contraste</b>.</li>
   <li><b>Candado.</b> Es la entrada del administrador. El público no lo necesita.</li>
   <li><b>Buscador.</b> Se escribe parte del nombre y aparece una lista en vivo. No distingue mayúsculas ni acentos ("cafe" encuentra "Café"). Mientras se escribe, el mapa se acomoda solo a los resultados. La ✕ limpia la búsqueda.</li>
   <li><b>Cerca de mí.</b> Pide la ubicación y ordena la lista de más cerca a más lejos, mostrando la distancia de cada lugar. De entrada muestra lo que está a menos de 1 km; el radio se cambia en los filtros (500 m, 1 km, 2 km o toda la ciudad). En el mapa aparece un punto azul que dice "Estás acá". Se apaga tocando el mismo botón.</li>
   <li><b>Rampas.</b> Prende o apaga los puntos celestes de rampas y cruces accesibles (ver 3.6).</li>
+  <li><b>WhatsApp y Escribinos.</b> Contacto directo con el responsable del proyecto. El botón verde abre un chat de WhatsApp con el mensaje ya empezado; el otro abre un mail. En el celular aparecen como dos botones cuadrados con el ícono, al lado de "Rampas".</li>
 </ul>
 <figure>
   <img src="img/buscador.jpg" alt="Buscador con resultados">
@@ -488,8 +490,8 @@
 <h3>6.7 Cosas que se cambian en un solo lugar</h3>
 <table>
   <tr><th style="width:42%">Qué</th><th>Dónde</th></tr>
-  <tr><td>El mail del botón "Escribinos"</td><td><code>CONTACT_EMAIL</code> en <code>src/data/constants.js</code></td></tr>
-  <tr><td>El número del botón "WhatsApp"</td><td><code>CONTACT_WHATSAPP</code> en el mismo archivo (solo números)</td></tr>
+  <tr><td>El mail de "Escribinos"</td><td><code>CONTACT_EMAIL</code> en <code>src/data/constants.js</code></td></tr>
+  <tr><td>El número de "WhatsApp"</td><td><code>CONTACT_WHATSAPP</code> en el mismo archivo (solo números)</td></tr>
   <tr><td>El color de cada tipo de lugar</td><td><code>TYPE_COLORS</code> en el mismo archivo</td></tr>
   <tr><td>Los radios de "Cerca de mí"</td><td><code>RADII</code> en <code>src/App.jsx</code></td></tr>
   <tr><td>Los datos o el contacto de un lugar original</td><td><code>src/data/places.js</code> y <code>src/contactos.json</code></td></tr>
