@@ -38,4 +38,7 @@ export const prefersReducedMotion = () =>
 
 // Contacto público (aparece en "Acerca de"). Dejalo vacío ("") para ocultar el botón.
 export const CONTACT_EMAIL = "facuarregui77@gmail.com";
+// WhatsApp de contacto (botón en "Acerca de"). Formato internacional, solo números:
+// 54 (Argentina) + 9 + característica sin el 0 + número sin el 15. Ej.: "5493415551234". Vacío = no se muestra.
+export const CONTACT_WHATSAPP = "5493412517777";
 export const REPO_URL = "https://github.com/facuarregui77/rosario-accesible";

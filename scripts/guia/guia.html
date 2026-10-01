@@ -165,7 +165,7 @@
 
 <h3>3.1 La barra de arriba</h3>
 <ul>
-  <li><b>Botón ⓘ (Acerca de).</b> Explica el proyecto, de dónde salen los datos y cómo colaborar. Tiene los botones "Compartir el mapa" y "Escribinos" (abre un mail), y el ajuste de <b>Alto contraste</b>.</li>
+  <li><b>Botón ⓘ (Acerca de).</b> Explica el proyecto, de dónde salen los datos y cómo colaborar. Tiene los botones "Compartir el mapa", "Escribinos" (abre un mail) y "WhatsApp" (abre un chat con el responsable del proyecto), y el ajuste de <b>Alto contraste</b>.</li>
   <li><b>Candado.</b> Es la entrada del administrador. El público no lo necesita.</li>
   <li><b>Buscador.</b> Se escribe parte del nombre y aparece una lista en vivo. No distingue mayúsculas ni acentos ("cafe" encuentra "Café"). Mientras se escribe, el mapa se acomoda solo a los resultados. La ✕ limpia la búsqueda.</li>
   <li><b>Cerca de mí.</b> Pide la ubicación y ordena la lista de más cerca a más lejos, mostrando la distancia de cada lugar. De entrada muestra lo que está a menos de 1 km; el radio se cambia en los filtros (500 m, 1 km, 2 km o toda la ciudad). En el mapa aparece un punto azul que dice "Estás acá". Se apaga tocando el mismo botón.</li>
@@ -487,6 +487,7 @@
 <table>
   <tr><th style="width:42%">Qué</th><th>Dónde</th></tr>
   <tr><td>El mail del botón "Escribinos"</td><td><code>CONTACT_EMAIL</code> en <code>src/data/constants.js</code></td></tr>
+  <tr><td>El número del botón "WhatsApp"</td><td><code>CONTACT_WHATSAPP</code> en el mismo archivo (solo números, con 549 adelante; vacío = el botón no aparece)</td></tr>
   <tr><td>El color de cada tipo de lugar</td><td><code>TYPE_COLORS</code> en el mismo archivo</td></tr>
   <tr><td>Los radios de "Cerca de mí"</td><td><code>RADII</code> en <code>src/App.jsx</code></td></tr>
   <tr><td>Los datos de un lugar original</td><td><code>src/data/places.js</code></td></tr>
