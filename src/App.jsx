@@ -18,6 +18,7 @@ import AnalysisPanel from "./components/AnalysisPanel";
 import LoginModal from "./components/LoginModal";
 import AboutModal from "./components/AboutModal";
 import AddPlaceModal from "./components/AddPlaceModal";
+import ContactButtons from "./components/ContactButtons";
 import { ROUTING_ON, fetchRoute } from "./lib/routing";
 
 // Aplica los cambios guardados (relevamiento) sobre los datos base
@@ -441,7 +442,7 @@ export default function App() {
             <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-blue-700 via-sky-400 to-orange-400 shadow-lg shadow-sky-400/30 text-white shrink-0" aria-hidden="true">
               <Accessibility size={28} />
             </div>
-            <div>
+            <div className="sm:max-w-[13rem] lg:max-w-[15rem] xl:max-w-sm">
               <h1 className="text-lg sm:text-xl font-extrabold leading-tight tracking-tight w-fit bg-gradient-to-r from-blue-800 via-sky-500 to-orange-500 bg-clip-text text-transparent" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>Rosario Access Map</h1>
               <p className="text-xs sm:text-sm font-medium text-blue-900">Toda la información disponible acerca de la accesibilidad local.</p>
             </div>
@@ -482,7 +483,7 @@ export default function App() {
                 </div>
                 <button onClick={handleSearch} title="Buscar y resaltar el lugar en el mapa"
                   className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-blue-800 hover:bg-blue-700 text-white text-sm font-medium border border-blue-800 shadow-sm transition">
-                  <Search size={15} /> <span className="hidden sm:inline">Buscar</span>
+                  <Search size={15} /> <span className="hidden xl:inline">Buscar</span>
                 </button>
               </div>
 
@@ -513,34 +514,36 @@ export default function App() {
               )}
             </div>
           </div>
-          <div className="flex flex-row flex-wrap sm:flex-col gap-2 sm:w-36 shrink-0">
+          <div className="flex flex-row flex-wrap sm:flex-col lg:grid lg:grid-cols-2 gap-2 sm:w-36 lg:w-[19rem] shrink-0">
             {admin && (
               <button onClick={() => setShowAnalysis(true)}
-                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white transition text-sm font-medium border border-orange-600 shadow-sm">
+                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-2 sm:px-4 lg:px-3 py-2 rounded-xl whitespace-nowrap bg-orange-600 hover:bg-orange-500 text-white transition text-sm font-medium border border-orange-600 shadow-sm">
                 <BarChart3 size={16} /> Análisis
               </button>
             )}
             <button onClick={userPos ? clearNearMe : locateMe} aria-pressed={!!userPos} disabled={geoState === "loading"}
               title={userPos ? "Dejar de ordenar por cercanía" : "Ver los lugares más cercanos a donde estás"}
-              className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm disabled:opacity-60 ${userPos ? "bg-blue-700 hover:bg-blue-600 text-white border-blue-700" : "bg-white/90 hover:bg-white text-blue-800 border-blue-700"}`}>
+              className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-2 sm:px-4 lg:px-3 py-2 rounded-xl whitespace-nowrap transition text-sm font-medium border shadow-sm disabled:opacity-60 ${userPos ? "bg-blue-700 hover:bg-blue-600 text-white border-blue-700" : "bg-white/90 hover:bg-white text-blue-800 border-blue-700"}`}>
               <LocateFixed size={16} /> {geoState === "loading" ? "Ubicando…" : "Cerca de mí"}
             </button>
             <button onClick={() => setShowRamps((v) => !v)} aria-pressed={showRamps}
               title="Mostrar u ocultar las rampas y cruces accesibles de la vía pública (fuente OpenStreetMap)"
-              className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-600 hover:bg-sky-500 text-white border-sky-600" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
+              className={`flex-1 sm:w-full justify-center flex items-center gap-2 px-2 sm:px-4 lg:px-3 py-2 rounded-xl whitespace-nowrap transition text-sm font-medium border shadow-sm ${showRamps ? "bg-sky-600 hover:bg-sky-500 text-white border-sky-600" : "bg-white/90 hover:bg-white text-sky-700 border-sky-400"}`}>
               <Accessibility size={16} /> Rampas
             </button>
+            {/* Contacto directo (WhatsApp + mail), siempre a la vista */}
+            <ContactButtons />
             {admin && (
               <button onClick={() => setShowSurvey(true)}
                 title="Relevar accesibilidad en la calle: ordena los lugares por cercanía y los cargás con pocos toques"
-                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition text-sm font-medium border border-emerald-600 shadow-sm">
+                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-2 sm:px-4 lg:px-3 py-2 rounded-xl whitespace-nowrap bg-emerald-600 hover:bg-emerald-500 text-white transition text-sm font-medium border border-emerald-600 shadow-sm">
                 <ClipboardList size={16} /> Relevar
               </button>
             )}
             {admin && (
               <button onClick={() => { setShowSuggPanel(true); refreshSuggestions(); }}
                 title="Revisar las sugerencias de accesibilidad enviadas por el público"
-                className="relative flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-white/90 hover:bg-white text-amber-800 transition text-sm font-medium border border-amber-500 shadow-sm">
+                className="relative flex-1 sm:w-full justify-center flex items-center gap-2 px-2 sm:px-4 lg:px-3 py-2 rounded-xl whitespace-nowrap bg-white/90 hover:bg-white text-amber-800 transition text-sm font-medium border border-amber-500 shadow-sm">
                 <Lightbulb size={16} /> Sugerencias
                 {pendingSuggestions.length > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-orange-600 text-white text-[11px] font-bold" aria-label={`${pendingSuggestions.length} pendientes`}>{pendingSuggestions.length}</span>
@@ -550,7 +553,7 @@ export default function App() {
             {admin && (
               <button onClick={() => { setPicked(null); setShowAddPlace(true); }}
                 title="Sumar un lugar nuevo al mapa"
-                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-white/90 hover:bg-white text-emerald-800 transition text-sm font-medium border border-emerald-600 shadow-sm">
+                className="flex-1 sm:w-full justify-center flex items-center gap-2 px-2 sm:px-4 lg:px-3 py-2 rounded-xl whitespace-nowrap bg-white/90 hover:bg-white text-emerald-800 transition text-sm font-medium border border-emerald-600 shadow-sm">
                 <Plus size={16} /> Agregar lugar
               </button>
             )}

@@ -72,7 +72,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     map.zoomControl.setPosition("bottomright"); // abajo-derecha: no choca con el panel ni el header
     layerRef.current = L.layerGroup().addTo(map);
     // Varios "empujones" para forzar la carga del mapa dentro del visor
-    const kick = () => map.invalidateSize();
+    const kick = () => { if (mapRef.current === map) map.invalidateSize(); }; // (si el mapa ya se desmontó, no hace nada)
     setTimeout(kick, 200);
     setTimeout(kick, 800);
     setTimeout(kick, 2000);
