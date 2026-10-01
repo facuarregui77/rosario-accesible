@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { HelpCircle, X } from "lucide-react";
 import { TYPE_LABELS, TYPE_COLORS, ACCESS_LABELS, accessColor } from "../data/constants";
+import { RAMP_ICON_URL } from "../lib/rampIcon";
 
 // Leyenda del mapa: qué significa el color del pin (tipo de lugar) y el puntito del centro (accesibilidad).
 // Botón flotante abajo a la derecha (arriba del zoom); se abre como una tarjetita.
@@ -34,7 +35,7 @@ export default function Legend({ showRamps }) {
           </ul>
           {showRamps && (
             <p className="mt-2.5 pt-2 border-t border-slate-200 flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-300 border border-sky-700 shrink-0" aria-hidden="true" /> Puntos celestes: rampas y cruces accesibles de la vereda
+              <img src={RAMP_ICON_URL} width="16" height="16" alt="" className="shrink-0" /> Rampas y cruces accesibles de la vereda
             </p>
           )}
         </div>

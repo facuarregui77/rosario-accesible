@@ -4,6 +4,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { TYPE_COLORS, TYPE_LABELS, ACCESS_LABELS, accessColor, prefersReducedMotion } from "../data/constants";
 import { reverseGeocode, escapeH } from "../lib/geo";
+import { RAMP_ICON_URL } from "../lib/rampIcon";
 
 // Vista inicial: toda la ciudad
 const HOME = { center: [-32.945, -60.66], zoom: 13 };
@@ -12,6 +13,32 @@ const ROSARIO_BOUNDS = [[-33.06, -60.82], [-32.83, -60.55]];
 // Con muchas rampas (dataset municipal), solo se dibujan a partir de este zoom y dentro de la vista.
 const RAMPS_MIN_ZOOM = 14;
 const RAMPS_MANY = 1500;
+
+// Ícono de las rampas (persona en silla de ruedas). Se dibuja sobre el canvas del mapa, como antes los
+// puntos: así se pueden mostrar más de mil íconos sin que el celular se trabe al mover el mapa.
+const rampImg = typeof Image !== "undefined" ? new Image() : null;
+if (rampImg) rampImg.src = RAMP_ICON_URL;
+// Tamaño del ícono (px) según el zoom: chiquito con la ciudad entera, un poco más grande al acercarse
+const rampSize = (z) => (z <= 13 ? 12 : z <= 14 ? 14 : z <= 15 ? 16 : 18);
+
+// Marcador de rampa: se comporta como un círculo de Leaflet (rápido y clickeable), pero dibuja el ícono
+const RampMarker = L.CircleMarker.extend({
+  _updatePath() {
+    const r = this._renderer;
+    if (!r || !r._ctx) return L.CircleMarker.prototype._updatePath.call(this); // sin canvas: círculo común
+    if (!r._drawing || this._empty()) return;
+    const ctx = r._ctx, p = this._point, d = this._radius * 2;
+    ctx.save();
+    ctx.globalAlpha = 1;
+    if (rampImg && rampImg.complete && rampImg.naturalWidth) {
+      ctx.drawImage(rampImg, p.x - d / 2, p.y - d / 2, d, d);
+    } else {
+      // (mientras carga el ícono, un círculo del mismo color)
+      ctx.beginPath(); ctx.arc(p.x, p.y, d / 2, 0, Math.PI * 2); ctx.fillStyle = "#0369a1"; ctx.fill();
+    }
+    ctx.restore();
+  },
+});
 
 export default function RealMap({ places, selected, onSelect, avgRating, ramps, showRamps, onRampsHint, searchTerm, sidebarOpen, route, userPos, picking, onPick }) {
   const containerRef = useRef(null);
@@ -181,12 +208,13 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
         return;
       }
       const b = many ? map.getBounds().pad(0.2) : null;
+      const size = rampSize(Math.round(map.getZoom()));
       let n = 0;
       pts.forEach(([lat, lng, srcTag]) => {
         if (b && !b.contains([lat, lng])) return;
         n++;
         const municipal = srcTag === "m";
-        L.circleMarker([lat, lng], { radius: 4, color: municipal ? "#0369a1" : "#0284c7", weight: 1, fillColor: municipal ? "#7dd3fc" : "#38bdf8", fillOpacity: 0.85 })
+        new RampMarker([lat, lng], { radius: size / 2, stroke: false, fillOpacity: 1 })
           .bindTooltip("Rampa / cruce accesible — tocá para ver la dirección", { direction: "top" })
           .bindPopup("Buscando dirección…", { minWidth: 180 })
           .on("click", function () {
@@ -201,9 +229,22 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       });
       onRampsHintRef.current && onRampsHintRef.current(many ? `${n.toLocaleString("es-AR")} rampas a la vista (de ${pts.length.toLocaleString("es-AR")})` : "");
     };
+    // Al hacer zoom solo cambia el tamaño del ícono (no se vuelven a crear las rampas: así no se cierra
+    // el cartelito con la dirección cuando el mapa se corre para mostrarlo).
+    const resize = () => {
+      const size = rampSize(Math.round(map.getZoom()));
+      if (rampsLayerRef.current) rampsLayerRef.current.eachLayer((l) => l.setRadius(size / 2));
+    };
+    // Con muchísimas rampas (más de RAMPS_MANY) se dibujan solo las que están a la vista, y eso sí
+    // necesita rehacerse cada vez que se mueve el mapa. Con las de hoy (~1.000) se dibujan una sola vez.
+    const many = (rampsRef.current || []).length > RAMPS_MANY;
+    const onMove = many ? draw : resize;
     draw();
-    map.on("moveend", draw);
-    return () => { map.off("moveend", draw); };
+    map.on(many ? "moveend" : "zoomend", onMove);
+    // si el ícono todavía no terminó de cargar, se vuelve a dibujar cuando esté listo
+    const redibujar = () => { if (rampsLayerRef.current) rampsLayerRef.current.eachLayer((l) => l.redraw()); };
+    if (rampImg && !rampImg.complete) rampImg.onload = redibujar;
+    return () => { map.off(many ? "moveend" : "zoomend", onMove); if (rampImg) rampImg.onload = null; };
   }, [showRamps, ramps, ready]);
 
   // Dibujar la ruta accesible (línea celeste + punto de origen) cuando hay una calculada.
