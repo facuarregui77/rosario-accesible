@@ -29,9 +29,11 @@
   a { color: #0369a1; text-decoration: none; }
   code { font: 9pt Consolas, "Courier New", monospace; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 1mm; padding: 0 1mm; white-space: nowrap; }
   b { color: #0f172a; }
-  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; }
+  tr { break-inside: avoid; }
+  thead, tr:first-child { break-after: avoid; }
   th { background: #1e40af; color: #fff; text-align: left; padding: 1.8mm 2.5mm; font-weight: 600; }
-  td { padding: 1.8mm 2.5mm; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  td { padding: 1.5mm 2.5mm; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
   tr:nth-child(even) td { background: #f8fafc; }
   .box { border-radius: 2.5mm; padding: 3mm 4mm; margin: 3mm 0 4mm; break-inside: avoid; border-left: 4px solid; }
   .box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom: 0; }
@@ -487,11 +489,10 @@
 <table>
   <tr><th style="width:42%">Qué</th><th>Dónde</th></tr>
   <tr><td>El mail del botón "Escribinos"</td><td><code>CONTACT_EMAIL</code> en <code>src/data/constants.js</code></td></tr>
-  <tr><td>El número del botón "WhatsApp"</td><td><code>CONTACT_WHATSAPP</code> en el mismo archivo (solo números, con 549 adelante; vacío = el botón no aparece)</td></tr>
+  <tr><td>El número del botón "WhatsApp"</td><td><code>CONTACT_WHATSAPP</code> en el mismo archivo (solo números)</td></tr>
   <tr><td>El color de cada tipo de lugar</td><td><code>TYPE_COLORS</code> en el mismo archivo</td></tr>
   <tr><td>Los radios de "Cerca de mí"</td><td><code>RADII</code> en <code>src/App.jsx</code></td></tr>
-  <tr><td>Los datos de un lugar original</td><td><code>src/data/places.js</code></td></tr>
-  <tr><td>Teléfono, web o redes de un lugar</td><td><code>src/contactos.json</code></td></tr>
+  <tr><td>Los datos o el contacto de un lugar original</td><td><code>src/data/places.js</code> y <code>src/contactos.json</code></td></tr>
 </table>
 
 <!-- ===================== 7 ===================== -->
