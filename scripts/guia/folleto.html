@@ -28,8 +28,15 @@
   .muestra { display: flex; gap: 5mm; align-items: stretch; margin-top: 6mm; }
   .muestra .pc { flex: none; width: 79mm; align-self: flex-start; border-radius: 2.2mm; overflow: hidden; border: 0.6px solid #cfd8e3; box-shadow: 0 2.5mm 8mm rgba(11, 27, 63, .16); }
   .muestra .pc img { display: block; width: 100%; }
-  .muestra .cel { flex: none; width: 29mm; align-self: flex-start; border-radius: 3.6mm; overflow: hidden; border: 1.2mm solid #0b1b3f; box-shadow: 0 2.5mm 7mm rgba(11, 27, 63, .25); background: #0b1b3f; }
-  .muestra .cel img { display: block; width: 100%; border-radius: 2.2mm; }
+  /* Celular con forma de iPhone: marco, barra de estado con el "notch" y la rayita de inicio abajo */
+  .muestra .cel { flex: none; width: 28mm; align-self: flex-start; position: relative; border-radius: 4.4mm; overflow: hidden; border: 1.2mm solid #0b1b3f; box-shadow: 0 2.5mm 7mm rgba(11, 27, 63, .25); background: #0b1b3f; }
+  .muestra .cel .estado { position: relative; height: 2.6mm; background: #fff; border-radius: 3.1mm 3.1mm 0 0; display: flex; justify-content: space-between; align-items: center; padding: 0 2.4mm 0 2.7mm; font-size: 3.3pt; font-weight: 700; line-height: 1; color: #0b1b3f; }
+  .muestra .cel .estado::after { content: ""; position: absolute; left: 50%; top: -0.2mm; transform: translateX(-50%); width: 45%; height: 2mm; background: #0b1b3f; border-radius: 0 0 1.5mm 1.5mm; }
+  .muestra .cel .bat { width: 2.3mm; height: 1.05mm; border: 0.25mm solid #0b1b3f; border-radius: 0.35mm; position: relative; }
+  .muestra .cel .bat::before { content: ""; position: absolute; left: 0.12mm; top: 0.12mm; bottom: 0.12mm; width: 70%; background: #0b1b3f; border-radius: 0.12mm; }
+  .muestra .cel .bat::after { content: ""; position: absolute; right: -0.5mm; top: 0.2mm; bottom: 0.2mm; width: 0.22mm; background: #0b1b3f; border-radius: 0 0.2mm 0.2mm 0; }
+  .muestra .cel img { display: block; width: 100%; border-radius: 0 0 3.1mm 3.1mm; }
+  .muestra .cel::after { content: ""; position: absolute; left: 50%; bottom: 0.9mm; transform: translateX(-50%); width: 34%; height: 0.55mm; border-radius: 1mm; background: rgba(11, 27, 63, .6); }
   .cifras { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding-left: 3mm; }
   .cifras > div { border-top: 0.6px solid var(--linea); padding: 1.9mm 0 0; }
   .cifras > div:first-child { border-top: 1.1px solid var(--tinta); }
@@ -96,7 +103,7 @@
 
   <div class="pad muestra">
     <div class="pc"><img src="img/inicio-folleto.jpg" alt="La app en una computadora"></div>
-    <div class="cel"><img src="img/movil.jpg" alt="La app en un celular"></div>
+    <div class="cel"><div class="estado"><span>9:41</span><span class="bat"></span></div><img src="img/movil.jpg" alt="La app en un celular"></div>
     <div class="cifras">
       <div><b>96</b><span>lugares de la ciudad</span></div>
       <div><b>1.003</b><span>rampas y cruces accesibles</span></div>
