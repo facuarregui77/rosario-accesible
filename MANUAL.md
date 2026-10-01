@@ -255,14 +255,15 @@ pendientes para que las apruebes. Necesita una clave `GOOGLE_MAPS_API_KEY` en `.
 
 ## 5. Cómo se mantiene (paso a paso)
 
-### 5.1 Cambié algo en el código → guardarlo en GitHub
+### 5.1 Cambié algo en el código → guardarlo y publicarlo
 Doble clic en **`SUBIR A GITHUB.bat`** (o Claude lo hace solo al terminar cada tarea).
-GitHub es la copia de seguridad del código; **no** cambia lo que ve la gente.
+Desde el 1/10/2026 Vercel está **conectado a GitHub**: cada vez que se sube algo, Vercel lo
+compila y lo publica solo en uno o dos minutos. No hay que hacer nada más.
 
-### 5.2 Que la gente vea la versión nueva → publicar
-Doble clic en **`PUBLICAR EN VERCEL.bat`**. La primera vez abre una dirección en el navegador
-para que confirmes que sos vos; después compila y publica (1 minuto). También intenta conectar
-Vercel con GitHub para que, de ahí en más, **cada "subir" publique solo**.
+### 5.2 Publicar a mano (repuesto)
+Si alguna vez el deploy automático no anda, doble clic en **`PUBLICAR EN VERCEL.bat`**: compila
+y publica directo desde tu compu. Si pide confirmar en el navegador, se confirma y sigue.
+En vercel.com → proyecto → **Deployments** se ve el historial y si alguno falló.
 
 ### 5.3 Cambió la base de datos → correr una migración
 Cuando una función nueva necesita una tabla o columna nueva, hay un archivo en `supabase/`.
@@ -311,11 +312,14 @@ src/
 
 ## 6. Pendientes que dependen de vos
 
-1. Correr **`supabase/migracion-lugares.sql`** en Supabase (sin esto, "Agregar lugar",
-   "borrar opinión" y el registro de errores no funcionan; todo lo demás sí).
-2. Doble clic en **`PUBLICAR EN VERCEL.bat`** y confirmar el login en el navegador.
-3. Activar **Analytics** en Vercel (un clic).
-4. Opcional: **dominio propio** (por ejemplo `rosarioaccesible.com.ar`): se compra en NIC
-   Argentina y se agrega en Vercel → Settings → Domains.
-5. Opcional: poner tu email en `CONTACT_EMAIL` para que aparezca "Escribinos" en Acerca de.
-6. Opcional: pedido de información pública a la Municipalidad por la capa de rampas.
+Ya está hecho: migración de la base, publicación, Analytics, email de contacto y deploy
+automático. Quedan solo opcionales:
+
+1. **Dominio propio** (por ejemplo `rosarioaccesible.com.ar`): se compra en NIC Argentina y se
+   agrega en Vercel → Settings → Domains.
+2. **Difusión**: que asociaciones, medios y el municipio enlacen la app.
+3. **Pedido de información pública** a la Municipalidad por la capa de rampas.
+4. **Clave de Google Places** para traer datos de entrada y baño accesibles.
+
+Para recordar: Supabase (plan gratis) se **pausa** si nadie usa la app 7 días seguidos. Si la
+app aparece sin opiniones ni datos, entrar a supabase.com y tocar **Restore project**.
