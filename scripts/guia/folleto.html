@@ -1,0 +1,144 @@
+<!doctype html>
+<!--
+  FUENTE de FOLLETO.pdf (volante de una página para organizaciones). Comparte el diseño con la guía (estilo.css).
+  Para regenerar los dos PDF después de editar: doble clic en "GENERAR PDF.bat" (en esta misma carpeta).
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Rosario Access Map — Folleto</title>
+<link rel="stylesheet" href="estilo.css">
+<style>
+  @page { size: A4; margin: 0; }
+  .hoja { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+  .pad { padding-left: 17mm; padding-right: 17mm; }
+  .hoja > * { flex: none; }
+  .cab { display: flex; justify-content: space-between; align-items: center; padding-top: 8mm; }
+  .cab .para { font-size: 7.6pt; color: var(--suave); text-align: right; line-height: 1.4; }
+
+  .heroe { display: flex; gap: 12mm; align-items: center; margin-top: 7mm; }
+  .heroe .txt { flex: 0 0 88mm; }
+  .heroe h1 { font-size: 21.5pt; line-height: 1.08; letter-spacing: -0.8pt; margin: 2mm 0 3.2mm; }
+  .heroe .lead { font-size: 9.6pt; line-height: 1.5; color: var(--texto); margin-bottom: 2.2mm; }
+  .heroe .porque { font-size: 8.3pt; line-height: 1.5; color: var(--suave); margin: 0; }
+  .heroe .vis { flex: 1; position: relative; height: 62mm; }
+  .heroe .pc { position: absolute; left: 0; right: -30mm; top: 2mm; border-radius: 2.6mm; overflow: hidden; border: 0.6px solid #cfd8e3; box-shadow: 0 2.5mm 8mm rgba(11, 27, 63, .16); }
+  .heroe .pc img { display: block; width: 100%; }
+  .heroe .cel { position: absolute; left: -8mm; bottom: -2mm; width: 25mm; border-radius: 3.6mm; overflow: hidden; border: 1.5mm solid #0b1b3f; box-shadow: 0 3mm 8mm rgba(11, 27, 63, .28); background: #0b1b3f; }
+  .heroe .cel img { display: block; width: 100%; border-radius: 2mm; }
+
+  .cifras { display: flex; margin-top: 7mm; border-top: 1.1px solid var(--tinta); border-bottom: 0.6px solid var(--linea); }
+  .cifras > div { flex: 1; padding: 2.8mm 4mm 2.8mm 0; }
+  .cifras > div + div { padding-left: 4.5mm; border-left: 0.6px solid var(--linea); }
+  .cifras b { display: block; font-size: 17pt; font-weight: 800; letter-spacing: -0.6pt; line-height: 1.1; color: var(--tinta); }
+  .cifras span { font-size: 7.9pt; color: var(--suave); line-height: 1.35; display: block; margin-top: 0.8mm; }
+
+  .tit { display: flex; align-items: baseline; gap: 3mm; margin: 6mm 0 3.6mm; }
+  .tit h2 { font-size: 13pt; margin: 0; padding: 0; break-before: auto; letter-spacing: -0.2pt; }
+  .tit h2::after { display: none; }
+  .tit .raya { flex: 1; height: 0.6px; background: var(--linea); }
+
+  .grilla { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm 7mm; }
+  .item { display: flex; gap: 3.2mm; align-items: flex-start; }
+  .item .ico { flex: none; width: 8.6mm; height: 8.6mm; border-radius: 2.2mm; background: #eaf2fd; color: var(--azul); display: flex; align-items: center; justify-content: center; }
+  .item .ico svg { width: 58%; height: 58%; }
+  .item h3 { font-size: 9.4pt; margin: 0.3mm 0 0.8mm; letter-spacing: 0; }
+  .item p { font-size: 8.1pt; line-height: 1.42; margin: 0; color: var(--texto); }
+
+  .confianza { margin: 5.5mm 0 0; padding: 2.6mm 4.5mm 2.6mm 5.5mm; font-size: 8.5pt; }
+  .confianza b { color: #9a3412; }
+
+  .hoja > .ayuda { background: var(--fondo); margin-top: 6mm; padding-top: 0.2mm; padding-bottom: 5.5mm; flex: 1 1 auto; }
+  .ayuda .grilla { grid-template-columns: repeat(4, 1fr); gap: 5mm; }
+  .ayuda .item { display: block; }
+  .ayuda .item .cabz { display: flex; align-items: center; gap: 2.4mm; margin-bottom: 1.6mm; }
+  .ayuda .item h3 { margin: 0; }
+  .ayuda .item .ico { width: 7.6mm; height: 7.6mm; background: #fff; color: var(--naranja); border: 0.6px solid #fed7aa; }
+
+  .pie { background: var(--marino); color: #c7d5ee; position: relative; padding-top: 7.5mm; padding-bottom: 5.5mm; }
+  .pie::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2.6mm; background: var(--franja); }
+  .pie .fila { display: flex; align-items: center; gap: 7mm; }
+  .pie .qr { flex: none; width: 25mm; background: #fff; border-radius: 2.4mm; padding: 2.4mm; }
+  .pie .qr img { display: block; width: 100%; }
+  .pie .url { flex: 1; }
+  .pie .url .sobre { color: #fdba74; }
+  .pie .url b { display: block; color: #fff; font-size: 16pt; font-weight: 800; letter-spacing: -0.4pt; margin: 1.2mm 0 1.4mm; line-height: 1.1; }
+  .pie .url span { font-size: 8.3pt; }
+  .pie .contacto { flex: none; font-size: 8.8pt; line-height: 1.3; }
+  .pie .contacto .sobre { color: #fdba74; display: block; margin-bottom: 2mm; }
+  .pie .contacto div { display: flex; align-items: center; gap: 2.2mm; color: #fff; font-weight: 600; margin-bottom: 1.8mm; }
+  .pie .contacto svg { width: 3.8mm; height: 3.8mm; flex: none; color: #9fc5ff; }
+  .pie .firma { margin-top: 4.5mm; padding-top: 2.6mm; border-top: 0.6px solid rgba(255,255,255,.18); font-size: 7.4pt; color: #9db1d6; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="hoja">
+  <div class="franja"></div>
+
+  <div class="pad cab">
+    <div class="marca"><div class="iso"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div><div class="nombre">Rosario Access Map<small>Mapa colaborativo de accesibilidad</small></div></div>
+    <div class="para">Para organizaciones,<br>instituciones y medios</div>
+  </div>
+
+  <div class="pad heroe">
+    <div class="txt">
+      <div class="sobre">Rosario · Santa Fe</div>
+      <h1>Saber si un lugar es accesible antes de salir de casa.</h1>
+      <p class="lead">Un mapa <b>gratuito y abierto</b> que muestra qué tan accesibles son los bares, hospitales, escuelas, museos, parques y oficinas de Rosario para <b>personas con discapacidad o movilidad reducida</b>.</p>
+      <p class="porque">Salir sin saber si hay rampa o baño adaptado es una barrera diaria. Este mapa reúne esa información y crece con la comunidad.</p>
+    </div>
+    <div class="vis">
+      <div class="pc"><img src="img/inicio.jpg" alt=""></div>
+      <div class="cel"><img src="img/movil.jpg" alt=""></div>
+    </div>
+  </div>
+
+  <div class="pad"><div class="cifras">
+    <div><b>96</b><span>lugares de la ciudad</span></div>
+    <div><b>1.003</b><span>rampas y cruces accesibles</span></div>
+    <div><b>10</b><span>tipos de lugar, de salud a gastronomía</span></div>
+    <div><b>$ 0</b><span>gratuito, sin publicidad ni registro</span></div>
+  </div></div>
+
+  <div class="pad">
+    <div class="tit"><h2>Qué ofrece</h2><div class="raya"></div></div>
+    <div class="grilla">
+      <div class="item"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div><div><h3>Semáforo de acceso</h3><p>Accesible, parcial o sin acceso en silla de ruedas, lugar por lugar.</p></div></div>
+      <div class="item"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></div><div><h3>Filtros por servicio</h3><p>Baño adaptado, rampa, ascensor, braille y lengua de señas.</p></div></div>
+      <div class="item"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/></svg></div><div><h3>Cerca de mí</h3><p>Los lugares ordenados por distancia desde donde estás.</p></div></div>
+      <div class="item"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div><div><h3>Rampas y cruces</h3><p>Más de 1.000 rebajes de cordón y cruces accesibles.</p></div></div>
+      <div class="item"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div><div><h3>Cómo llego</h3><p>Una ruta pensada para silla de ruedas hasta el lugar.</p></div></div>
+      <div class="item"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></div><div><h3>Accesible e instalable</h3><p>Lector de pantalla, teclado y alto contraste. Se instala en el celular.</p></div></div>
+    </div>
+    <div class="box oro confianza"><b>Información real y verificable.</b> Cada dato tiene fuente o fue relevado en el lugar; lo que no se sabe dice "sin datos".</div>
+  </div>
+
+  <div class="pad ayuda">
+    <div class="tit"><h2>Cómo puede ayudar tu organización</h2><div class="raya"></div></div>
+    <div class="grilla">
+      <div class="item"><div class="cabz"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div><h3>Difundir</h3></div><p>Compartí el mapa con tu comunidad: cuanta más gente lo usa, más completo queda.</p></div>
+      <div class="item"><div class="cabz"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/><path d="m15 5 3 3"/></svg></div><h3>Sumar datos</h3></div><p>Cualquiera propone datos desde la app, sin cuenta. El equipo los revisa y publica.</p></div>
+      <div class="item"><div class="cabz"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Relevar</h3></div><p>Referentes de confianza reciben una cuenta para cargar datos frente al lugar.</p></div>
+      <div class="item"><div class="cabz"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div><h3>Validar</h3></div><p>La mirada de quienes viven la accesibilidad a diario vuelve útil la información.</p></div>
+    </div>
+  </div>
+
+  <div class="pad pie">
+    <div class="fila">
+      <div class="qr"><img src="img/qr.svg" alt="Código QR"></div>
+      <div class="url">
+        <div class="sobre">Entrá, usalo y compartilo</div>
+        <b>access-app-rosario.vercel.app</b>
+        <span>Escaneá el código con la cámara del celular para abrir el mapa.</span>
+      </div>
+      <div class="contacto">
+        <span class="sobre">Contacto</span>
+        <div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> +54 9 341 251-7777</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> facuarregui77@gmail.com</div>
+      </div>
+    </div>
+    <div class="firma"><span>Proyecto de Facundo Arregui · sin fines de lucro, con fines educativos y de bien común</span><span>Octubre 2026</span></div>
+  </div>
+</div>
+</body>
+</html>

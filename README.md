@@ -15,7 +15,8 @@ Mapa colaborativo de **accesibilidad de Rosario**: lugares de la ciudad con info
 - `SUBIR A GITHUB.bat` — guarda el código en GitHub; Vercel lo publica solo.
 - `PUBLICAR EN VERCEL.bat` — publicación manual, de repuesto.
 - `supabase/` — archivos de la base de datos (ya aplicados; se corren en Supabase → SQL Editor).
-- `scripts/` — actualizar rampas desde OpenStreetMap, traer datos de Google y la fuente de la guía (`scripts/guia/guia.html`).
+- `scripts/` — actualizar rampas desde OpenStreetMap y traer datos de Google.
+- `scripts/guia/` — la fuente de la guía y del folleto (mismo diseño). Después de editarlas, doble clic en `GENERAR PDF.bat`.
 
 ---
 
