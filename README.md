@@ -17,6 +17,7 @@ Mapa colaborativo de **accesibilidad de Rosario**: lugares de la ciudad con info
 - `supabase/` — archivos de la base de datos (ya aplicados; se corren en Supabase → SQL Editor).
 - `scripts/` — actualizar rampas desde OpenStreetMap y traer datos de Google.
 - `scripts/guia/` — la fuente de la guía y del folleto (mismo diseño). Después de editarlas, doble clic en `GENERAR PDF.bat`.
+  Si al cambiar textos de la guía quedan páginas con espacio en blanco, `python scripts/guia/ajustar-paginas.py` recalcula el tamaño de las capturas para que vuelvan a quedar llenas.
 
 ---
 
