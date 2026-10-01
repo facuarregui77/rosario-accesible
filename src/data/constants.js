@@ -37,5 +37,5 @@ export const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Contacto público (aparece en "Acerca de"). Dejalo vacío ("") para ocultar el botón.
-export const CONTACT_EMAIL = "";
+export const CONTACT_EMAIL = "facuarregui77@gmail.com";
 export const REPO_URL = "https://github.com/facuarregui77/rosario-accesible";
