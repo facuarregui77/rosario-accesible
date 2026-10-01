@@ -3,7 +3,7 @@
 -- Cómo usarlo: Supabase → SQL Editor → New query → pegar todo → Run.
 
 -- 1) Lugares nuevos sumados desde la app (botón "Agregar lugar", solo admin).
---    Los 110 lugares base siguen viviendo en el código; acá van solo los agregados.
+--    Los 96 lugares base siguen viviendo en el código; acá van solo los agregados.
 create table if not exists places (
   id         text primary key,
   name       text not null check (char_length(name) between 1 and 80),

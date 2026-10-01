@@ -6,18 +6,16 @@ Mapa colaborativo de **accesibilidad de Rosario**: lugares de la ciudad con info
 
 ## 📄 Documentación
 
-- **[MANUAL.md](MANUAL.md)** — manual completo: cómo funciona cada parte de la app, qué hace el admin, de dónde salen los datos y cómo se mantiene.
-- **[README.pdf](README.pdf)** — descripción del proyecto, características y tecnologías.
-- **[GUIA.pdf](GUIA.pdf)** — guía de uso: cómo administrar, relevar datos y sumar colaboradores.
+**[GUIA.pdf](GUIA.pdf)** — la guía completa: qué ve el público, qué hace el administrador, de dónde salen los datos, cómo se mantiene y qué hacer si algo falla.
+
+[FOLLETO.pdf](FOLLETO.pdf) — volante de una página para presentar el proyecto a organizaciones.
 
 ## 🧰 Para quien mantiene la app
 
-- `SUBIR A GITHUB.bat` — guarda el código en GitHub.
-- `PUBLICAR EN VERCEL.bat` — publica la versión nueva en internet (y conecta el deploy automático).
-- `supabase/*.sql` — migraciones de la base de datos, se pegan en Supabase → SQL Editor. La última es `migracion-lugares.sql`.
-- `scripts/actualizar-rampas-osm.mjs` — refresca las rampas desde OpenStreetMap (`node scripts/actualizar-rampas-osm.mjs`).
-
-Estructura del código (`src/`): `App.jsx` (pantalla principal) · `components/` (mapa, ficha, paneles) · `data/` (lugares base y constantes) · `lib/` (distancias, direcciones, ruteo) · `db.js` (nube / local).
+- `SUBIR A GITHUB.bat` — guarda el código en GitHub; Vercel lo publica solo.
+- `PUBLICAR EN VERCEL.bat` — publicación manual, de repuesto.
+- `supabase/` — archivos de la base de datos (ya aplicados; se corren en Supabase → SQL Editor).
+- `scripts/` — actualizar rampas desde OpenStreetMap, traer datos de Google y la fuente de la guía (`scripts/guia/guia.html`).
 
 ---
 
