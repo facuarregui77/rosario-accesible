@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<!--
+  FUENTE de "PLAN DE DIFUSION.pdf". Comparte el diseño con la guía y el folleto (estilo.css).
+  Para regenerar todo (PDF e imágenes de redes): doble clic en "GENERAR PDF.bat" (en esta misma carpeta).
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Rosario Access Map — Plan de difusión</title>
+<link href="estilo.css" rel="stylesheet"/>
+<style>
+  @page { size: A4; margin: 23mm 19mm 20mm 19mm;
+    @top-left { content: "ROSARIO ACCESS MAP"; font: 700 6.6pt "Jakarta", "Segoe UI", sans-serif; letter-spacing: 1.3pt; color: #0b1b3f; vertical-align: bottom; padding-bottom: 5mm; }
+    @top-right { content: "Plan de difusión"; font: 500 7.4pt "Jakarta", "Segoe UI", sans-serif; color: #64748b; vertical-align: bottom; padding-bottom: 5mm; }
+    @bottom-left { content: "access-app-rosario.vercel.app"; font: 500 7.2pt "Jakarta", "Segoe UI", sans-serif; color: #64748b; }
+    @bottom-right { content: counter(page) " / " counter(pages); font: 700 7.6pt "Jakarta", "Segoe UI", sans-serif; color: #0b1b3f; } }
+  @page :first { margin: 0; @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
+
+  /* Portada */
+  .portada { height: 297mm; position: relative; overflow: hidden; background: #fff; }
+  .portada .arriba { padding: 16mm 20mm 0; }
+  .portada .marca .iso { width: 13mm; height: 13mm; border-radius: 3.2mm; }
+  .portada .marca .nombre { font-size: 14pt; }
+  .portada h1 { font-size: 46pt; line-height: 1.02; letter-spacing: -1.4pt; margin: 24mm 0 5mm; }
+  .portada .bajada { font-size: 12.5pt; line-height: 1.5; color: var(--texto); max-width: 128mm; margin: 0; }
+  .portada .abajo { position: absolute; left: 0; right: 0; bottom: 0; height: 133mm; background: var(--marino); }
+  .portada .abajo::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2.6mm; background: var(--franja); }
+  .portada .captura { position: absolute; left: 20mm; right: 20mm; top: -42mm; border-radius: 3.5mm; overflow: hidden; box-shadow: 0 6mm 16mm rgba(4, 12, 32, .38); border: 0.8px solid rgba(255,255,255,.5); }
+  .portada .captura img { display: block; width: 100%; }
+  .portada .pie { position: absolute; left: 20mm; right: 20mm; bottom: 13mm; display: flex; justify-content: space-between; align-items: flex-end; color: #c7d5ee; font-size: 8.4pt; line-height: 1.5; }
+  .portada .pie b { color: #fff; font-size: 10.5pt; font-weight: 700; }
+
+  /* Índice: ocupa la página entera (los ítems se reparten a lo alto y la regla de oro queda al pie) */
+  .indice { break-before: page; break-after: page; height: 251mm; display: flex; flex-direction: column; }
+  .indice h2 { margin-top: 0; }
+  .indice + h2 { margin-top: 0; }
+  .indice ol { list-style: none; padding: 0; margin: 0 0 8mm; flex: 1; display: flex; flex-direction: column; }
+  .indice > ol > li { flex: 1; display: flex; gap: 7mm; align-items: center; margin: 0; border-bottom: 0.6px solid var(--linea); }
+  .indice > ol > li > span { flex: none; width: 11mm; font-size: 17pt; font-weight: 800; color: #b9c6dc; letter-spacing: -0.6pt; line-height: 1; }
+  .indice > ol > li > div { font-weight: 700; color: var(--tinta); font-size: 10.6pt; line-height: 1.25; }
+  .indice li small { display: block; font-weight: 400; color: var(--suave); font-size: 8.2pt; margin-top: 0.5mm; }
+  .indice .box { margin-bottom: 0; }
+</style>
+<style>
+  /* Ajustes propios del plan */
+  .portada .captura { left: 52mm; right: 52mm; top: -42mm; }
+  .par { gap: 4mm; }
+  .par img { height: 32mm; }
+  h2 { margin-top: 8mm; }
+  h3 { margin-top: 5mm; }
+  .box p:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+<section class="portada">
+  <div class="arriba">
+    <div class="marca"><div class="iso"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div><div class="nombre">Rosario Access Map<small>Mapa colaborativo de accesibilidad</small></div></div>
+    <h1>Plan de<br>difusión</h1>
+    <p class="bajada">Redes sociales y presencia en internet: quién hace qué, qué se publica, con qué textos, cómo conseguir que otros sitios nos enlacen y cómo se mide si funciona.</p>
+  </div>
+  <div class="abajo">
+    <div class="captura"><img src="../../piezas-redes/p1-lanzamiento.png" alt=""></div>
+    <div class="pie">
+      <span><b>access-app-rosario.vercel.app</b><br>Rosario, Santa Fe, Argentina</span>
+      <span style="text-align:right">Facundo Arregui<br>Versión del 9 de octubre de 2026</span>
+    </div>
+  </div>
+</section>
+
+<h2 style="break-before:page"><span class="n">1</span>Para qué y desde dónde partimos</h2>
+<p class="intro">El mapa sirve si la gente lo conoce y si se llena de datos. La difusión tiene dos objetivos: que más personas lo usen antes de salir de casa y que más personas carguen lo que saben de cada lugar.</p>
+<h3><span class="k">1.1</span>Punto de partida</h3>
+<p>Datos reales de los últimos 30 días (Vercel Analytics, al 9 de octubre de 2026):</p>
+<table>
+<tr><th style="width:44%">Qué</th><th style="width:22%">Hoy</th><th>Lectura</th></tr>
+<tr><td>Visitantes en 30 días</td><td>11</td><td>Prácticamente sin difusión todavía.</td></tr>
+<tr><td>Páginas vistas en 30 días</td><td>41</td><td>Quien entra, recorre: casi 4 páginas por persona.</td></tr>
+<tr><td>Visitas desde el celular</td><td>82 %</td><td>Todo el contenido tiene que pensarse para el teléfono.</td></tr>
+<tr><td>Llegadas desde Google</td><td>2</td><td>Google ya muestra la página, pero casi nadie la busca: falta que otros sitios la enlacen.</td></tr>
+<tr><td>Lugares con dato de acceso</td><td>24 de 96</td><td>Hay mucho para sumar: es el mejor motivo para pedir ayuda.</td></tr>
+</table>
+<h3><span class="k">1.2</span>Metas para los primeros tres meses</h3>
+<p>Son una propuesta para medir el avance: el responsable del proyecto las ajusta al terminar el primer mes.</p>
+<table>
+<tr><th style="width:44%">Meta</th><th style="width:22%">Hoy</th><th>A los 3 meses</th></tr>
+<tr><td>Visitantes por mes</td><td>11</td><td>500</td></tr>
+<tr><td>Llegadas desde Google por mes</td><td>2</td><td>100</td></tr>
+<tr><td>Lugares con dato de acceso</td><td>24 de 96</td><td>60 de 96</td></tr>
+<tr><td>Sugerencias del público por mes</td><td>sin medir</td><td>30</td></tr>
+<tr><td>Sitios que enlazan al mapa</td><td>0</td><td>10</td></tr>
+<tr><td>Seguidores en Instagram</td><td>sin cuenta</td><td>500</td></tr>
+</table>
+
+<h2><span class="n">2</span>Quién hace qué</h2>
+<p class="intro">La difusión se puede repartir entre varias personas. Ninguno de estos roles necesita conocimientos técnicos.</p>
+<table>
+<tr><th style="width:23%">Rol</th><th style="width:47%">Qué hace</th><th>Tiempo</th></tr>
+<tr><td>Responsable de redes</td><td>Publica según el calendario, responde mensajes y comentarios, y completa la tabla de medición cada mes.</td><td>3 horas por semana</td></tr>
+<tr><td>Creador de contenido</td><td>Saca fotos y datos en los lugares para el "Lugar de la semana" y graba videos cortos de la app. Puede ser un relevador (ver la guía, sección 5).</td><td>2 horas por semana</td></tr>
+<tr><td>Vínculos</td><td>Contacta organizaciones, medios, universidades y el municipio, y consigue que enlacen el mapa (sección 8).</td><td>2 horas por semana</td></tr>
+<tr><td>Responsable del proyecto</td><td>Aprueba el tono y las piezas, es dueño de las cuentas de redes y revisa las metas una vez por mes.</td><td>1 hora por mes</td></tr>
+</table>
+<div class="box info"><span class="t">Las cuentas, a nombre del proyecto</span><p>Las cuentas de redes se crean con un mail del proyecto o de la empresa, nunca con el personal de quien las maneja, y la contraseña la guarda el responsable del proyecto. Así nadie se lleva la cuenta si deja el equipo.</p></div>
+
+<h2><span class="n">3</span>A quién le hablamos y qué decimos</h2>
+<p class="intro">Un solo mensaje central, adaptado a cada público.</p>
+<div class="box oro"><span class="t">Mensaje central</span><p><b>Antes de salir, fijate si el lugar es accesible.</b> Rosario Access Map es un mapa gratuito, sin registro y hecho en Rosario, que muestra qué tan accesibles son los lugares de la ciudad. Es colaborativo: cualquiera puede sumar lo que sabe y el equipo lo revisa antes de publicarlo.</p></div>
+<table>
+<tr><th style="width:27%">Público</th><th style="width:38%">Qué le importa</th><th>Qué le pedimos</th></tr>
+<tr><td>Personas con discapacidad o movilidad reducida, y sus familias</td><td>Saber antes de ir si van a poder entrar, si hay baño adaptado, cómo llegar.</td><td>Que lo usen, lo guarden en el celular y cuenten lo que ven.</td></tr>
+<tr><td>Bares, comercios y lugares del mapa</td><td>Que los elijan; mostrar que son accesibles.</td><td>Que confirmen sus datos y compartan su ficha.</td></tr>
+<tr><td>Organizaciones e instituciones</td><td>Herramientas útiles para la gente con la que trabajan.</td><td>Que lo difundan, lo enlacen y sumen relevadores.</td></tr>
+<tr><td>Medios de Rosario</td><td>Historias locales con impacto.</td><td>Una nota sobre el proyecto.</td></tr>
+<tr><td>Estudiantes y voluntarios</td><td>Participar en algo concreto.</td><td>Sumarse a las salidas de relevamiento.</td></tr>
+</table>
+<h3><span class="k">3.1</span>Tono y palabras</h3>
+<ul>
+<li>Cercano y concreto, en el castellano de Rosario: "fijate", "contanos", "sumá".</li>
+<li>Decir "persona con discapacidad" o "persona usuaria de silla de ruedas". Evitar "discapacitado", "sufre de", "postrado" o "confinado a una silla".</li>
+<li>No prometer lo que el mapa no tiene: si un lugar está "sin datos", se dice así y se pide ayuda para completarlo.</li>
+<li>No señalar ni avergonzar a un lugar por no ser accesible: se informa el dato y se invita a mejorar.</li>
+</ul>
+
+<h2><span class="n">4</span>Canales y enlaces</h2>
+<p class="intro">Cada canal lleva su propio enlace. Todos abren el mapa normal, pero así se puede medir de dónde llega cada visita (sección 9).</p>
+<table>
+<tr><th style="width:21%">Canal</th><th style="width:43%">Uso</th><th>Enlace</th></tr>
+<tr><td>Instagram</td><td>Canal principal: posts, historias y videos cortos.</td><td><code>access-app-rosario.vercel.app/ig</code></td></tr>
+<tr><td>Facebook</td><td>Página propia y grupos de Rosario (barrios, discapacidad, familias).</td><td><code>access-app-rosario.vercel.app/fb</code></td></tr>
+<tr><td>WhatsApp</td><td>Estados, contactos y grupos de organizaciones.</td><td><code>access-app-rosario.vercel.app/wa</code></td></tr>
+<tr><td>LinkedIn</td><td>Perfil de la empresa: el proyecto como acción de inclusión.</td><td><code>access-app-rosario.vercel.app/li</code></td></tr>
+<tr><td>TikTok (opcional)</td><td>Los mismos videos cortos de Instagram.</td><td><code>access-app-rosario.vercel.app/tt</code></td></tr>
+<tr><td>Folleto impreso</td><td>El código QR del folleto ya lleva este enlace.</td><td><code>access-app-rosario.vercel.app/qr</code></td></tr>
+<tr><td>Mails</td><td>Contactos con organizaciones y medios.</td><td><code>access-app-rosario.vercel.app/mail</code></td></tr>
+</table>
+<h3><span class="k">4.1</span>Perfil de Instagram</h3>
+<p><b>Usuario sugerido:</b> @rosarioaccessmap (verificar que esté libre; si no, @rosario.accessmap). <b>Foto de perfil:</b> el logo de la app. <b>Descripción:</b></p>
+<div class="box"><p>Mapa gratuito de accesibilidad de Rosario. Bares, hospitales, escuelas, parques y más: fijate antes de salir. Sumá lo que sabés, sin registro.</p></div>
+<p>Enlace del perfil: <code>access-app-rosario.vercel.app/ig</code>. Fijar arriba del perfil los posts de lanzamiento, "Cómo leer el mapa" y "Ayudanos".</p>
+<h3><span class="k">4.2</span>Las otras redes</h3>
+<p>En Facebook, LinkedIn y TikTok se usan la misma foto de perfil y una descripción equivalente, cada una con su enlace de la tabla. En Facebook, además de la página propia, conviene compartir las publicaciones en grupos de Rosario (barrios, discapacidad, familias), respetando las reglas de cada grupo.</p>
+
+<h2><span class="n">5</span>Qué publicamos</h2>
+<p class="intro">Cinco tipos de publicación que se repiten. Así nunca falta qué publicar y el perfil se reconoce.</p>
+<table>
+<tr><th style="width:26%">Tipo</th><th style="width:50%">Qué es</th><th>Frecuencia</th></tr>
+<tr><td>Lugar de la semana</td><td>Un lugar del mapa con su dato real y verificable, y la invitación a completar lo que falte.</td><td>1 post por semana</td></tr>
+<tr><td>Cómo usar el mapa</td><td>Una función por vez: leyenda, "Cerca de mí", "Cómo llego", sugerir un dato, instalarla en el celular.</td><td>1 cada 2 semanas</td></tr>
+<tr><td>Contanos</td><td>Lista de lugares sin datos de un barrio o un tema ("hospitales sin datos") y el pedido de ayuda.</td><td>1 por semana</td></tr>
+<tr><td>Relevamos</td><td>Detrás de escena: el equipo relevando un lugar. Solo con permiso de quien aparece.</td><td>1 o 2 historias por semana</td></tr>
+<tr><td>Novedades</td><td>Hitos con números reales ("ya hay 50 lugares con datos"), alianzas, notas en medios.</td><td>Cuando haya</td></tr>
+</table>
+<h3><span class="k">5.1</span>Piezas listas</h3>
+<p>En la carpeta <code>piezas-redes</code> del proyecto hay cinco imágenes con el diseño de la app, listas para subir: cuatro posts cuadrados (1080 × 1080) y una historia vertical (1080 × 1920). Su fuente es <code>scripts/guia/piezas.html</code>: para cambiar un texto o armar otro "Lugar de la semana", se edita ese archivo y se vuelven a generar con <b>GENERAR PDF.bat</b>.</p>
+<div class="par">
+<figure><img src="../../piezas-redes/p1-lanzamiento.png" alt="Pieza de lanzamiento"><figcaption>Lanzamiento.</figcaption></figure>
+<figure><img src="../../piezas-redes/p2-como-leer.png" alt="Pieza cómo leer el mapa"><figcaption>Cómo leer el mapa.</figcaption></figure>
+<figure><img src="../../piezas-redes/p3-ayudanos.png" alt="Pieza ayudanos"><figcaption>Ayudanos.</figcaption></figure>
+<figure><img src="../../piezas-redes/p4-lugar-semana.png" alt="Pieza lugar de la semana"><figcaption>Lugar de la semana.</figcaption></figure>
+</div>
+
+<h2><span class="n">6</span>Lanzamiento: las primeras cuatro semanas</h2>
+<p class="intro">Un mes para pasar de cero a una comunidad que usa y completa el mapa. Después se sigue con la rutina de la sección 10.</p>
+<table>
+<tr><th style="width:14%">Semana</th><th style="width:56%">Qué se hace</th><th>Quién</th></tr>
+<tr><td>Antes</td><td>Crear las cuentas (sección 4) y cargar la descripción y el enlace. Publicar las piezas de lanzamiento, "Cómo leer el mapa" y "Ayudanos" para que el perfil no esté vacío. Armar la lista de contactos de la sección 8.</td><td>Redes y vínculos</td></tr>
+<tr><td>1</td><td>Lunes: post y historia de lanzamiento en Instagram, Facebook y LinkedIn. Mensaje de WhatsApp a contactos y grupos. Miércoles: "Cómo leer el mapa". Viernes: primer "Lugar de la semana". Mails a las organizaciones (sección 8).</td><td>Redes y vínculos</td></tr>
+<tr><td>2</td><td>Video corto: cómo encontrar un lugar accesible cerca (grabación de pantalla de 20 segundos con subtítulos). "Contanos" con los lugares sin datos del centro. Nota de prensa a los medios. Segundo "Lugar de la semana".</td><td>Redes, contenido y vínculos</td></tr>
+<tr><td>3</td><td>Salida de relevamiento abierta un sábado por el centro, con voluntarios de organizaciones y universidades. Historias durante la salida y post con el resultado.</td><td>Todo el equipo</td></tr>
+<tr><td>4</td><td>Post de balance con números reales ("en un mes sumamos X datos"). Completar la tabla de medición, comparar con las metas y ajustar.</td><td>Redes y responsable</td></tr>
+</table>
+
+<h2><span class="n">7</span>Textos listos para publicar</h2>
+<p class="intro">Se pueden copiar tal cual o adaptar. Cada post va con su texto alternativo: la descripción de la imagen para quien usa lector de pantalla (sección 7.7).</p>
+<h3><span class="k">7.1</span>Lanzamiento (Instagram y Facebook)</h3>
+<div class="box"><p>¿Ese bar tiene rampa? ¿El hospital tiene baño adaptado? Armamos Rosario Access Map: un mapa gratuito que muestra qué tan accesibles son los lugares de la ciudad para personas con discapacidad o movilidad reducida.</p><p>Es colaborativo: si conocés un lugar, podés sumar lo que viste en 20 segundos y sin registrarte. El equipo lo revisa antes de publicarlo.</p><p>Entrá desde el enlace del perfil y guardalo en tu celular.</p><p>#Rosario #Accesibilidad #MovilidadReducida #SillaDeRuedas #RosarioAccesible</p></div>
+<p><b>Texto alternativo:</b> Celular con el mapa de Rosario lleno de pines de colores. Texto: "¿Es accesible? Fijate antes de salir".</p>
+<h3><span class="k">7.2</span>Cómo leer el mapa</h3>
+<div class="box"><p>Cada pin del mapa tiene un puntito en el centro que dice si el lugar es accesible: verde, accesible en silla de ruedas; naranja, parcial; rojo, sin acceso; gris, todavía sin datos. El color del pin indica el tipo de lugar. En la app, el botón "Leyenda" lo explica siempre.</p><p>#Rosario #Accesibilidad #RosarioAccesible</p></div>
+<p><b>Texto alternativo:</b> Un pin del mapa y cuatro círculos de colores con su significado: verde accesible, naranja parcial, rojo sin acceso, gris sin datos.</p>
+<h3><span class="k">7.3</span>Ayudanos</h3>
+<div class="box"><p>De los 96 lugares del mapa, la mayoría todavía no tiene datos. ¿Conocés alguno? Buscalo en el mapa, tocá "¿Conocés este lugar?" y marcá lo que viste: si hay rampa, baño adaptado, ascensor. Sin cuenta y en 20 segundos. Lo revisamos antes de publicarlo.</p><p>#Rosario #Accesibilidad #RosarioAccesible</p></div>
+<p><b>Texto alternativo:</b> Tres pasos numerados: buscalo en el mapa, tocá "¿Conocés este lugar?", marcá lo que viste y enviá.</p>
+<h3><span class="k">7.4</span>Lugar de la semana (ejemplo)</h3>
+<div class="box"><p>Lugar de la semana: el Monumento Nacional a la Bandera es accesible en silla de ruedas, según los datos de OpenStreetMap. ¿Fuiste? ¿Viste si tiene baño adaptado o ascensor? Contanos desde su ficha en el mapa: access-app-rosario.vercel.app/?lugar=monumento_bandera</p><p>#Rosario #Accesibilidad #MonumentoALaBandera #RosarioAccesible</p></div>
+<p>Para elegir el lugar de cada semana: uno con dato verificado (su ficha dice la fuente) y preferentemente conocido. Nunca publicar un dato que no esté en el mapa.</p>
+<h3><span class="k">7.5</span>LinkedIn (perfil de la empresa)</h3>
+<div class="box"><p>En Rosario, salir a comer, ir al médico o hacer un trámite puede ser una barrera para muchas personas: no saber si hay rampa o baño adaptado alcanza para quedarse en casa.</p><p>Por eso impulsamos Rosario Access Map, un mapa gratuito y colaborativo de accesibilidad: 96 lugares de la ciudad y más de 1.000 rampas y cruces accesibles, con datos verificables y una comunidad que los completa.</p><p>Si tu organización trabaja con personas con discapacidad, te invitamos a sumarte: access-app-rosario.vercel.app/li</p></div>
+<h3><span class="k">7.6</span>Mensaje de WhatsApp</h3>
+<div class="box"><p>¡Hola! Te comparto Rosario Access Map, un mapa gratuito que muestra qué tan accesibles son los lugares de Rosario para personas con movilidad reducida. Si conocés algún lugar podés sumar lo que viste, sin registrarte. Si te sirve, pasalo: access-app-rosario.vercel.app/wa</p></div>
+<h3><span class="k">7.7</span>Publicaciones accesibles</h3>
+<p>Un proyecto de accesibilidad tiene que publicar de forma accesible. Antes de cada publicación:</p>
+<ul>
+<li><b>Texto alternativo</b> en cada imagen (en Instagram: Configuración avanzada → Escribir texto alternativo).</li>
+<li><b>Subtítulos</b> en todos los videos; que se entiendan sin sonido.</li>
+<li><b>Hashtags</b> con mayúscula en cada palabra (#RosarioAccesible), para que los lectores de pantalla los lean bien.</li>
+<li><b>Pocos emojis</b>, y al final del texto, no en medio de las frases.</li>
+<li>Lo importante, <b>escrito en la descripción</b> y no solo dentro de la imagen.</li>
+<li>Fotos de personas, <b>solo con su permiso</b>.</li>
+</ul>
+
+<h2><span class="n">8</span>Relevancia en internet</h2>
+<p class="intro">Google muestra primero las páginas que entiende bien, que otros sitios confiables enlazan y que la gente usa. La primera parte ya está hecha; la segunda es la que más pesa y depende de la difusión.</p>
+<h3><span class="k">8.1</span>Lo que ya está hecho en la página</h3>
+<ul>
+<li>Título, descripción, imagen para compartir y datos estructurados para Google.</li>
+<li>Página verificada en Google Search Console.</li>
+<li><b>Nuevo:</b> cada lugar tiene su propio título y descripción, y los 96 figuran en el mapa del sitio (sitemap) que lee Google. Así alguien que busca "El Cairo Rosario accesibilidad" puede llegar directo a la ficha.</li>
+<li>Rápida, pensada para el celular e instalable: Google lo tiene en cuenta.</li>
+</ul>
+<div class="box oro"><span class="t">Una tarea para el responsable del proyecto</span><p>Entrar a Google Search Console → <b>Sitemaps</b> → escribir <code>sitemap.xml</code> → <b>Enviar</b>. Se hace una sola vez y acelera que Google conozca las 96 fichas.</p></div>
+<h3><span class="k">8.2</span>Conseguir que otros sitios nos enlacen</h3>
+<p>Cada sitio confiable que pone un enlace al mapa le dice a Google que la página es importante. Por orden de prioridad:</p>
+<table>
+<tr><th style="width:30%">Quién</th><th>Qué pedirle</th></tr>
+<tr><td>Organizaciones de personas con discapacidad de Rosario y la provincia</td><td>Que compartan el mapa en sus redes, lo enlacen desde su web y sumen relevadores.</td></tr>
+<tr><td>Municipalidad de Rosario y Concejo Municipal</td><td>Presentar el proyecto al área de discapacidad e inclusión, pedir que lo difundan y, de paso, el pedido de información pública por las rampas (guía, sección 6.3).</td></tr>
+<tr><td>Universidades de Rosario</td><td>Carreras afines (arquitectura, terapia ocupacional, trabajo social, comunicación): voluntariado de relevamiento y una nota en su sitio.</td></tr>
+<tr><td>Medios locales</td><td>Una nota sobre el proyecto, con el enlace al mapa.</td></tr>
+<tr><td>Lugares accesibles del mapa</td><td>Que compartan su propia ficha (<code>…/?lugar=</code> + su identificador) en sus redes y en su web: "Somos accesibles, miralo en Rosario Access Map".</td></tr>
+</table>
+<h3><span class="k">8.3</span>Mail para organizaciones y medios</h3>
+<div class="box"><p><b>Asunto:</b> Mapa gratuito de accesibilidad de Rosario: ¿nos ayudan a difundirlo?</p><p>Hola, ¿cómo están? Les escribo de Rosario Access Map, un mapa gratuito y colaborativo que muestra qué tan accesibles son los lugares de Rosario para personas con discapacidad o movilidad reducida: bares, hospitales, escuelas, parques y oficinas, además de más de 1.000 rampas y cruces accesibles.</p><p>Los datos son verificables y cualquiera puede sumar lo que sabe sin registrarse; el equipo lo revisa antes de publicarlo.</p><p>Nos ayudaría mucho que lo compartan con su comunidad y, si pueden, que lo enlacen desde su sitio: access-app-rosario.vercel.app/mail. Les adjunto un folleto de una página. Y si les interesa sumarse a relevar lugares, coordinamos una salida.</p><p>¡Muchas gracias!<br>[Nombre] · Rosario Access Map · [WhatsApp]</p></div>
+
+<h2><span class="n">9</span>Cómo medimos</h2>
+<p class="intro">Una vez por mes el responsable de redes completa la tabla de 9.2. Vercel guarda solo los últimos 31 días: por eso hay que anotar los números cada mes, si no se pierden.</p>
+<h3><span class="k">9.1</span>Dónde ver cada número</h3>
+<table>
+<tr><th style="width:34%">Número</th><th>Dónde</th></tr>
+<tr><td>Visitantes y páginas vistas</td><td>vercel.com → proyecto → <b>Analytics</b></td></tr>
+<tr><td>Visitas por canal</td><td>Analytics → <b>Pages</b>: cada enlace de la sección 4 aparece por separado (<code>/ig</code>, <code>/fb</code>, <code>/qr</code>…). También <b>Referrers</b> muestra los sitios de donde llegan.</td></tr>
+<tr><td>Llegadas y búsquedas en Google</td><td>Google Search Console → <b>Rendimiento</b> (clics y qué buscó la gente)</td></tr>
+<tr><td>Lugares con datos</td><td>En la app, como administrador: botón <b>Análisis</b></td></tr>
+<tr><td>Sugerencias del público</td><td>En la app: botón <b>Sugerencias</b> (pendientes) y las aprobadas en el mes</td></tr>
+<tr><td>Seguidores y alcance</td><td>Las estadísticas de cada red</td></tr>
+</table>
+<h3><span class="k">9.2</span>Tabla mensual</h3>
+<table>
+<tr><th style="width:40%">Número</th><th style="width:15%">Inicio</th><th style="width:15%">Mes 1</th><th style="width:15%">Mes 2</th><th>Mes 3</th></tr>
+<tr><td>Visitantes del mes</td><td>11</td><td></td><td></td><td></td></tr>
+<tr><td>Llegadas desde Google</td><td>2</td><td></td><td></td><td></td></tr>
+<tr><td>Visitas por Instagram / Facebook / QR</td><td>0 / 0 / 0</td><td></td><td></td><td></td></tr>
+<tr><td>Lugares con dato de acceso</td><td>24</td><td></td><td></td><td></td></tr>
+<tr><td>Sugerencias del público</td><td>—</td><td></td><td></td><td></td></tr>
+<tr><td>Sitios que enlazan al mapa</td><td>0</td><td></td><td></td><td></td></tr>
+<tr><td>Seguidores en Instagram</td><td>0</td><td></td><td></td><td></td></tr>
+</table>
+
+<h2><span class="n">10</span>Rutina y respuestas</h2>
+<p class="intro">Después del lanzamiento, la difusión se sostiene con una rutina corta y constante.</p>
+<h3><span class="k">10.1</span>Cada semana</h3>
+<ul>
+<li>Lunes: elegir el "Lugar de la semana" y preparar las publicaciones (sección 5).</li>
+<li>Publicar 3 posts y 3 o más historias.</li>
+<li>Responder mensajes y comentarios en menos de 48 horas.</li>
+<li>Contactar al menos 2 organizaciones, medios o lugares nuevos (sección 8).</li>
+</ul>
+<h3><span class="k">10.2</span>Cada mes</h3>
+<ul>
+<li>Completar la tabla de 9.2 y compartirla con el responsable del proyecto.</li>
+<li>Repetir lo que más funcionó y dejar lo que no; ajustar las metas.</li>
+<li>Publicar un balance con los números del mes.</li>
+</ul>
+<h3><span class="k">10.3</span>Cómo responder</h3>
+<table>
+<tr><th style="width:36%">Si alguien…</th><th>Respuesta</th></tr>
+<tr><td>Dice que un dato está mal</td><td>Agradecer y pedirle que lo cargue con "¿Conocés este lugar?" en la ficha; si es urgente, pasarlo al equipo para relevar. Nunca discutir.</td></tr>
+<tr><td>Pregunta por un lugar que no está</td><td>Avisar al equipo para que lo agregue (guía, sección 5.8) y contestarle cuando esté.</td></tr>
+<tr><td>Es un lugar que se queja por su dato</td><td>Ofrecer revisar el dato en el lugar y corregirlo si corresponde. El mapa informa, no juzga.</td></tr>
+<tr><td>Quiere sumarse a ayudar</td><td>Pasar el contacto al responsable del proyecto para darle una cuenta de relevador.</td></tr>
+<tr><td>Escribe un comentario agresivo</td><td>No responder en público; ocultarlo si insulta.</td></tr>
+</table>
+<p style="margin-top:12mm; color:#64748b; font-size:8.2pt; border-top:0.6px solid #e2e8f0; padding-top:3mm">Rosario Access Map · Proyecto sin fines de lucro, con fines educativos y de bien común · Facundo Arregui</p>
+
+</body>
+</html>

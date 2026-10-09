@@ -20,6 +20,7 @@ import AboutModal from "./components/AboutModal";
 import AddPlaceModal from "./components/AddPlaceModal";
 import ContactButtons from "./components/ContactButtons";
 import { ROUTING_ON, fetchRoute } from "./lib/routing";
+import { updateHead } from "./lib/seo";
 
 // Aplica los cambios guardados (relevamiento) sobre los datos base
 const mergePlaces = (base, overrides) => base.map((p) => {
@@ -245,6 +246,9 @@ export default function App() {
     const found = id && data.find((p) => p.id === id);
     if (found) setSelected(found);
   }, [loading, data]);
+
+  // Título, descripción y dirección oficial de la página según el lugar abierto (para Google y al compartir).
+  useEffect(() => { updateHead(selectedLive); }, [selectedLive]);
 
   // Mantener la URL en sincronía con el lugar abierto (para poder compartir el enlace).
   // Solo actúa una vez aplicado el deep-link inicial (para no pisar el ?lugar antes de leerlo).

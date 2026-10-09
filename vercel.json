@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/(ig|fb|wa|li|tt|qr|mail)", "destination": "/index.html" }
+  ]
+}

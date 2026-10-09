@@ -89,7 +89,7 @@ body > figure figcaption, section > figure figcaption { display: table-caption; 
 .duo figure { margin-top: 0; }
 .cel img { max-height: 92mm; }
 /* Captura al costado del texto: flota a la derecha y el texto la rodea (puede seguir en la página siguiente) */
-.flota { display: flow-root; margin-bottom: 2mm; break-inside: avoid; }
+.flota { display: flow-root; margin-bottom: 2mm; }
 .flota > .der { float: right; margin: 0.5mm 0 3mm 7mm; }
 /* el ancho de la figura lo marca la imagen; el pie se ajusta a ese ancho */
 .flota > figure.der { display: table; width: 1%; }

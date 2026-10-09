@@ -31,22 +31,26 @@
   .portada .pie { position: absolute; left: 20mm; right: 20mm; bottom: 13mm; display: flex; justify-content: space-between; align-items: flex-end; color: #c7d5ee; font-size: 8.4pt; line-height: 1.5; }
   .portada .pie b { color: #fff; font-size: 10.5pt; font-weight: 700; }
 
+  /* La fila de títulos de una tabla puede quedar al pie de una página si la tabla sigue en la siguiente (evita páginas a medio llenar) */
+  tr:first-child { break-after: auto; }
+  p.intro + table tr:first-child { break-after: avoid; }  /* al abrir una sección, títulos y primera fila juntos */
+
   /* Índice: ocupa la página entera (los ítems se reparten a lo alto y la regla de oro queda al pie) */
   .indice { break-before: page; break-after: page; height: 251mm; display: flex; flex-direction: column; }
   .indice h2 { margin-top: 0; }
   .indice + h2 { margin-top: 0; }
   .indice ol { list-style: none; padding: 0; margin: 0 0 8mm; flex: 1; display: flex; flex-direction: column; }
   .indice > ol > li { flex: 1; display: flex; gap: 7mm; align-items: center; margin: 0; border-bottom: 0.6px solid var(--linea); }
-  .indice > ol > li > span { flex: none; width: 11mm; font-size: 22pt; font-weight: 800; color: #b9c6dc; letter-spacing: -0.6pt; line-height: 1; }
-  .indice > ol > li > div { font-weight: 700; color: var(--tinta); font-size: 12pt; line-height: 1.3; }
-  .indice li small { display: block; font-weight: 400; color: var(--suave); font-size: 9pt; margin-top: 0.8mm; }
+  .indice > ol > li > span { flex: none; width: 11mm; font-size: 17pt; font-weight: 800; color: #b9c6dc; letter-spacing: -0.6pt; line-height: 1; }
+  .indice > ol > li > div { font-weight: 700; color: var(--tinta); font-size: 10.6pt; line-height: 1.25; }
+  .indice li small { display: block; font-weight: 400; color: var(--suave); font-size: 8.2pt; margin-top: 0.5mm; }
   .indice .box { margin-bottom: 0; }
 </style>
 <style id="ajustes">
-  /* Altos de las capturas calculados para que ninguna página quede con hueco al pie (ver ajustar-paginas.py) */
-  #f2 img { max-height: 98.0mm !important; }
-  #f3 img { max-height: 64.0mm !important; }
-  #f5 img { max-height: 106.0mm !important; }
+  /* Altos de las capturas calculados para que ninguna página quede con hueco al pie */
+  #f3 img { max-height: 106.0mm !important; }
+  #f4 img { max-height: 98.0mm !important; }
+  #f5 img { max-height: 82.0mm !important; }
 </style>
 </head>
 <body>
@@ -61,23 +65,27 @@
 <div class="captura"><img alt="" src="img/inicio.jpg"/></div>
 <div class="pie">
 <span><b>access-app-rosario.vercel.app</b><br/>Rosario, Santa Fe, Argentina</span>
-<span style="text-align:right">Facundo Arregui<br/>Octubre 2026</span>
+<span style="text-align:right">Facundo Arregui<br/>Versión del 9 de octubre de 2026</span>
 </div>
 </div>
 </section>
 <!-- ===================== ÍNDICE ===================== -->
 <section class="indice">
 <h2>Contenido</h2>
-<ol>
-<li><span>1</span><div>Qué es y cómo está armada <small>Las tres piezas: la app, la base de datos y los datos base</small></div></li>
-<li><span>2</span><div>Quiero hacer… <small>Tabla rápida: qué función usar para cada cosa</small></div></li>
-<li><span>3</span><div>Lo que ve cualquier persona <small>Barra, buscador, mapa, lista, filtros, ficha, rampas, opiniones, instalar la app</small></div></li>
-<li><span>4</span><div>Lo que hace el administrador <small>Entrar, sumar colaboradores, cargar datos, moderar, agregar lugares, fotos, análisis</small></div></li>
-<li><span>5</span><div>Los datos <small>De dónde salen, dónde se guardan y quién puede tocar qué</small></div></li>
-<li><span>6</span><div>Cómo se mantiene <small>Guardar, publicar, base de datos, claves, estadísticas, la carpeta del proyecto</small></div></li>
-<li><span>7</span><div>Si algo falla <small>Los problemas más probables y cómo se resuelven</small></div></li>
-<li><span>8</span><div>Buenas prácticas y próximos pasos <small>Cómo cargar datos y qué haría crecer el proyecto</small></div></li>
-</ol>
+  <ol>
+    <li><span>1</span><div>Qué es y cómo está armada <small>Las tres piezas: la app, la base de datos y los datos base</small></div></li>
+    <li><span>2</span><div>Quién hace qué <small>Los roles del equipo, qué accesos necesita cada uno y qué leer</small></div></li>
+    <li><span>3</span><div>Quiero hacer… <small>Tabla rápida: qué función usar para cada cosa</small></div></li>
+    <li><span>4</span><div>Lo que ve cualquier persona <small>Barra, buscador, mapa, lista, filtros, ficha, rampas, opiniones, instalar la app</small></div></li>
+    <li><span>5</span><div>Lo que hace el administrador <small>Entrar, cuentas, cargar datos, moderar, agregar lugares, fotos, análisis</small></div></li>
+    <li><span>6</span><div>Los datos <small>De dónde salen, dónde se guardan y quién puede tocar qué</small></div></li>
+    <li><span>7</span><div>Cuentas, accesos y servicios <small>De quién es cada cuenta, cómo dar acceso, condiciones y paso a la empresa</small></div></li>
+    <li><span>8</span><div>Cómo se mantiene <small>Publicar, base de datos, claves, estadísticas y la carpeta del proyecto</small></div></li>
+    <li><span>9</span><div>Guía técnica <small>Tecnologías, correr la app, modelo de datos, publicar sin riesgo y volver atrás</small></div></li>
+    <li><span>10</span><div>Si algo falla <small>Los problemas más probables y cómo se resuelven</small></div></li>
+    <li><span>11</span><div>Buenas prácticas y próximos pasos <small>Cómo cargar datos y qué haría crecer el proyecto</small></div></li>
+    <li><span>12</span><div>Glosario e incorporación <small>Palabras técnicas y qué hacer cuando alguien entra o se va</small></div></li>
+  </ol>
 <div class="box oro">
 <span class="t">La regla de oro del proyecto</span>
 <p>Nada se inventa. Solo se cargan datos reales que se puedan confirmar. Ante la duda, se deja "sin datos": es mejor no tener un dato que tener uno falso, porque alguien en silla de ruedas va a decidir a dónde ir según lo que diga el mapa.</p>
@@ -87,7 +95,7 @@
 <h2><span class="n">1</span>Qué es y cómo está armada</h2><div class="flota"><figure id="f1" class="der">
 <img alt="Pantalla principal" src="img/inicio.jpg"/>
 <figcaption>La pantalla principal: barra con buscador y botones, lista de lugares a la izquierda y el mapa.</figcaption>
-</figure><p class="intro">Rosario Access Map es una página web que funciona como una app: se abre desde cualquier navegador y también se puede instalar en el celular. Muestra un mapa de Rosario con lugares (bares, restaurantes, escuelas, clubes, hospitales, oficinas públicas, parques) y para cada uno dice qué tan accesible es para una persona con discapacidad o movilidad reducida. También muestra las rampas y cruces accesibles de la vereda.</p><p>Cualquiera puede consultar el mapa, dejar una opinión o proponer un dato. El administrador (vos y la gente de confianza que sumes) verifica y publica.</p></div>
+</figure><p class="intro">Rosario Access Map es una página web que funciona como una app: se abre desde cualquier navegador y también se puede instalar en el celular. Muestra un mapa de Rosario con lugares (bares, restaurantes, escuelas, clubes, hospitales, oficinas públicas, parques) y para cada uno dice qué tan accesible es para una persona con discapacidad o movilidad reducida. También muestra las rampas y cruces accesibles de la vereda.</p><p>Cualquiera puede consultar el mapa, dejar una opinión o proponer un dato. Los administradores, un equipo de confianza con cuenta propia, verifican y publican.</p></div>
 
 
 <h3>Las tres piezas</h3>
@@ -102,48 +110,67 @@
 <p>Cuando se modifica el código, se sube a GitHub y Vercel lo publica solo en uno o dos minutos. Cuando un administrador carga un dato desde la app, va directo a Supabase y lo ve todo el mundo al instante, sin publicar nada.</p>
 </div>
 
+<!-- ===================== 2 (nueva) ===================== -->
+<h2><span class="n">2</span>Quién hace qué</h2>
+<p class="intro">El trabajo se puede repartir entre varias personas. Cada rol necesita accesos distintos y no hace falta que todos lean toda la guía: esta tabla dice qué le toca a cada uno y por dónde empezar. Cada persona tiene su propia cuenta; cómo se dan y se quitan los accesos está en la sección 7, y qué hacer cuando alguien entra o se va, en la 12.</p>
+<table>
+<tr><th style="width:20%">Rol</th><th style="width:36%">Qué hace</th><th style="width:28%">Qué accesos necesita</th><th>Secciones</th></tr>
+<tr><td>Relevador</td><td>Carga datos de accesibilidad, en la calle o desde la computadora.</td><td>Una cuenta de administrador de la app.</td><td>1, 4, 5 y 11</td></tr>
+<tr><td>Moderador</td><td>Revisa las sugerencias del público y borra opiniones fuera de lugar.</td><td>Una cuenta de administrador de la app.</td><td>1, 4, 5.7 y 5.9</td></tr>
+<tr><td>Responsable técnico</td><td>Hace cambios en el código, los publica, cuida la base de datos y resuelve fallas.</td><td>GitHub, Supabase y, si se puede, Vercel. La app instalada en su computadora.</td><td>Toda la guía, en especial 7 a 10</td></tr>
+<tr><td>Responsable del proyecto</td><td>Es dueño de las cuentas: da y quita accesos, decide qué se cambia y responde las consultas del público.</td><td>Es el dueño de todas las cuentas (sección 7).</td><td>1, 2, 7, 11 y 12</td></tr>
+</table>
+<div class="box info">
+<span class="t">Una persona puede tener varios roles</span>
+<p>Hoy los cuatro roles los cumple Facundo Arregui. Al sumar gente, lo habitual es repartir primero el relevamiento y la moderación, que no requieren conocimientos técnicos, y pasar las cuentas a nombre de la empresa (ver 7.4).</p>
+</div>
+
 <!-- ===================== 2 ===================== -->
-<h2><span class="n">2</span>Quiero hacer…</h2>
-<p class="intro">Tabla para ir directo a lo que necesitás. El número indica la sección de esta guía donde está explicado.</p>
+<h2><span class="n">3</span>Quiero hacer…</h2>
+<p class="intro">Tabla para ir directo a lo que necesitás. "Quién puede" indica el rol (ver sección 2) y el número, la parte de esta guía donde está explicado.</p>
 <table class="plano">
 <tr><th style="width:38%">Quiero…</th><th style="width:30%">Uso…</th><th style="width:17%">Quién puede</th><th>Ver</th></tr>
-<tr><td>Encontrar un lugar por nombre</td><td>El buscador</td><td>Cualquiera</td><td>3.1</td></tr>
-<tr><td>Ver qué hay accesible cerca de donde estoy</td><td>Botón "Cerca de mí"</td><td>Cualquiera</td><td>3.1</td></tr>
-<tr><td>Ver solo lugares con baño adaptado, rampa, etc.</td><td>Filtros (pestaña naranja)</td><td>Cualquiera</td><td>3.4</td></tr>
-<tr><td>Saber cómo llegar en silla de ruedas</td><td>"Cómo llego" en la ficha</td><td>Cualquiera</td><td>3.5</td></tr>
-<tr><td>Ver las rampas de la vereda</td><td>Botón "Rampas"</td><td>Cualquiera</td><td>3.6</td></tr>
-<tr><td>Contar cómo me fue en un lugar</td><td>Opiniones en la ficha</td><td>Cualquiera</td><td>3.7</td></tr>
-<tr><td>Proponer un dato de accesibilidad</td><td>"¿Conocés este lugar?"</td><td>Cualquiera</td><td>3.7</td></tr>
-<tr><td>Mandarle un lugar a alguien</td><td>Botón compartir de la ficha</td><td>Cualquiera</td><td>3.5</td></tr>
-<tr><td>Hacer una consulta al responsable</td><td>Botones "WhatsApp" o "Escribinos"</td><td>Cualquiera</td><td>3.1</td></tr>
-<tr><td>Sumar a alguien al equipo</td><td>Crear usuario en Supabase</td><td>Vos</td><td>4.2</td></tr>
-<tr><td>Cargar datos parado frente al lugar</td><td>Botón "Relevar"</td><td>Admin</td><td>4.4</td></tr>
-<tr><td>Cargar datos desde casa</td><td>Google Maps + "Editar"</td><td>Admin</td><td>4.5</td></tr>
-<tr><td>Corregir un lugar puntual</td><td>"Editar" en la ficha</td><td>Admin</td><td>4.6</td></tr>
-<tr><td>Revisar lo que propuso la gente</td><td>Botón "Sugerencias"</td><td>Admin</td><td>4.7</td></tr>
-<tr><td>Agregar un lugar que no está en el mapa</td><td>Botón "Agregar lugar"</td><td>Admin</td><td>4.8</td></tr>
-<tr><td>Subir fotos de un lugar</td><td>"Agregar foto" en la ficha</td><td>Admin</td><td>4.9</td></tr>
-<tr><td>Borrar una opinión fuera de lugar</td><td>Tachito al lado de la opinión</td><td>Admin</td><td>4.9</td></tr>
-<tr><td>Ver cómo viene la carga de datos</td><td>Botón "Análisis"</td><td>Admin</td><td>4.10</td></tr>
-<tr><td>Saber cuánta gente entra</td><td>Analytics de Vercel</td><td>Vos</td><td>6.5</td></tr>
+<tr><td>Encontrar un lugar por nombre</td><td>El buscador</td><td>Cualquiera</td><td>4.1</td></tr>
+<tr><td>Ver qué hay accesible cerca de donde estoy</td><td>Botón "Cerca de mí"</td><td>Cualquiera</td><td>4.1</td></tr>
+<tr><td>Ver solo lugares con baño adaptado, rampa, etc.</td><td>Filtros (pestaña naranja)</td><td>Cualquiera</td><td>4.4</td></tr>
+<tr><td>Saber cómo llegar en silla de ruedas</td><td>"Cómo llego" en la ficha</td><td>Cualquiera</td><td>4.5</td></tr>
+<tr><td>Ver las rampas de la vereda</td><td>Botón "Rampas"</td><td>Cualquiera</td><td>4.6</td></tr>
+<tr><td>Contar cómo me fue en un lugar</td><td>Opiniones en la ficha</td><td>Cualquiera</td><td>4.7</td></tr>
+<tr><td>Proponer un dato de accesibilidad</td><td>"¿Conocés este lugar?"</td><td>Cualquiera</td><td>4.7</td></tr>
+<tr><td>Mandarle un lugar a alguien</td><td>Botón compartir de la ficha</td><td>Cualquiera</td><td>4.5</td></tr>
+<tr><td>Hacer una consulta al responsable</td><td>Botones "WhatsApp" o "Escribinos"</td><td>Cualquiera</td><td>4.1</td></tr>
+<tr><td>Darle una cuenta de administrador a alguien</td><td>Crear usuario en Supabase</td><td>Responsable</td><td>5.2</td></tr>
+<tr><td>Darle acceso al código o a la base</td><td>Invitaciones en GitHub y Supabase</td><td>Responsable</td><td>7.2</td></tr>
+<tr><td>Cargar datos parado frente al lugar</td><td>Botón "Relevar"</td><td>Admin</td><td>5.4</td></tr>
+<tr><td>Cargar datos desde casa</td><td>Google Maps + "Editar"</td><td>Admin</td><td>5.5</td></tr>
+<tr><td>Corregir un lugar puntual</td><td>"Editar" en la ficha</td><td>Admin</td><td>5.6</td></tr>
+<tr><td>Revisar lo que propuso la gente</td><td>Botón "Sugerencias"</td><td>Admin</td><td>5.7</td></tr>
+<tr><td>Agregar un lugar que no está en el mapa</td><td>Botón "Agregar lugar"</td><td>Admin</td><td>5.8</td></tr>
+<tr><td>Subir fotos de un lugar</td><td>"Agregar foto" en la ficha</td><td>Admin</td><td>5.9</td></tr>
+<tr><td>Borrar una opinión fuera de lugar</td><td>Tachito al lado de la opinión</td><td>Admin</td><td>5.9</td></tr>
+<tr><td>Ver cómo viene la carga de datos</td><td>Botón "Análisis"</td><td>Admin</td><td>5.10</td></tr>
+<tr><td>Saber cuánta gente entra</td><td>Analytics de Vercel</td><td>Responsable</td><td>8.5</td></tr>
+<tr><td>Correr la app en mi computadora</td><td><code>npm run dev</code></td><td>Técnico</td><td>9.2</td></tr>
+<tr><td>Probar un cambio sin que lo vea el público</td><td>Rama y vista previa</td><td>Técnico</td><td>9.4</td></tr>
+<tr><td>Deshacer una publicación que salió mal</td><td>Instant Rollback en Vercel</td><td>Técnico</td><td>9.5</td></tr>
 </table>
 <!-- ===================== 3 ===================== -->
-<h2><span class="n">3</span>Lo que ve cualquier persona</h2>
+<h2><span class="n">4</span>Lo que ve cualquier persona</h2>
 <p class="intro">Todo lo que encuentra quien entra a la app, sin necesidad de cuenta: cómo buscar, filtrar, leer el mapa, consultar un lugar y colaborar.</p>
-<h3><span class="k">3.1</span>La barra de arriba</h3>
+<h3><span class="k">4.1</span>La barra de arriba</h3>
+<div class="flota"><figure id="f2" class="der">
+<img alt="Buscador con resultados" src="img/buscador.jpg"/>
+<figcaption>El buscador muestra las coincidencias con su tipo y el color de accesibilidad, y el mapa se mueve solo hacia el resultado.</figcaption>
+</figure>
 <ul>
 <li><b>Botón ⓘ (Acerca de).</b> Explica el proyecto, de dónde salen los datos y cómo colaborar. Tiene el botón "Compartir el mapa" y el ajuste de <b>Alto contraste</b>.</li>
 <li><b>Candado.</b> Es la entrada del administrador. El público no lo necesita.</li>
 <li><b>Buscador.</b> Se escribe parte del nombre y aparece una lista en vivo. No distingue mayúsculas ni acentos ("cafe" encuentra "Café"). Mientras se escribe, el mapa se acomoda solo a los resultados. La ✕ limpia la búsqueda.</li>
 <li><b>Cerca de mí.</b> Pide la ubicación y ordena la lista de más cerca a más lejos, mostrando la distancia de cada lugar. De entrada muestra lo que está a menos de 1 km; el radio se cambia en los filtros (500 m, 1 km, 2 km o toda la ciudad). En el mapa aparece un punto azul que dice "Estás acá". Se apaga tocando el mismo botón.</li>
-<li><b>Rampas.</b> Prende o apaga los íconos de rampas y cruces accesibles (ver 3.6).</li>
+<li><b>Rampas.</b> Prende o apaga los íconos de rampas y cruces accesibles (ver 4.6).</li>
 <li><b>WhatsApp y Escribinos.</b> Contacto directo con el responsable del proyecto. El botón verde abre un chat de WhatsApp con el mensaje ya empezado; el otro abre un mail. En el celular aparecen como dos botones cuadrados con el ícono, al lado de "Rampas".</li>
-</ul>
-<figure id="f2">
-<img alt="Buscador con resultados" src="img/buscador.jpg"/>
-<figcaption>El buscador muestra las coincidencias con su tipo y el color de accesibilidad, y el mapa se mueve solo hacia el resultado.</figcaption>
-</figure>
-<h3><span class="k">3.2</span>El mapa</h3>
+</ul></div>
+<h3><span class="k">4.2</span>El mapa</h3>
 <p>Muestra solamente Rosario: no se puede arrastrar hacia otra ciudad ni alejar hasta ver toda la provincia. Cada pin es un lugar y lleva dos colores:</p>
 <div class="duo">
 <div>
@@ -177,9 +204,9 @@
 <img alt="Leyenda del mapa abierta" src="img/leyenda.jpg"/>
 <figcaption>La leyenda abierta sobre el mapa.</figcaption>
 </figure>
-<h3><span class="k">3.3</span>La lista de lugares (panel izquierdo)</h3>
+<h3><span class="k">4.3</span>La lista de lugares (panel izquierdo)</h3>
 <p>Se abre y se cierra con la pestaña celeste. Muestra los lugares que pasan los filtros activos, cada uno con su tipo, el puntaje de Google, la etiqueta "Accesible", "Parcial" o "Sin acceso" si tiene dato, y la distancia cuando está activo "Cerca de mí". Tocar un lugar abre su ficha. En el celular la lista se cierra sola al elegir.</p>
-<h3><span class="k">3.4</span>Los filtros (panel derecho)</h3>
+<h3><span class="k">4.4</span>Los filtros (panel derecho)</h3>
 <p>Se abren con la pestaña naranja, que muestra un puntito blanco cuando hay algún filtro puesto.</p>
 <ul>
 <li><b>Cerca de mí:</b> usar la ubicación y elegir el radio.</li>
@@ -192,7 +219,7 @@
 <img alt="Filtros y Cerca de mí" src="img/filtros.jpg"/>
 <figcaption>"Cerca de mí" activo: la lista ordenada por distancia y, a la derecha, el panel de filtros con el radio.</figcaption>
 </figure>
-<h3><span class="k">3.5</span>La ficha de un lugar</h3>
+<h3><span class="k">4.5</span>La ficha de un lugar</h3>
 <div class="flota"><figure id="f5" class="der">
 <img alt="Ficha de un lugar" src="img/ficha.jpg" style="max-height:118mm"/>
 <figcaption>Ficha del Teatro La Comedia.</figcaption>
@@ -208,13 +235,13 @@
 <li><b>Fotos</b>, si el administrador subió.</li>
 </ul>
 </div>
-<h3><span class="k">3.6</span>La capa de rampas</h3>
+<h3><span class="k">4.6</span>La capa de rampas</h3>
 <p>Con el botón <b>Rampas</b> aparecen 1.003 íconos de silla de ruedas: rebajes de cordón, rampas, ascensores públicos, entradas accesibles y cruces con baldosas para personas ciegas. Al tocar uno se ve la dirección aproximada. Los datos son de OpenStreetMap.</p>
 <figure id="f6">
 <img alt="Capa de rampas" src="img/rampas.jpg"/>
 <figcaption>La capa de rampas prendida.</figcaption>
 </figure>
-<h3><span class="k">3.7</span>Opiniones y sugerencias del público</h3>
+<h3><span class="k">4.7</span>Opiniones y sugerencias del público</h3>
 <p>En la ficha hay dos formularios distintos, y conviene no confundirlos:</p>
 <table>
 <tr><th style="width:22%"></th><th style="width:39%">"¿Conocés este lugar? ¡Ayudanos!"</th><th>Opiniones</th></tr>
@@ -224,9 +251,9 @@
 </table>
 <div class="box info">
 <span class="t">Freno contra el abuso</span>
-<p>Las opiniones tienen cuatro protecciones: un campo invisible que solo completan los programas automáticos, una pausa de 2 minutos entre opiniones de una misma persona para un mismo lugar, un tope de 5 opiniones por lugar cada 10 minutos y un largo máximo de texto. Si igual entra algo que no corresponde, el administrador lo borra (ver 4.9).</p>
+<p>Las opiniones tienen cuatro protecciones: un campo invisible que solo completan los programas automáticos, una pausa de 2 minutos entre opiniones de una misma persona para un mismo lugar, un tope de 5 opiniones por lugar cada 10 minutos y un largo máximo de texto. Si igual entra algo que no corresponde, el administrador lo borra (ver 5.9).</p>
 </div>
-<h3><span class="k">3.8</span>Accesibilidad de la propia app</h3>
+<h3><span class="k">4.8</span>Accesibilidad de la propia app</h3>
 <div class="flota"><figure id="f7" class="der">
 <img alt="Ventana Acerca de" src="img/acerca.jpg" style="max-height:112mm"/>
 <figcaption>"Acerca de", con el ajuste de alto contraste al final.</figcaption>
@@ -239,7 +266,7 @@
 <li><b>Movimiento:</b> si el celular o la computadora tienen activada la opción de reducir animaciones, la app las apaga.</li>
 </ul>
 </div>
-<h3><span class="k">3.9</span>Instalarla en el celular</h3>
+<h3><span class="k">4.9</span>Instalarla en el celular</h3>
 
 <p>Al abrir la app en el celular, el navegador ofrece <b>"Agregar a la pantalla de inicio"</b> (en iPhone: botón compartir → Agregar a inicio). Queda con su propio ícono, se abre a pantalla completa y funciona aunque no haya señal, mostrando lo último que cargó.</p>
 <p>Cuando se publica una versión nueva, a quien tenga la app abierta le aparece un cartel "Hay una versión nueva" con el botón <b>Actualizar</b>. La app revisa esto cada hora.</p>
@@ -247,17 +274,17 @@
 <p>Al pegar el enlace en WhatsApp o en redes sale una tarjeta con título, descripción e imagen. El sitio está verificado en Google Search Console y Google lo tiene indexado. Lo que más ayuda a aparecer arriba en las búsquedas es que otros sitios (asociaciones, medios, el municipio) pongan un enlace a la app.</p>
 <div class="par"><figure id="f8"><img alt="App en el celular" src="img/movil.jpg"/><figcaption>En el celular.</figcaption></figure><figure id="f9"><img alt="Lista en el celular" src="img/movil-lista.jpg"/><figcaption>Con la lista abierta.</figcaption></figure></div>
 <!-- ===================== 4 ===================== -->
-<h2><span class="n">4</span>Lo que hace el administrador</h2>
+<h2><span class="n">5</span>Lo que hace el administrador</h2>
 <p class="intro">Las tareas de quienes tienen cuenta de administrador: cargar y corregir datos, moderar lo que propone el público y sumar colaboradores.</p>
-<h3><span class="k">4.1</span>Entrar y salir</h3>
+<h3><span class="k">5.1</span>Entrar y salir</h3>
 <div class="flota"><figure id="f10" class="der"><img alt="Ventana de acceso" src="img/login.jpg"/><figcaption>La ventana de acceso.</figcaption></figure><ol class="pasos">
 <li>Abrir la app y tocar el <b>candado</b>, al lado del título.</li>
 <li>Escribir el <b>email y la contraseña</b> de administrador.</li>
 <li>El candado se pone verde y aparecen los botones de administrador: Análisis, Relevar, Sugerencias y Agregar lugar. En las fichas aparece "Editar".</li>
 <li>Para salir, tocar el candado otra vez.</li>
 </ol></div>
-<h3><span class="k">4.2</span>Sumar o quitar colaboradores</h3>
-<p>El registro público está cerrado: las cuentas las creás vos a mano. Cualquier persona con cuenta puede editar y relevar igual que vos, así que conviene sumar solo gente de confianza.</p>
+<h3><span class="k">5.2</span>Sumar o quitar colaboradores</h3>
+<p>El registro público está cerrado: las cuentas las crea a mano el responsable del proyecto. Todas tienen el mismo poder (editar, relevar, moderar y borrar), así que conviene sumar solo gente de confianza y darle a cada persona su propia cuenta.</p>
 <ol class="pasos">
 <li>Entrar a <b>supabase.com</b> y abrir el proyecto.</li>
 <li>En el menú de la izquierda: <b>Authentication</b> → pestaña <b>Users</b>.</li>
@@ -266,13 +293,13 @@
 <li>Tocar <b>Create user</b> y pasarle a la persona su email, su contraseña y el enlace de la app por un medio privado.</li>
 </ol>
 <p><b>Para quitar a alguien:</b> Authentication → Users → los tres puntitos de esa persona → Delete user. Solo le saca el acceso; no borra nada de lo que cargó.</p>
-<h3><span class="k">4.3</span>Qué se carga de cada lugar</h3>
+<h3><span class="k">5.3</span>Qué se carga de cada lugar</h3>
 <p>Todas las formas de cargar datos llenan lo mismo:</p>
 <ul>
 <li><b>Acceso en silla de ruedas</b> (el dato más importante, porque pinta el color del mapa): Accesible, Parcial, Sin acceso o Sin datos.</li>
 <li><b>Cinco criterios</b>, cada uno con Sí, No o "—" (sin datos): baño adaptado, rampa de acceso, ascensor, menú en braille y personal con lengua de señas.</li>
 </ul>
-<h3><span class="k">4.4</span>Relevar en la calle</h3>
+<h3><span class="k">5.4</span>Relevar en la calle</h3>
 <p>Para cuando estás parado frente al lugar o caminando por la zona.</p>
 <ol class="pasos">
 <li>Tocar el botón verde <b>Relevar</b> y permitir la ubicación.</li>
@@ -281,7 +308,7 @@
 <li>Tocar <b>Guardar y volver</b>. Se publica al instante y quedás de nuevo en la lista para seguir con el próximo.</li>
 </ol>
 <p>Arriba se ve el avance general, por ejemplo "38 de 96 lugares con datos".</p>
-<h3><span class="k">4.5</span>Relevar desde casa</h3>
+<h3><span class="k">5.5</span>Relevar desde casa</h3>
 <p>Para cargar sin moverte, usando lo que ya publica Google Maps.</p>
 <ol class="pasos">
 <li>Buscar el lugar en Google Maps y mirar la sección <b>Accesibilidad</b>, las fotos y las reseñas.</li>
@@ -295,15 +322,15 @@
 <tr><td>No figura</td><td>Se deja en "—" (sin datos)</td></tr>
 </table>
 <p>Google casi nunca informa rampa, braille ni lengua de señas. Esos datos salen del relevamiento en la calle, de llamar al lugar o de las sugerencias del público.</p>
-<h3><span class="k">4.6</span>Editar un lugar puntual</h3>
+<h3><span class="k">5.6</span>Editar un lugar puntual</h3>
 <p>Buscar el lugar, abrir su ficha y tocar <b>Editar</b>. Se elige el acceso general y cada criterio, y se toca <b>Guardar</b>. Se publica al instante y queda registrada la fecha.</p>
-<h3><span class="k">4.7</span>Moderar las sugerencias del público</h3>
+<h3><span class="k">5.7</span>Moderar las sugerencias del público</h3>
 <p>El botón <b>Sugerencias</b> muestra un globito naranja con la cantidad pendiente. Cada sugerencia indica el lugar, los datos propuestos, el comentario y quién la mandó.</p>
 <ul>
 <li><b>Aprobar</b> pasa esos datos a la ficha. Solo cambia los campos que la persona completó; el resto queda como estaba.</li>
 <li><b>Rechazar</b> la descarta.</li>
 </ul>
-<h3><span class="k">4.8</span>Agregar un lugar nuevo</h3>
+<h3><span class="k">5.8</span>Agregar un lugar nuevo</h3>
 <ol class="pasos">
 <li>Tocar <b>Agregar lugar</b> y escribir el nombre y el tipo.</li>
 <li>Indicar la ubicación de alguna de estas tres formas: <b>Usar mi ubicación</b> (si estás ahí), <b>Marcar en el mapa</b> (la ventana se esconde, tocás el mapa donde está el lugar y la ventana vuelve con la ubicación cargada) o escribir la latitud y la longitud.</li>
@@ -311,13 +338,13 @@
 <li>Cargarle la accesibilidad con <b>Editar</b>.</li>
 </ol>
 <p>Un lugar agregado desde la app se puede eliminar con el botón <b>Borrar lugar</b> de su ficha. Los 96 lugares originales no se pueden borrar desde la app.</p>
-<h3><span class="k">4.9</span>Fotos y opiniones</h3>
+<h3><span class="k">5.9</span>Fotos y opiniones</h3>
 <ul>
 <li><b>Agregar foto:</b> en la ficha, botón "Agregar foto". El público las ve en la ficha y puede tocarlas para agrandarlas.</li>
 <li><b>Borrar foto:</b> la ✕ que aparece sobre cada foto.</li>
 <li><b>Borrar una opinión:</b> el tachito que aparece al lado de cada opinión cuando estás como administrador.</li>
 </ul>
-<h3><span class="k">4.10</span>Análisis</h3>
+<h3><span class="k">5.10</span>Análisis</h3>
 <p>El botón naranja <b>Análisis</b> muestra:</p>
 <ul>
 <li>El porcentaje de lugares que ya tienen algún dato, y cuántos son accesibles, parciales o están sin datos.</li>
@@ -325,9 +352,9 @@
 <li><b>Errores registrados en la app:</b> si a alguien se le rompe algo en su celular, la app lo anota sola y acá aparece con fecha, mensaje y tipo de dispositivo. Si la lista está vacía, está todo bien.</li>
 </ul>
 <!-- ===================== 5 ===================== -->
-<h2><span class="n">5</span>Los datos</h2>
+<h2><span class="n">6</span>Los datos</h2>
 <p class="intro">De dónde sale cada dato del mapa, dónde se guarda y quién puede modificarlo.</p>
-<h3><span class="k">5.1</span>De dónde sale cada cosa</h3>
+<h3><span class="k">6.1</span>De dónde sale cada cosa</h3>
 <table>
 <tr><th style="width:36%">Dato</th><th style="width:32%">Fuente</th><th>Dónde se guarda</th></tr>
 <tr><td>Los 96 lugares originales</td><td>Cargados a mano, con ubicaciones reales</td><td>En el código</td></tr>
@@ -341,7 +368,7 @@
 <tr><td>Fotos</td><td>Administradores</td><td>Supabase</td></tr>
 <tr><td>Registro de errores</td><td>La app, sola</td><td>Supabase</td></tr>
 </table>
-<h3><span class="k">5.2</span>Quién puede hacer qué</h3>
+<h3><span class="k">6.2</span>Quién puede hacer qué</h3>
 <table>
 <tr><th style="width:55%">Acción</th><th>Público</th><th>Administrador</th></tr>
 <tr><td>Ver lugares, accesibilidad, opiniones y fotos</td><td>Sí</td><td>Sí</td></tr>
@@ -354,21 +381,69 @@
 <tr><td>Ver el registro de errores</td><td>No</td><td>Sí</td></tr>
 </table>
 <p>Estas reglas están puestas en la base de datos, no solo en la pantalla: aunque alguien intente saltearse la app, Supabase no lo deja escribir sin una cuenta.</p>
-<h3><span class="k">5.3</span>Las rampas de la Municipalidad</h3>
+<h3><span class="k">6.3</span>Las rampas de la Municipalidad</h3>
 <p>La Municipalidad informa 11.129 rampas en la ciudad (dato de 2022), pero <b>no publica dónde está cada una</b>: solo da el total por distrito. Se revisaron el portal de datos abiertos, el mapa municipal y sus servicios, y no existe un archivo con las ubicaciones. La única manera de conseguirlo es un <b>pedido de acceso a la información pública</b>, solicitando la capa de rampas de la Secretaría de Obras Públicas.</p>
 <p>Mientras tanto, la capa de rampas usa OpenStreetMap, que se puede actualizar cada tanto para sumar lo que la comunidad vaya cargando allí.</p>
-<h3><span class="k">5.4</span>Traer datos de Google de forma automática (opcional)</h3>
+<h3><span class="k">6.4</span>Traer datos de Google de forma automática (opcional)</h3>
 <p>Hay un programa preparado que consulta Google para los 70 lugares principales y trae "entrada accesible" y "baño accesible". No los publica: los deja como sugerencias pendientes para que las apruebes una por una. Para usarlo hace falta una clave de Google Maps, que es gratuita para este volumen pero pide registrar una tarjeta.</p>
+<!-- ===================== 7 (nueva) ===================== -->
+<h2><span class="n">7</span>Cuentas, accesos y servicios</h2>
+<p class="intro">La app se apoya en varios servicios externos. Esta sección dice de quién es cada cuenta, cómo se le da acceso a alguien, qué condiciones tiene cada servicio y cómo pasar todo a la empresa.</p>
+<h3><span class="k">7.1</span>Las cuentas del proyecto</h3>
+<table>
+<tr><th style="width:27%">Servicio</th><th style="width:31%">Para qué</th><th style="width:28%">De quién es hoy</th><th>Plan</th></tr>
+<tr><td>GitHub<span class="sub">repositorio rosario-accesible</span></td><td>Guarda el código y su historial.</td><td>Cuenta personal de Facundo. El repositorio es público.</td><td>Gratis</td></tr>
+<tr><td>Vercel<span class="sub">proyecto access-app-rosario</span></td><td>Publica la app y mide las visitas.</td><td>Cuenta personal de Facundo.</td><td>Hobby, gratis</td></tr>
+<tr><td>Supabase<span class="sub">proyecto xclzrsvlbbaguhlfgmyf</span></td><td>Base de datos, fotos y cuentas de administrador.</td><td>Organización personal de Facundo.</td><td>Gratis</td></tr>
+<tr><td>OpenRouteService</td><td>Calcula las rutas de "Cómo llego".</td><td>Clave a nombre de quien la creó.</td><td>Gratis</td></tr>
+<tr><td>Google Search Console</td><td>Que la app aparezca en Google.</td><td>Cuenta de Google de Facundo.</td><td>Gratis</td></tr>
+</table>
+<h3><span class="k">7.2</span>Darle acceso a alguien</h3>
+<table>
+<tr><th style="width:26%">Para que pueda…</th><th style="width:30%">Dónde</th><th>Cómo</th></tr>
+<tr><td>Cargar datos y moderar</td><td>Supabase → Authentication → Users</td><td>Crearle su cuenta de administrador de la app (ver 5.2). No necesita nada más.</td></tr>
+<tr><td>Ver y cambiar el código</td><td>GitHub → repositorio → Settings → Collaborators</td><td><b>Add people</b> con su usuario de GitHub. Puede subir cambios, y todo lo que llegue a <code>main</code> se publica.</td></tr>
+<tr><td>Entrar a la base de datos</td><td>Supabase → Organization settings → Team</td><td><b>Invite</b> con su mail. Ve las tablas, los permisos y el SQL Editor.</td></tr>
+<tr><td>Ver publicaciones, estadísticas y claves</td><td>Vercel → Settings → Members</td><td>Solo en un equipo con plan Pro: la cuenta personal gratuita no admite miembros. Sin esto igual puede publicar, subiendo a GitHub.</td></tr>
+</table>
+<p>Cuando alguien deja el equipo se hace lo inverso: borrar su cuenta de administrador y sacarlo de GitHub, Supabase y Vercel (lista completa en 12.3).</p>
+<h3><span class="k">7.3</span>Condiciones de cada servicio</h3>
+<table>
+<tr><th style="width:24%">Servicio</th><th style="width:27%">Qué usa la app</th><th>A tener en cuenta</th></tr>
+<tr><td>Supabase</td><td>Base de datos y fotos</td><td>En el plan gratis se pausa tras una semana sin uso (ver 8.3) y tiene un límite de espacio. Con uso diario de la empresa conviene el plan pago.</td></tr>
+<tr><td>Vercel</td><td>Publicación y estadísticas</td><td>El plan Hobby es solo para uso personal y no comercial. Si la app pasa a ser de la empresa, hay que moverla a un equipo con plan Pro.</td></tr>
+<tr><td>OpenRouteService</td><td>Rutas para silla de ruedas</td><td>La clave gratuita permite unas 2.000 rutas por día. Si se superan, "Cómo llego" da error hasta el día siguiente.</td></tr>
+<tr><td>Nominatim (OpenStreetMap)</td><td>Dirección aproximada de rampas y lugares</td><td>Gratis y sin clave, pensado para uso moderado: como máximo una consulta por segundo. Con mucho tráfico habría que pasar a un servicio pago o propio.</td></tr>
+<tr><td>Mapa base de Esri</td><td>El dibujo de las calles</td><td>Se usa sin clave, con la mención "Tiles © Esri" visible. Si el uso se vuelve comercial, revisar sus condiciones o cambiar de proveedor.</td></tr>
+<tr><td>OpenStreetMap (datos)</td><td>Rampas, contactos y parte de la accesibilidad</td><td>Licencia ODbL: hay que citar la fuente, cosa que la app ya hace.</td></tr>
+</table>
+<h3><span class="k">7.4</span>Si el proyecto pasa a la empresa</h3>
+<p>Ningún paso borra datos ni cambia cómo funciona la app. Conviene hacerlos en este orden, en un momento de poco uso:</p>
+<ol class="pasos">
+<li><b>GitHub:</b> crear una organización de la empresa y transferirle el repositorio (Settings → Transfer ownership). Las direcciones viejas redirigen solas.</li>
+<li><b>Vercel:</b> crear un equipo de la empresa con plan Pro y transferirle el proyecto (Settings → Transfer). Después, comprobar que la app siga en la misma dirección y conectada al repositorio (Settings → Git).</li>
+<li><b>Supabase:</b> crear una organización de la empresa y transferirle el proyecto (Project Settings → General → Transfer project). Los datos y las claves no cambian.</li>
+<li><b>OpenRouteService y Google Search Console:</b> crear cuentas de la empresa, generar una clave nueva de rutas y reemplazarla en Vercel, y sumar a la empresa como propietaria en Search Console.</li>
+<li><b>Contacto:</b> cambiar el mail y el WhatsApp de la app (ver 8.7) y los datos de esta guía y del folleto.</li>
+</ol>
+<h3><span class="k">7.5</span>Claves y datos personales</h3>
+<div class="box ojo">
+<span class="t">El código es público</span>
+<p>Cualquiera puede leer el repositorio de GitHub. Por eso ninguna contraseña ni clave secreta va en los archivos del proyecto: las claves viven solo en Vercel y en el <code>.env.local</code> de cada computadora, y se pasan por un medio privado, nunca en un grupo ni en un mail a varias personas.</p>
+</div>
+<p>La clave de Supabase que usa la app (la "anon") es pública por diseño: lo que protege los datos son los permisos de la base (ver 6.2). La que nunca debe ponerse en la app ni compartirse es la "service_role", que saltea esos permisos.</p>
+<p><b>Datos personales:</b> la app no pide registrarse. Las opiniones y sugerencias pueden traer un nombre (opcional) y texto libre, y el registro de errores guarda el tipo de navegador. La ubicación de "Cerca de mí" no se guarda; para trazar una ruta se envía a OpenRouteService.</p>
+
 <!-- ===================== 6 ===================== -->
-<h2><span class="n">6</span>Cómo se mantiene</h2>
+<h2><span class="n">8</span>Cómo se mantiene</h2>
 <p class="intro">Lo necesario para que la app siga publicada y al día: cómo se publican los cambios, qué hacer con la base de datos y qué es cada cosa de la carpeta.</p>
-<h3><span class="k">6.1</span>Guardar y publicar un cambio</h3>
-<p>Doble clic en <b>SUBIR A GITHUB.bat</b>. Eso guarda el código en GitHub y, como Vercel está conectado a GitHub, <b>la versión nueva se publica sola</b> en uno o dos minutos. No hay que hacer nada más.</p>
+<h3><span class="k">8.1</span>Guardar y publicar un cambio</h3>
+<p>Cada vez que un cambio llega a la rama principal (<code>main</code>) de GitHub, <b>Vercel publica la versión nueva sola</b> en uno o dos minutos. En la computadora de Facundo eso se hace con doble clic en <b>SUBIR A GITHUB.bat</b>; el resto del equipo sube con git y prueba antes en una vista previa (ver 9.4).</p>
 <p>Los datos que se cargan desde la app (accesibilidad, opiniones, lugares, fotos) no necesitan nada de esto: se guardan y se ven al instante.</p>
-<h3><span class="k">6.2</span>Publicar a mano, por si el automático falla</h3>
-<p>Doble clic en <b>PUBLICAR EN VERCEL.bat</b>. Compila y publica directamente desde tu computadora. Si Vercel pide confirmar que sos vos, abre una dirección en el navegador: se entra, se toca "Confirm" y sigue solo.</p>
+<h3><span class="k">8.2</span>Publicar a mano, por si el automático falla</h3>
+<p>Doble clic en <b>PUBLICAR EN VERCEL.bat</b>. Compila y publica directamente desde la computadora; hace falta tener acceso al proyecto en Vercel. Si Vercel pide confirmar la identidad, abre una dirección en el navegador: se entra, se toca "Confirm" y sigue solo.</p>
 <p>En vercel.com → proyecto → <b>Deployments</b> está el historial de publicaciones y se ve si alguna falló.</p>
-<h3><span class="k">6.3</span>Cambios en la base de datos</h3>
+<h3><span class="k">8.3</span>Cambios en la base de datos</h3>
 <p>Cuando una función nueva necesita guardar algo que antes no existía, viene acompañada de un archivo en la carpeta <code>supabase</code>. Se aplica así:</p>
 <ol class="pasos">
 <li>Entrar a supabase.com y abrir el proyecto.</li>
@@ -382,32 +457,35 @@
 <span class="t">Supabase se duerme</span>
 <p>En el plan gratuito, Supabase pausa el proyecto si pasa una semana sin que nadie use la app. Mientras está pausado, la app se ve pero sin opiniones ni datos cargados, y no se puede entrar como administrador. Se soluciona entrando a supabase.com y tocando <b>Restore project</b>; en dos o tres minutos vuelve todo. No se pierde nada.</p>
 </div>
-<h3><span class="k">6.4</span>Las claves</h3>
-<p>La app necesita tres claves para conectarse a los servicios. No se suben a GitHub: están en el archivo <code>.env.local</code> de tu computadora y en Vercel → Settings → Environment Variables.</p>
+<h3><span class="k">8.4</span>Las claves</h3>
+<p>La app usa tres claves para conectarse a los servicios. No se suben a GitHub, porque el código es público: están en Vercel → Settings → Environment Variables (cargadas para la versión publicada y para las vistas previas) y en el archivo <code>.env.local</code> de cada computadora donde se programa.</p>
 <table>
 <tr><th style="width:36%">Clave</th><th>Para qué</th><th style="width:34%">Si falta</th></tr>
 <tr><td><code>VITE_SUPABASE_URL</code><br/><code>VITE_SUPABASE_ANON_KEY</code></td><td>Conectar con la base de datos</td><td>La app guarda todo solo en el navegador de cada persona</td></tr>
 <tr><td><code>VITE_ORS_API_KEY</code></td><td>Calcular la ruta accesible</td><td>No aparece el botón "Cómo llego"</td></tr>
+<tr><td><code>GOOGLE_MAPS_API_KEY</code></td><td>Solo el programa que trae datos de Google (ver 6.4). Va únicamente en <code>.env.local</code>.</td><td>Ese programa no funciona; la app, sí</td></tr>
 </table>
-<h3><span class="k">6.5</span>Estadísticas de visitas</h3>
+<h3><span class="k">8.5</span>Estadísticas de visitas</h3>
 <p>En vercel.com → proyecto → <b>Analytics</b> se ve cuánta gente entra, desde qué dispositivo y de dónde llega. Es anónimo y no usa cookies.</p>
-<h3><span class="k">6.6</span>Qué es cada cosa de la carpeta del proyecto</h3>
+<h3><span class="k">8.6</span>Qué es cada cosa de la carpeta del proyecto</h3>
 <table>
 <tr><th style="width:34%">Archivo o carpeta</th><th>Para qué sirve</th></tr>
 <tr><td><b>GUIA.pdf</b></td><td>Esta guía.</td></tr>
 <tr><td><b>FOLLETO.pdf</b></td><td>Volante de una página para presentar el proyecto a organizaciones y pedirles que lo difundan.</td></tr>
-<tr><td><b>SUBIR A GITHUB.bat</b></td><td>Guarda el código y dispara la publicación automática.</td></tr>
+<tr><td><b>PLAN DE DIFUSION.pdf</b></td><td>Plan para redes sociales y presencia en internet: roles, calendario, textos y medición.</td></tr>
+<tr><td><code>piezas-redes</code></td><td>Imágenes listas para publicar en redes.</td></tr>
+<tr><td><b>SUBIR A GITHUB.bat</b></td><td>Guarda el código y dispara la publicación automática. Solo funciona en la computadora de Facundo: el resto del equipo usa git (ver 9.4).</td></tr>
 <tr><td><b>PUBLICAR EN VERCEL.bat</b></td><td>Publicación manual, de repuesto.</td></tr>
 <tr><td>README.md</td><td>La presentación del proyecto que se ve en GitHub.</td></tr>
 <tr><td><code>src</code></td><td>El código de la app. Adentro: <code>App.jsx</code> (pantalla principal), <code>components</code> (mapa, ficha y ventanas), <code>data</code> (lugares y colores), <code>lib</code> (distancias y rutas), <code>db.js</code> (conexión con Supabase), más los archivos de contactos y rampas.</td></tr>
 <tr><td><code>public</code></td><td>Íconos, imagen para compartir y archivos para Google.</td></tr>
-<tr><td><code>supabase</code></td><td>Los archivos de la base de datos (ver 6.3).</td></tr>
+<tr><td><code>supabase</code></td><td>Los archivos de la base de datos (ver 8.3).</td></tr>
 <tr><td><code>scripts</code></td><td>Programas auxiliares: actualizar rampas, traer datos de Google y la fuente de esta guía y del folleto.</td></tr>
-<tr><td><code>node_modules</code></td><td>Piezas que la app necesita para funcionar en tu computadora. Pesa mucho, se instala sola y no se sube a GitHub.</td></tr>
+<tr><td><code>node_modules</code></td><td>Piezas que la app necesita para funcionar en la computadora. Pesa mucho, se instala sola y no se sube a GitHub.</td></tr>
 <tr><td>Archivos sueltos: <code>index.html</code>, <code>package.json</code>, <code>vite.config.js</code>, <code>tailwind.config.js</code>, etc.</td><td>Configuración. No se tocan a mano.</td></tr>
-<tr><td><code>.env.local</code></td><td>Las claves (ver 6.4). No se comparte ni se sube.</td></tr>
+<tr><td><code>.env.local</code></td><td>Las claves (ver 8.4). No se comparte ni se sube.</td></tr>
 </table>
-<h3><span class="k">6.7</span>Cosas que se cambian en un solo lugar</h3>
+<h3><span class="k">8.7</span>Cosas que se cambian en un solo lugar</h3>
 <table>
 <tr><th style="width:42%">Qué</th><th>Dónde</th></tr>
 <tr><td>El mail de "Escribinos"</td><td><code>CONTACT_EMAIL</code> en <code>src/data/constants.js</code></td></tr>
@@ -415,10 +493,86 @@
 <tr><td>El color de cada tipo de lugar</td><td><code>TYPE_COLORS</code> en el mismo archivo</td></tr>
 <tr><td>Los radios de "Cerca de mí"</td><td><code>RADII</code> en <code>src/App.jsx</code></td></tr>
 <tr><td>Los datos o el contacto de un lugar original</td><td><code>src/data/places.js</code> y <code>src/contactos.json</code></td></tr>
-<tr><td>El texto de esta guía o del folleto</td><td><code>scripts/guia</code>: editar el archivo y hacer doble clic en <b>GENERAR PDF.bat</b></td></tr>
+<tr><td>El texto de esta guía, el folleto, el plan de difusión o las piezas</td><td><code>scripts/guia</code>: editar el archivo y hacer doble clic en <b>GENERAR PDF.bat</b>. Si quedan páginas a medio llenar, correr <code>ajustar-paginas.py</code> de la misma carpeta.</td></tr>
 </table>
+<!-- ===================== 9 (nueva) ===================== -->
+<h2><span class="n">9</span>Guía técnica</h2>
+<p class="intro">Para quien programa: con qué está hecha la app, cómo correrla en una computadora, cómo se guardan los datos y cómo publicar cambios sin riesgo.</p>
+<h3><span class="k">9.1</span>Con qué está hecha</h3>
+<table>
+<tr><th style="width:30%">Parte</th><th>Tecnología</th></tr>
+<tr><td>Pantallas</td><td>React 18, armado con Vite 6 y estilos con Tailwind CSS 3</td></tr>
+<tr><td>Mapa</td><td>Leaflet 1.9 con el mapa base de Esri; las rampas se dibujan en canvas para que vaya fluido</td></tr>
+<tr><td>App instalable</td><td>vite-plugin-pwa: funciona sin conexión y avisa cuando hay versión nueva</td></tr>
+<tr><td>Datos, fotos y cuentas</td><td>Supabase (PostgreSQL con permisos por fila, Storage y Auth) a través de supabase-js</td></tr>
+<tr><td>Publicación y estadísticas</td><td>Vercel, conectado a GitHub, y Vercel Analytics</td></tr>
+<tr><td>Servicios externos</td><td>OpenRouteService (rutas) y Nominatim (direcciones)</td></tr>
+</table>
+<p>No hay un servidor propio: la app corre entera en el navegador y habla directo con Supabase y los demás servicios.</p>
+<h3><span class="k">9.2</span>Correr la app en una computadora</h3>
+<ol class="pasos">
+<li>Instalar Node.js (versión 20 o más nueva) y Git.</li>
+<li>Bajar el código: <code>git clone https://github.com/facuarregui77/rosario-accesible.git</code></li>
+<li>Entrar a la carpeta e instalar lo necesario: <code>npm install</code></li>
+<li>Copiar <code>.env.example</code> con el nombre <code>.env.local</code> y completar las claves (las da el responsable; también están en Vercel → Settings → Environment Variables). Para "Cómo llego", agregar una línea <code>VITE_ORS_API_KEY=</code> con su clave.</li>
+<li>Encender la app con <code>npm run dev</code>: se abre en <code>http://localhost:5173</code>.</li>
+<li>Antes de subir un cambio, comprobar que compile con <code>npm run build</code>.</li>
+</ol>
+<div class="box ojo">
+<span class="t">Con las claves se trabaja sobre los datos reales</span>
+<p>Con el <code>.env.local</code> completo, la app de la computadora usa la misma base de datos que la publicada: lo que se cargue o borre ahí se ve en el mapa de todos. Sin ese archivo, la app funciona en "modo local", guarda todo solo en el navegador y el candado pide un código (está en <code>src/data/constants.js</code>): sirve para probar sin tocar nada.</p>
+</div>
+<h3><span class="k">9.3</span>Cómo se guardan los datos</h3>
+<p>Todo se cruza por el identificador de cada lugar (por ejemplo, <code>elcairo</code>). Los 96 lugares originales tienen el suyo en <code>src/data/places.js</code>; los agregados desde la app, en la tabla <code>places</code>. El archivo <code>src/db.js</code> concentra todo lo que habla con Supabase.</p>
+<table>
+<tr><th style="width:30%">En Supabase</th><th>Qué guarda</th></tr>
+<tr><td><code>place_access</code></td><td>La accesibilidad cargada por el equipo: un registro por lugar con el semáforo y los cinco criterios. Tiene prioridad sobre el dato de OpenStreetMap.</td></tr>
+<tr><td><code>reviews</code></td><td>Las opiniones del público.</td></tr>
+<tr><td><code>access_suggestions</code></td><td>Las sugerencias del público, con su estado: pendiente, aprobada o rechazada.</td></tr>
+<tr><td><code>places</code></td><td>Los lugares agregados desde la app.</td></tr>
+<tr><td><code>app_errors</code></td><td>Los errores que la app registra sola.</td></tr>
+<tr><td>Storage: <code>place-photos</code></td><td>Las fotos, en una carpeta por lugar.</td></tr>
+<tr><td>Authentication</td><td>Las cuentas de administrador.</td></tr>
+</table>
+<div class="box ojo">
+<span class="t">No cambiar identificadores</span>
+<p>Si se cambia el identificador de un lugar que ya existe, todo lo cargado para él (accesibilidad, opiniones, fotos) queda desconectado. Para corregir el nombre se cambia el nombre, nunca el identificador.</p>
+</div>
+<h3><span class="k">9.4</span>Publicar un cambio sin riesgo</h3>
+<p>Todo lo que llega a la rama principal (<code>main</code>) se publica solo en la dirección pública. Con más de una persona, cada cambio se prueba antes en una rama aparte:</p>
+<ol class="pasos">
+<li>Crear una rama: <code>git switch -c nombre-del-cambio</code></li>
+<li>Hacer el cambio, probarlo con <code>npm run dev</code> y guardarlo: <code>git add .</code> y <code>git commit -m "Qué cambié"</code></li>
+<li>Subir la rama: <code>git push -u origin nombre-del-cambio</code>. Vercel arma una <b>vista previa</b> con su propio enlace, que el público no ve (aparece en GitHub y en vercel.com → Deployments).</li>
+<li>Revisar la vista previa. Si está bien, abrir en GitHub un <b>Pull Request</b> hacia <code>main</code>, que otra persona lo mire y tocar <b>Merge</b>. A los dos minutos queda publicado.</li>
+</ol>
+<p>Las vistas previas usan la misma base de datos real: para probar cargas, crear un lugar de prueba y borrarlo al terminar. Para abrir el enlace de una vista previa puede hacer falta haber iniciado sesión en Vercel con acceso al proyecto.</p>
+<h3><span class="k">9.5</span>Volver atrás una publicación</h3>
+<p>Si una versión nueva salió con errores: vercel.com → proyecto → <b>Deployments</b>, abrir la publicación anterior que funcionaba y elegir <b>Instant Rollback</b>. La app vuelve a esa versión en segundos. En el plan gratuito solo se puede volver a la publicación inmediatamente anterior.</p>
+<p>Después de volver atrás, Vercel deja de publicar solo los cambios nuevos hasta que se corrige el error y se toca <b>Undo Rollback</b> o se elige <b>Promote</b> en la publicación corregida.</p>
+<h3><span class="k">9.6</span>Tareas periódicas</h3>
+<table>
+<tr><th style="width:34%">Tarea</th><th style="width:44%">Cómo</th><th>Cada cuánto</th></tr>
+<tr><td>Revisar que la base no esté pausada</td><td>Abrir la app y ver que haya opiniones</td><td>Una vez por semana</td></tr>
+<tr><td>Revisar errores registrados</td><td>Análisis → Errores registrados</td><td>Una vez por semana</td></tr>
+<tr><td>Actualizar las rampas</td><td><code>node scripts/actualizar-rampas-osm.mjs</code> y subir el cambio</td><td>Cada algunos meses</td></tr>
+<tr><td>Traer datos de Google</td><td><code>node scripts/enrich-google-places.mjs</code> y aprobar en Sugerencias</td><td>Cuando se suman lugares</td></tr>
+<tr><td>Actualizar guía y folleto</td><td>Editar <code>scripts/guia</code> y doble clic en GENERAR PDF.bat</td><td>Con cada cambio visible</td></tr>
+</table>
+
+<h3><span class="k">9.7</span>Antes de unir un cambio a <code>main</code></h3>
+<ul>
+<li>Compila sin errores con <code>npm run build</code>.</li>
+<li>Se probó en la vista previa, en el celular y en la computadora.</li>
+<li>Si cambia la base de datos, la migración está en <code>supabase/</code> y ya se corrió.</li>
+</ul>
+<div class="box info">
+<span class="t">Si aparece una tarea nueva</span>
+<p>Cuando alguien del equipo resuelva algo que esta guía no explica, conviene sumarlo acá antes de darlo por terminado. Así la próxima persona no depende de la memoria de nadie.</p>
+</div>
+
 <!-- ===================== 7 ===================== -->
-<h2><span class="n">7</span>Si algo falla</h2>
+<h2><span class="n">10</span>Si algo falla</h2>
 <p class="intro">Los problemas más probables, su causa y cómo se resuelven. Casi todos se arreglan en un par de minutos.</p>
 <table class="plano">
 <tr><th style="width:34%">Qué pasa</th><th style="width:30%">Causa más probable</th><th>Qué hacer</th></tr>
@@ -429,12 +583,15 @@
 <tr><td>Un colaborador no puede entrar</td><td>La cuenta se creó sin "Auto Confirm User"</td><td>Borrar ese usuario en Supabase y crearlo de nuevo con la opción tildada.</td></tr>
 <tr><td>"Cerca de mí" o "Relevar" no encuentran la ubicación</td><td>El navegador no tiene permiso</td><td>Tocar el candadito de la barra de direcciones → Ubicación → Permitir.</td></tr>
 <tr><td>No aparece el botón "Cómo llego"</td><td>Falta la clave de rutas en Vercel</td><td>Cargar <code>VITE_ORS_API_KEY</code> en Environment Variables y volver a publicar.</td></tr>
-<tr><td>"No se pudo subir la foto"</td><td>Falta crear el espacio de fotos en Supabase</td><td>Correr <code>migracion-fotos.sql</code> (ver 6.3).</td></tr>
+<tr><td>"No se pudo subir la foto"</td><td>Falta crear el espacio de fotos en Supabase</td><td>Correr <code>migracion-fotos.sql</code> (ver 8.3).</td></tr>
 <tr><td>Aparecen opiniones basura</td><td>Alguien abusando</td><td>Entrar como administrador y borrarlas con el tachito.</td></tr>
 <tr><td>A una persona se le rompe algo y no sabe explicar qué</td><td>—</td><td>Mirar "Errores registrados" en Análisis.</td></tr>
+<tr><td>Se publicó un cambio y la app dejó de andar</td><td>Un error en el código nuevo</td><td>Volver a la versión anterior con Instant Rollback (ver 9.5) y corregir con calma.</td></tr>
+<tr><td>SUBIR A GITHUB.bat no anda en otra computadora</td><td>Usa una herramienta que solo está en la de Facundo</td><td>Subir con git (ver 9.4).</td></tr>
+<tr><td>No se puede sumar a alguien en Vercel</td><td>La cuenta gratuita no admite miembros</td><td>Pasar el proyecto a un equipo con plan Pro (ver 7.4).</td></tr>
 </table>
 <!-- ===================== 8 ===================== -->
-<h2><span class="n">8</span>Buenas prácticas y próximos pasos</h2>
+<h2><span class="n">11</span>Buenas prácticas y próximos pasos</h2>
 <p class="intro">Recomendaciones para que los datos sean confiables y los pasos que más harían crecer el proyecto.</p>
 <div class="box ok">
 <span class="t">Para cargar datos</span>
@@ -449,12 +606,46 @@
 <h3>Lo que más haría crecer el proyecto</h3>
 <table>
 <tr><th style="width:30%">Paso</th><th>Por qué</th></tr>
+<tr><td><b>Cuentas de la empresa</b></td><td>Hoy todo está a nombre de una persona. Si el proyecto pasa a la empresa, las cuentas tienen que ser de la empresa (ver 7.4).</td></tr>
 <tr><td><b>Completar datos</b></td><td>De los 96 lugares, 24 tienen dato de acceso. Una tarde de relevamiento por el centro cambia el mapa por completo.</td></tr>
-<tr><td><b>Difusión</b></td><td>Compartir el enlace y el folleto con asociaciones de personas con discapacidad, medios y el municipio. Más uso trae más sugerencias, y los enlaces desde otros sitios mejoran la posición en Google.</td></tr>
+<tr><td><b>Difusión</b></td><td>Seguir el <b>PLAN DE DIFUSION.pdf</b>: redes sociales, organizaciones, medios y enlaces desde otros sitios, con textos listos, piezas gráficas y cómo medir los resultados.</td></tr>
 <tr><td><b>Dominio propio</b></td><td>Una dirección como rosarioaccesible.com.ar da más confianza que la de Vercel. Se compra en NIC Argentina y se agrega en Vercel → Domains.</td></tr>
-<tr><td><b>Rampas oficiales</b></td><td>Hacer el pedido de información pública a la Municipalidad (ver 5.3) multiplicaría por diez la capa de rampas.</td></tr>
-<tr><td><b>Datos de Google</b></td><td>Con la clave de Google Maps se pueden traer de una vez los datos de entrada y baño accesibles (ver 5.4).</td></tr>
+<tr><td><b>Rampas oficiales</b></td><td>Hacer el pedido de información pública a la Municipalidad (ver 6.3) multiplicaría por diez la capa de rampas.</td></tr>
+<tr><td><b>Datos de Google</b></td><td>Con la clave de Google Maps se pueden traer de una vez los datos de entrada y baño accesibles (ver 6.4).</td></tr>
 </table>
+<!-- ===================== 12 (nueva) ===================== -->
+<h2><span class="n">12</span>Glosario e incorporación</h2>
+<p class="intro">Las palabras técnicas que aparecen en esta guía y los pasos para cuando alguien entra o se va del equipo.</p>
+<h3><span class="k">12.1</span>Glosario</h3>
+<table class="plano">
+<tr><th style="width:30%">Palabra</th><th>Qué significa</th></tr>
+<tr><td>Administrador</td><td>Persona con cuenta para editar datos desde la app.</td></tr>
+<tr><td>Relevar</td><td>Ir a un lugar, o consultar una fuente confiable, y cargar su accesibilidad.</td></tr>
+<tr><td>Repositorio</td><td>La carpeta del código guardada en GitHub, con el historial de todos los cambios.</td></tr>
+<tr><td>Rama y <code>main</code></td><td>Una rama es una copia del código para trabajar un cambio sin afectar al resto. <code>main</code> es la rama que se publica.</td></tr>
+<tr><td>Publicar (deploy)</td><td>Poner en internet una versión nueva de la app.</td></tr>
+<tr><td>Vista previa (preview)</td><td>Una publicación de prueba con su propio enlace, que el público no ve.</td></tr>
+<tr><td>Pull Request</td><td>Pedido para sumar a <code>main</code> los cambios de una rama, para que otra persona los revise antes.</td></tr>
+<tr><td>Migración</td><td>Archivo que cambia la estructura de la base de datos: agrega tablas, columnas o permisos.</td></tr>
+<tr><td>Permisos (RLS)</td><td>Reglas de la base que deciden quién puede leer o escribir cada tabla.</td></tr>
+<tr><td>Clave (variable de entorno)</td><td>Dato de configuración, a veces secreto, que la app necesita para conectarse a un servicio.</td></tr>
+<tr><td>App instalable (PWA)</td><td>Página web que se agrega a la pantalla del celular y abre aunque no haya señal.</td></tr>
+<tr><td>OpenStreetMap</td><td>Mapa colaborativo y abierto del que salen las rampas y parte de los datos.</td></tr>
+</table>
+<h3><span class="k">12.2</span>Cuando alguien entra al equipo</h3>
+<ol class="pasos">
+<li>Presentarle el proyecto con esta guía y el folleto, y pedirle que lea las secciones de su rol (ver sección 2).</li>
+<li>Crearle su propia cuenta de administrador de la app (ver 5.2). Nunca compartir una cuenta entre varias personas.</li>
+<li>Si va a programar: invitarlo a GitHub y Supabase (ver 7.2), pasarle las claves por un medio privado y acompañarlo a correr la app en su computadora (ver 9.2).</li>
+<li>Hacer con esa persona una primera tarea: relevar un lugar, moderar una sugerencia o publicar un cambio chico en una vista previa.</li>
+</ol>
+<h3><span class="k">12.3</span>Cuando alguien deja el equipo</h3>
+<ol class="pasos">
+<li>Borrar su cuenta de administrador (ver 5.2). Lo que cargó queda en el mapa.</li>
+<li>Sacarlo de GitHub, Supabase y Vercel (ver 7.2).</li>
+<li>Cambiar la contraseña de cualquier cuenta que haya conocido y, si tenía la clave de rutas, generar una nueva y reemplazarla en Vercel.</li>
+</ol>
+
 <p style="margin-top:12mm; color:#64748b; font-size:8.2pt; border-top:0.6px solid #e2e8f0; padding-top:3mm">Rosario Access Map · Proyecto sin fines de lucro, con fines educativos y de bien común · Facundo Arregui</p>
 </body>
 </html>

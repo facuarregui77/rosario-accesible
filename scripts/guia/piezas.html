@@ -1,0 +1,134 @@
+<!doctype html>
+<!--
+  FUENTE de las piezas para redes (carpeta "piezas-redes"). Mismo diseño que la guía y el folleto.
+  Cada .pieza se exporta como imagen: posts de 1080 x 1080 y una historia de 1080 x 1920.
+  Para regenerarlas: doble clic en "GENERAR PDF.bat" (también rehace las imágenes).
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Piezas para redes — Rosario Access Map</title>
+<link rel="stylesheet" href="estilo.css">
+<style>
+  body { margin: 0; background: #888; }
+  .pieza { width: 540px; height: 540px; position: relative; overflow: hidden; margin: 20px; font-size: 16px; line-height: 1.35; }
+  .pieza.historia { height: 960px; }
+  .franja { position: absolute; left: 0; right: 0; top: 0; height: 9px; }
+  .marca .iso { width: 40px; height: 40px; border-radius: 10px; }
+  .marca .nombre { font-size: 17px; }
+  .marca .nombre small { font-size: 11px; }
+  .oscuro { background: var(--marino); color: #dbe6f7; }
+  .oscuro .marca .nombre { color: #fff; }
+  .oscuro .marca .nombre small { color: #a9bddf; }
+  .claro { background: #fff; color: var(--texto); }
+  .suave { background: #fff7ed; color: var(--texto); }
+  .pad { position: absolute; left: 38px; right: 38px; top: 38px; bottom: 34px; }
+  h1 { font-size: 42px; line-height: 1.04; letter-spacing: -1.4px; margin: 0; color: inherit; }
+  .oscuro h1 { color: #fff; }
+  .sobre { font-size: 12px; letter-spacing: 2px; }
+  .url { position: absolute; left: 38px; bottom: 30px; font-weight: 800; font-size: 17px; letter-spacing: -0.2px; }
+  .oscuro .url { color: #fff; }
+  .claro .url, .suave .url { color: var(--tinta); }
+  .url small { display: block; font-weight: 600; font-size: 11px; letter-spacing: 1.6px; color: var(--naranja); margin-bottom: 3px; text-transform: uppercase; }
+  /* celular tipo iPhone, como en el folleto */
+  .cel { position: absolute; border-radius: 26px; overflow: hidden; border: 8px solid #0b1b3f; background: #0b1b3f; box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+  .cel .estado { position: relative; height: 18px; background: #fff; border-radius: 18px 18px 0 0; display: flex; justify-content: space-between; align-items: center; padding: 0 14px 0 16px; font-size: 8px; font-weight: 700; color: #0b1b3f; }
+  .cel .estado::after { content: ""; position: absolute; left: 50%; top: -1px; transform: translateX(-50%); width: 44%; height: 14px; background: #0b1b3f; border-radius: 0 0 10px 10px; }
+  .cel .bat { width: 15px; height: 7px; border: 1.4px solid #0b1b3f; border-radius: 2px; position: relative; }
+  .cel .bat::before { content: ""; position: absolute; left: 1px; top: 1px; bottom: 1px; width: 70%; background: #0b1b3f; border-radius: 1px; }
+  .cel img { display: block; width: 100%; border-radius: 0 0 18px 18px; }
+  .cel::after { content: ""; position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); width: 34%; height: 4px; border-radius: 4px; background: rgba(11,27,63,.55); }
+  .sem { list-style: none; padding: 0; margin: 0; }
+  .sem li { display: flex; align-items: center; gap: 14px; font-size: 20px; font-weight: 600; color: var(--tinta); padding: 9px 0; border-bottom: 1px solid var(--linea); }
+  .sem li:last-child { border-bottom: 0; }
+  .sem .d { width: 22px; height: 22px; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px #fff, 0 0 0 4px #cbd5e1; }
+  .sem small { display: block; font-size: 12.5px; font-weight: 400; color: var(--suave); }
+  .pasos3 { list-style: none; counter-reset: p; padding: 0; margin: 0; }
+  .pasos3 li { counter-increment: p; display: flex; gap: 14px; align-items: center; font-size: 19px; font-weight: 600; color: var(--tinta); margin-bottom: 16px; }
+  .pasos3 li::before { content: counter(p); flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--naranja); color: #fff; font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · Lanzamiento -->
+<div class="pieza oscuro" id="p1-lanzamiento">
+  <div class="franja" style="background:var(--franja)"></div>
+  <div class="pad">
+    <div class="marca"><div class="iso"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div><div class="nombre">Rosario Access Map<small>Mapa colaborativo de accesibilidad</small></div></div>
+    <div style="width:275px; margin-top:44px">
+      <div class="sobre" style="color:#fdba74">GRATIS · SIN REGISTRO</div>
+      <h1 style="margin-top:10px">¿Es accesible? Fijate antes de salir.</h1>
+      <p style="font-size:16px; margin:16px 0 0; color:#c7d5ee">Bares, hospitales, escuelas, parques y oficinas de Rosario, con su accesibilidad para personas con movilidad reducida.</p>
+    </div>
+  </div>
+  <div class="cel" style="right:34px; top:92px; width:178px"><div class="estado"><span>9:41</span><span class="bat"></span></div><img src="img/movil.jpg" alt=""></div>
+  <div class="url"><small>Entrá desde el celular</small>access-app-rosario.vercel.app</div>
+</div>
+
+<!-- 2 · Cómo leer el mapa -->
+<div class="pieza claro" id="p2-como-leer">
+  <div class="franja" style="background:var(--franja)"></div>
+  <div class="pad">
+    <div class="sobre" style="color:var(--naranja)">ROSARIO ACCESS MAP</div>
+    <h1 style="color:var(--tinta); margin:8px 0 18px; font-size:38px">Cómo leer el mapa</h1>
+    <div style="display:flex; gap:26px; align-items:flex-start">
+      <svg width="92" height="112" viewBox="0 0 24 29" style="flex:none; margin-top:6px"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#d946ef" stroke="#fff" stroke-width="1"/><circle cx="12" cy="9" r="4.6" fill="#fff"/><circle cx="12" cy="9" r="2.4" fill="#10b981"/></svg>
+      <ul class="sem" style="flex:1">
+        <li><span class="d" style="background:#10b981"></span><span>Accesible<small>se puede entrar en silla de ruedas</small></span></li>
+        <li><span class="d" style="background:#f59e0b"></span><span>Parcial<small>con alguna barrera</small></span></li>
+        <li><span class="d" style="background:#ef4444"></span><span>Sin acceso</span></li>
+        <li><span class="d" style="background:#94a3b8"></span><span>Sin datos<small>todavía nadie lo relevó</small></span></li>
+      </ul>
+    </div>
+    <p style="font-size:14.5px; margin:16px 0 0; color:var(--suave)">El puntito del centro dice si es accesible. El color del pin, qué tipo de lugar es.</p>
+  </div>
+  <div class="url"><small>Probalo</small>access-app-rosario.vercel.app</div>
+</div>
+
+<!-- 3 · Ayudanos -->
+<div class="pieza suave" id="p3-ayudanos">
+  <div class="franja" style="background:var(--naranja)"></div>
+  <div class="pad">
+    <div class="marca"><div class="iso"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div><div class="nombre">Rosario Access Map<small>Mapa colaborativo de accesibilidad</small></div></div>
+    <h1 style="color:var(--tinta); margin:34px 0 26px; font-size:39px">¿Conocés un lugar? Contanos si es accesible.</h1>
+    <ol class="pasos3">
+      <li>Buscalo en el mapa</li>
+      <li>Tocá "¿Conocés este lugar?"</li>
+      <li>Marcá lo que viste y enviá</li>
+    </ol>
+    <span class="chip" style="background:#fff; color:#9a3412; border:1px solid #fed7aa">Sin cuenta · en 20 segundos · lo revisamos antes de publicar</span>
+  </div>
+  <div class="url"><small>Sumá tu dato</small>access-app-rosario.vercel.app</div>
+</div>
+
+<!-- 4 · Lugar de la semana (ejemplo con un dato real y verificable) -->
+<div class="pieza claro" id="p4-lugar-semana">
+  <div class="franja" style="background:var(--franja)"></div>
+  <div class="pad">
+    <div class="sobre" style="color:var(--naranja)">LUGAR DE LA SEMANA</div>
+    <h1 style="color:var(--tinta); margin:10px 0 6px; font-size:40px">Monumento Nacional a la Bandera</h1>
+    <div style="font-size:15px; color:var(--suave); margin-bottom:26px">Cultural · Centro de Rosario</div>
+    <div style="background:#ecfdf5; border-radius:14px; padding:18px 20px; display:flex; gap:16px; align-items:center">
+      <div style="width:54px; height:54px; border-radius:50%; background:#10b981; display:flex; align-items:center; justify-content:center; flex:none"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div>
+      <div><div style="font-size:21px; font-weight:800; color:#065f46">Accesible en silla de ruedas</div><div style="font-size:13.5px; color:#047857; margin-top:2px">Dato verificable en OpenStreetMap</div></div>
+    </div>
+    <p style="font-size:15px; margin:22px 0 0">¿Fuiste y viste algo distinto? ¿Tiene baño adaptado o ascensor? Contanos desde su ficha en el mapa.</p>
+  </div>
+  <div class="url"><small>Mirá la ficha completa</small>access-app-rosario.vercel.app</div>
+</div>
+
+<!-- 5 · Historia (vertical) -->
+<div class="pieza historia oscuro" id="p5-historia">
+  <div class="franja" style="background:var(--franja)"></div>
+  <div class="pad">
+    <div class="marca"><div class="iso"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg></div><div class="nombre">Rosario Access Map<small>Mapa colaborativo de accesibilidad</small></div></div>
+    <h1 style="margin-top:46px; font-size:46px">Antes de salir, fijate si el lugar es accesible.</h1>
+    <p style="font-size:17px; margin:16px 0 0; color:#c7d5ee">Gratis, sin registro y hecho en Rosario.</p>
+  </div>
+  <div class="cel" style="left:50%; transform:translateX(-50%); top:372px; width:262px"><div class="estado"><span>9:41</span><span class="bat"></span></div><img src="img/movil.jpg" alt=""></div>
+  <div class="url" style="left:0; right:0; text-align:center; bottom:38px"><small>Tocá el enlace</small>access-app-rosario.vercel.app</div>
+</div>
+
+</body>
+</html>
