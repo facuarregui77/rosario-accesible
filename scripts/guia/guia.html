@@ -47,10 +47,12 @@
   .indice .box { margin-bottom: 0; }
 </style>
 <style id="ajustes">
-  /* Altos de las capturas calculados para que ninguna página quede con hueco al pie */
-  #f3 img { max-height: 106.0mm !important; }
+  /* Altos de las capturas: páginas llenas y cada captura al costado de su texto */
+  #f3 img { max-height: 92.0mm !important; }
   #f4 img { max-height: 98.0mm !important; }
-  #f5 img { max-height: 82.0mm !important; }
+  #f5 img { max-height: 72.0mm !important; }
+  #f6 img { max-height: 90.0mm !important; }
+  #f7 img { max-height: 80.0mm !important; }
 </style>
 </head>
 <body>
@@ -510,6 +512,10 @@
 </table>
 <p>No hay un servidor propio: la app corre entera en el navegador y habla directo con Supabase y los demás servicios.</p>
 <h3><span class="k">9.2</span>Correr la app en una computadora</h3>
+<div class="box ojo">
+<span class="t">Con las claves se trabaja sobre los datos reales</span>
+<p>Con el <code>.env.local</code> completo, la app de la computadora usa la misma base de datos que la publicada: lo que se cargue o borre ahí se ve en el mapa de todos. Sin ese archivo, la app funciona en "modo local", guarda todo solo en el navegador y el candado pide un código (está en <code>src/data/constants.js</code>): sirve para probar sin tocar nada.</p>
+</div>
 <ol class="pasos">
 <li>Instalar Node.js (versión 20 o más nueva) y Git.</li>
 <li>Bajar el código: <code>git clone https://github.com/facuarregui77/rosario-accesible.git</code></li>
@@ -518,10 +524,7 @@
 <li>Encender la app con <code>npm run dev</code>: se abre en <code>http://localhost:5173</code>.</li>
 <li>Antes de subir un cambio, comprobar que compile con <code>npm run build</code>.</li>
 </ol>
-<div class="box ojo">
-<span class="t">Con las claves se trabaja sobre los datos reales</span>
-<p>Con el <code>.env.local</code> completo, la app de la computadora usa la misma base de datos que la publicada: lo que se cargue o borre ahí se ve en el mapa de todos. Sin ese archivo, la app funciona en "modo local", guarda todo solo en el navegador y el candado pide un código (está en <code>src/data/constants.js</code>): sirve para probar sin tocar nada.</p>
-</div>
+
 <h3><span class="k">9.3</span>Cómo se guardan los datos</h3>
 <p>Todo se cruza por el identificador de cada lugar (por ejemplo, <code>elcairo</code>). Los 96 lugares originales tienen el suyo en <code>src/data/places.js</code>; los agregados desde la app, en la tabla <code>places</code>. El archivo <code>src/db.js</code> concentra todo lo que habla con Supabase.</p>
 <table>
