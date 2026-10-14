@@ -832,5 +832,56 @@
     "archivo": "Edificio donde vivió el Che Guevara.jpg"
    }
   ]
+ },
+ "elcairo": {
+  "wikidata": null,
+  "fotos": [
+   {
+    "url": "/fotos-calle/903701240175732.jpg",
+    "autor": "kaartcam",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://www.mapillary.com/app/?pKey=903701240175732",
+    "archivo": "mapillary-903701240175732",
+    "fuente": "Mapillary",
+    "anio": 2017
+   }
+  ]
+ },
+ "escauriza": {
+  "wikidata": null,
+  "fotos": [
+   {
+    "url": "/fotos-calle/2954107271531854.jpg",
+    "autor": "kaartcam",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://www.mapillary.com/app/?pKey=2954107271531854",
+    "archivo": "mapillary-2954107271531854",
+    "fuente": "Mapillary",
+    "anio": 2017
+   },
+   {
+    "url": "/fotos-calle/162149972506598.jpg",
+    "autor": "kaartcam",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://www.mapillary.com/app/?pKey=162149972506598",
+    "archivo": "mapillary-162149972506598",
+    "fuente": "Mapillary",
+    "anio": 2017
+   }
+  ]
+ },
+ "parque_moreno": {
+  "wikidata": null,
+  "fotos": [
+   {
+    "url": "/fotos-calle/226845728774689.jpg",
+    "autor": "kaartcam",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://www.mapillary.com/app/?pKey=226845728774689",
+    "archivo": "mapillary-226845728774689",
+    "fuente": "Mapillary",
+    "anio": 2017
+   }
+  ]
  }
 }

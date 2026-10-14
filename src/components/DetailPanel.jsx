@@ -118,7 +118,7 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
           {!editing && (
             <PhotoGallery placeName={place.name} photos={[
               ...photos.map((ph) => ({ url: ph.url, enlace: ph.url, credito: "Foto del equipo de Rosario Access Map" })),
-              ...((FOTOS_LIBRES[place.id] && FOTOS_LIBRES[place.id].fotos) || []).map((f) => ({ url: f.url, enlace: f.pagina, credito: `Foto: ${f.autor}, Wikimedia Commons`, licencia: f.licencia })),
+              ...((FOTOS_LIBRES[place.id] && FOTOS_LIBRES[place.id].fotos) || []).map((f) => ({ url: f.url, enlace: f.pagina, credito: `Foto: ${f.autor}, ${f.fuente || "Wikimedia Commons"}${f.anio ? " (" + f.anio + ")" : ""}`, licencia: f.licencia })),
             ]} />
           )}
           {routingEnabled && !editing && (
