@@ -786,5 +786,51 @@
     "archivo": "Plaza Pringles, Rosario.jpg"
    }
   ]
+ },
+ "rockfellers": {
+  "wikidata": null,
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Hotel_Esplendor_Savoy_Rosario.jpg/960px-Hotel_Esplendor_Savoy_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Franca Tommasino",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Hotel_Esplendor_Savoy_Rosario.jpg",
+    "archivo": "Hotel Esplendor Savoy Rosario.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Opensavoy2.jpg/960px-Opensavoy2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Dunger Mariana",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Opensavoy2.jpg",
+    "archivo": "Opensavoy2.jpg"
+   }
+  ]
+ },
+ "casa_che": {
+  "wikidata": null,
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Casa_Che_Guevara_Rosario_Mapfre.jpg/960px-Casa_Che_Guevara_Rosario_Mapfre.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 594,
+    "autor": "Banfield",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Casa_Che_Guevara_Rosario_Mapfre.jpg",
+    "archivo": "Casa Che Guevara Rosario Mapfre.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg/960px-Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg",
+    "archivo": "Edificio donde vivió el Che Guevara.jpg"
+   }
+  ]
  }
 }

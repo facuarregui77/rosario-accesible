@@ -103,9 +103,17 @@ async function infoDeArchivos(nombres) {
   }).filter((x) => x.ancho >= 400 && x.alto >= 250);
 }
 
+// Lugares sin entrada en Wikidata con fotos elegidas a mano en Commons (sacadas al lado del lugar, revisadas)
+const EXTRA = {"rockfellers": ["Hotel Esplendor Savoy Rosario.jpg", "Opensavoy2.jpg"], "casa_che": ["Casa Che Guevara Rosario Mapfre.jpg", "Edificio donde vivió el Che Guevara.jpg"]};
+
 const resultado = {};
 let conFoto = 0;
 for (const p of PLACES) {
+  if (EXTRA[p.id]) {
+    const fotos = await infoDeArchivos(EXTRA[p.id]);
+    if (fotos.length) { resultado[p.id] = { wikidata: null, fotos }; conFoto++; console.log(`  ${fotos.length}  ${p.name}  (elegidas a mano)`); }
+    continue;
+  }
   let qid = await wikidataDeOSM(p);
   if (!qid) qid = await wikidataPorNombre(p);
   if (!qid) { console.log("  —  " + p.name); continue; }
