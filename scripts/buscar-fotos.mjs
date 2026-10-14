@@ -10,6 +10,7 @@
 // Uso: node scripts/buscar-fotos.mjs        (tarda unos minutos; después revisar las fotos)
 import fs from "node:fs";
 import { PLACES } from "../src/data/places-base.js"; // solo los lugares relevados a mano
+import { EMPRESAS_OSM } from "../src/data/empresas-osm.js";
 
 const UA = { "User-Agent": "rosario-accesible/1.0 (https://github.com/facuarregui77/rosario-accesible)" };
 const OUT = new URL("../src/fotos.json", import.meta.url);
@@ -76,7 +77,7 @@ async function wikidataPorNombre(p) {
 }
 
 // Fotos revisadas a mano que NO corresponden (eventos, objetos, recortes, grafitis…). Si aparece otra mala, sumarla acá.
-const EXCLUIR = new Set(["Vitrina trofeos canob.jpg", "Estadio Cubierto \"Dr. Claudio. L. Newell\".jpg", "Extracto del libro 'Anales del Fútbol Rosarino' de Cipriano Roldán, 1959. 02.jpg", "Roberto Fontanarrosa escultura C.C.R.F detalle.jpg", "Consejo Municipal de Rosario.jpg", "Generación.jpg", "Graffiti anti-Bush Rosario 2.jpg", "Cristian Segura.jpg", "25 años del CCPE 3.jpg", "25 años del CCPE 4.jpg", "Plaza 25 de Mayo, Rosario.jpg"]);
+const EXCLUIR = new Set(["Museo de la ciudad de Rosario 2018 01.jpg","Museo de la ciudad de Rosario 2018 02.jpg","Diario La Capital Rosario kiosco.jpg","Huelga 2010 diario La Capital.jpg","CLIMA Sanford inundada 1938.jpg","Centro Popular de la Memoria Rosario.jpg", "Vitrina trofeos canob.jpg", "Estadio Cubierto \"Dr. Claudio. L. Newell\".jpg", "Extracto del libro 'Anales del Fútbol Rosarino' de Cipriano Roldán, 1959. 02.jpg", "Roberto Fontanarrosa escultura C.C.R.F detalle.jpg", "Consejo Municipal de Rosario.jpg", "Generación.jpg", "Graffiti anti-Bush Rosario 2.jpg", "Cristian Segura.jpg", "25 años del CCPE 3.jpg", "25 años del CCPE 4.jpg", "Plaza 25 de Mayo, Rosario.jpg"]);
 const esFotoUtil = (f) => !EXCLUIR.has(f) && /\.(jpe?g|png|webp)$/i.test(f) && !/(logo|mapa|map|plano|escudo|coat|flag|bandera_de|firma|signature|diagram)/i.test(f);
 
 async function archivosDeCategoria(cat) {
@@ -134,5 +135,28 @@ for (const p of PLACES) {
   } else console.log(`  0  ${p.name}  (${qid}, sin fotos)`);
   await espera(300);
 }
+// Empresas importadas de OpenStreetMap: solo las que traen un enlace a Wikidata o a una foto de Commons
+for (const p of EMPRESAS_OSM.filter((x) => x.f)) {
+  let nombres = [];
+  if (p.f.commons) nombres.push(p.f.commons);
+  if (p.f.wikidata) {
+    const e = (await entidades([p.f.wikidata]))[p.f.wikidata] || {};
+    const principal = claim(e, "P18"), cat = claim(e, "P373");
+    if (principal) nombres.unshift(principal);
+    if (cat) nombres.push(...(await archivosDeCategoria(cat)));
+  }
+  nombres = [...new Set(nombres)].filter(esFotoUtil).slice(0, 12);
+  const fotos = (await infoDeArchivos(nombres)).slice(0, MAX_FOTOS);
+  if (fotos.length) { resultado[p.id] = { wikidata: p.f.wikidata || null, fotos }; conFoto++; console.log(`  ${fotos.length}  ${p.name}  (OpenStreetMap)`); }
+  else console.log(`  0  ${p.name}`);
+}
+// conservar las fotos de calle (Mapillary) que se guardaron con scripts/buscar-fotos-calle.mjs
+try {
+  const previo = JSON.parse(fs.readFileSync(OUT, "utf8"));
+  for (const [id, v] of Object.entries(previo)) {
+    const calle = (v.fotos || []).filter((f) => f.fuente === "Mapillary");
+    if (calle.length) resultado[id] = { ...(resultado[id] || { wikidata: null, fotos: [] }), fotos: [...((resultado[id] && resultado[id].fotos) || []), ...calle] };
+  }
+} catch (e) { /* primera vez */ }
 fs.writeFileSync(OUT, JSON.stringify(resultado, null, 1), "utf8");
 console.log(`\nListo: ${conFoto} de ${PLACES.length} lugares con fotos. Archivo: src/fotos.json`);

@@ -10,5 +10,5 @@ const SIN_DATOS = { bano: null, rampa: null, ascensor: null, braille: null, sena
 export const PLACES_BASE = BASE;
 export const PLACES = [
   ...BASE,
-  ...EMPRESAS_OSM.map(({ bano, c, ...p }) => ({ ...p, a: { ...SIN_DATOS, bano: bano || null }, contacto: c || null, osm: true })),
+  ...EMPRESAS_OSM.map(({ bano, c, f, ...p }) => ({ ...p, a: { ...SIN_DATOS, bano: bano || null }, contacto: c || null, osm: true })),
 ];

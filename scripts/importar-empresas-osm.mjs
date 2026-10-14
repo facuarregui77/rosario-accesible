@@ -29,6 +29,19 @@ const tipo = (t) => {
 const W = { yes: "si", limited: "parcial", no: "no" };
 const rad = (d) => (d * Math.PI) / 180;
 const distM = (a, b) => { const x = Math.sin(rad(b.lat - a.lat) / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(rad(b.lng - a.lng) / 2) ** 2; return 2 * 6371000 * Math.asin(Math.sqrt(x)); };
+// Solo lo que está dentro del límite oficial del Municipio de Rosario (sin Funes, Granadero Baigorria, etc.)
+const LIMITE = JSON.parse(fs.readFileSync(new URL("./limite-rosario.json", import.meta.url), "utf8")).geojson;
+const anillos = LIMITE.type === "Polygon" ? [LIMITE.coordinates[0]] : LIMITE.coordinates.map((pol) => pol[0]);
+const dentroDeRosario = (lat, lng) => anillos.some((r) => {
+  let dentro = false;
+  for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+    const [xi, yi] = r[i], [xj, yj] = r[j];
+    if ((yi > lat) !== (yj > lat) && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) dentro = !dentro;
+  }
+  return dentro;
+});
+// Los lugares ya cargados a mano que vienen de OpenStreetMap, para no repetirlos
+const OSM_YA = new Set(PLACES.filter((b) => b.src).map((b) => b.src.replace(/^.*openstreetmap\.org\//, "")));
 const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "");
 
 // Prueba varios servidores de OpenStreetMap (a veces alguno está saturado)
@@ -48,12 +61,14 @@ if (!r || !r.ok) { console.error("OpenStreetMap no respondió. Probá de nuevo e
 const els = (await r.json()).elements;
 
 const out = [], vistos = new Set();
-let repetidos = 0;
+let repetidos = 0, fuera = 0;
 for (const e of els) {
   const t = e.tags || {};
   const w = W[t.wheelchair], ty = tipo(t);
   const lat = e.lat ?? (e.center && e.center.lat), lng = e.lon ?? (e.center && e.center.lon);
   if (!w || !ty || lat == null) continue;
+  if (!dentroDeRosario(lat, lng)) { fuera++; continue; }
+  if (OSM_YA.has(`${e.type}/${e.id}`)) { repetidos++; continue; }
   const p = { lat, lng };
   // no duplicar los lugares que ya están cargados a mano
   if (PLACES.some((b) => distM(b, p) < 120 && (norm(b.name).includes(norm(t.name)) || norm(t.name).includes(norm(b.name))))) { repetidos++; continue; }
@@ -75,6 +90,12 @@ for (const e of els) {
   if (t.website || t["contact:website"]) c.web = t.website || t["contact:website"];
   if (ig) c.instagram = ig.startsWith("http") ? ig : "https://instagram.com/" + ig.replace(/^@/, "");
   if (Object.keys(c).length) fila.c = c;
+  // pistas para buscar fotos de uso libre (las usa scripts/buscar-fotos.mjs)
+  const f = {};
+  if (t.wikidata) f.wikidata = t.wikidata;
+  if (t.wikimedia_commons && /^File:/.test(t.wikimedia_commons)) f.commons = t.wikimedia_commons.replace(/^File:/, "");
+  if (t.mapillary) f.mapillary = t.mapillary;
+  if (Object.keys(f).length) fila.f = f;
   out.push(fila);
 }
 out.sort((a, b) => a.name.localeCompare(b.name, "es"));
@@ -85,4 +106,4 @@ export const EMPRESAS_OSM = ${JSON.stringify(out)};
 `;
 fs.writeFileSync(new URL("../src/data/empresas-osm.js", import.meta.url), js, "utf8");
 const porTipo = out.reduce((m, x) => ((m[x.type] = (m[x.type] || 0) + 1), m), {});
-console.log(`Listo: ${out.length} lugares (se saltearon ${repetidos} que ya estaban cargados).`, porTipo);
+console.log(`Listo: ${out.length} lugares (se saltearon ${repetidos} que ya estaban cargados y ${fuera} de fuera de Rosario).`, porTipo);

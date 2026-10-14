@@ -1,4 +1,27 @@
 {
+ "rockfellers": {
+  "wikidata": null,
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Opensavoy2.jpg/960px-Opensavoy2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Dunger Mariana",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Opensavoy2.jpg",
+    "archivo": "Opensavoy2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Hotel_Esplendor_Savoy_Rosario.jpg/960px-Hotel_Esplendor_Savoy_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Franca Tommasino",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Hotel_Esplendor_Savoy_Rosario.jpg",
+    "archivo": "Hotel Esplendor Savoy Rosario.jpg"
+   }
+  ]
+ },
  "unr_derecho": {
   "wikidata": "Q5428854",
   "fotos": [
@@ -79,6 +102,33 @@
     "licencia": "CC BY-SA 4.0",
     "pagina": "https://commons.wikimedia.org/wiki/File:Arco_historico..jpg",
     "archivo": "Arco historico..jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Extracto_del_libro_%27Anales_del_F%C3%BAtbol_Rosarino%27_de_Cipriano_Rold%C3%A1n%2C_1959._01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 572,
+    "autor": "Autor desconocido",
+    "licencia": "Public domain",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Extracto_del_libro_%27Anales_del_F%C3%BAtbol_Rosarino%27_de_Cipriano_Rold%C3%A1n,_1959._01.jpg",
+    "archivo": "Extracto del libro 'Anales del Fútbol Rosarino' de Cipriano Roldán, 1959. 01.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Copa_de_la_asociaci%C3%B3n_uruguaya_de_futbol.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 850,
+    "autor": "Rafael 778",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Copa_de_la_asociaci%C3%B3n_uruguaya_de_futbol.jpg",
+    "archivo": "Copa de la asociación uruguaya de futbol.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/4/48/Campa%C3%B1a_de_Newell%27s_%281973%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 846,
+    "autor": "FUrriolabeitia1",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Campa%C3%B1a_de_Newell%27s_(1973).png",
+    "archivo": "Campaña de Newell's (1973).png"
    }
   ]
  },
@@ -111,6 +161,15 @@
     "licencia": "CC BY-SA 4.0",
     "pagina": "https://commons.wikimedia.org/wiki/File:Centro_cultural_Roberto_Fontanarrosa,_Rosario.jpg",
     "archivo": "Centro cultural Roberto Fontanarrosa, Rosario.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Escultura_de_Fontanarrosa_en_Plaza_Montenegro.jpg/960px-Escultura_de_Fontanarrosa_en_Plaza_Montenegro.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 694,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Escultura_de_Fontanarrosa_en_Plaza_Montenegro.jpg",
+    "archivo": "Escultura de Fontanarrosa en Plaza Montenegro.jpg"
    }
   ]
  },
@@ -270,6 +329,24 @@
   "wikidata": "Q7126305",
   "fotos": [
    {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Palacio_Vassallo_1.jpg/960px-Palacio_Vassallo_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_Vassallo_1.jpg",
+    "archivo": "Palacio Vassallo 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Palacio_Vasallo.jpg/960px-Palacio_Vasallo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo David Flores",
+    "licencia": "CC BY-SA 2.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_Vasallo.jpg",
+    "archivo": "Palacio Vasallo.jpg"
+   },
+   {
     "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Palacio_Vasallo%2C_Rosario.jpg/960px-Palacio_Vasallo%2C_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
     "ancho": 800,
     "alto": 600,
@@ -359,6 +436,15 @@
     "licencia": "CC BY-SA 2.5",
     "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Montenegro_Rosario_3.jpg",
     "archivo": "Plaza Montenegro Rosario 3.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Nido_de_hornero.jpg/960px-Nido_de_hornero.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Rosarinagazo",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Nido_de_hornero.jpg",
+    "archivo": "Nido de hornero.jpg"
    }
   ]
  },
@@ -414,6 +500,15 @@
     "licencia": "CC BY-SA 3.0",
     "pagina": "https://commons.wikimedia.org/wiki/File:12_-_Imagen_055.jpg",
     "archivo": "12 - Imagen 055.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Fachada_macro.jpg/960px-Fachada_macro.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 531,
+    "autor": "Castagnino+macro",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Fachada_macro.jpg",
+    "archivo": "Fachada macro.jpg"
    }
   ]
  },
@@ -461,15 +556,6 @@
  "museo_memoria": {
   "wikidata": "Q16609965",
   "fotos": [
-   {
-    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Centro_Popular_de_la_Memoria_Rosario.jpg/960px-Centro_Popular_de_la_Memoria_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "ancho": 800,
-    "alto": 600,
-    "autor": "Pablo-flores",
-    "licencia": "CC BY-SA 2.5",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_Popular_de_la_Memoria_Rosario.jpg",
-    "archivo": "Centro Popular de la Memoria Rosario.jpg"
-   },
    {
     "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Centro_Popular_de_la_Memoria_Rosario_2.jpg/960px-Centro_Popular_de_la_Memoria_Rosario_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
     "ancho": 800,
@@ -581,6 +667,29 @@
    }
   ]
  },
+ "casa_che": {
+  "wikidata": null,
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Casa_Che_Guevara_Rosario_Mapfre.jpg/960px-Casa_Che_Guevara_Rosario_Mapfre.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 594,
+    "autor": "Banfield",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Casa_Che_Guevara_Rosario_Mapfre.jpg",
+    "archivo": "Casa Che Guevara Rosario Mapfre.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg/960px-Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg",
+    "archivo": "Edificio donde vivió el Che Guevara.jpg"
+   }
+  ]
+ },
  "fceia": {
   "wikidata": "Q5428850",
   "fotos": [
@@ -615,6 +724,24 @@
     "licencia": "CC BY-SA 4.0",
     "pagina": "https://commons.wikimedia.org/wiki/File:25_a%C3%B1os_del_CCPE_2.jpg",
     "archivo": "25 años del CCPE 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/25_a%C3%B1os_del_CCPE_5.jpg/960px-25_a%C3%B1os_del_CCPE_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 531,
+    "autor": "CCPE Rosario",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:25_a%C3%B1os_del_CCPE_5.jpg",
+    "archivo": "25 años del CCPE 5.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/10A%C3%B1osLocoRabia-42_0793.jpg/960px-10A%C3%B1osLocoRabia-42_0793.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 531,
+    "autor": "CCPE Rosario",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:10A%C3%B1osLocoRabia-42_0793.jpg",
+    "archivo": "10AñosLocoRabia-42 0793.jpg"
    }
   ]
  },
@@ -743,6 +870,15 @@
     "licencia": "CC BY-SA 2.5",
     "pagina": "https://commons.wikimedia.org/wiki/File:Pasaje_Juramento.jpg",
     "archivo": "Pasaje Juramento.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Rosario-BolaNieve.jpg/960px-Rosario-BolaNieve.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Fulviusbsas",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Rosario-BolaNieve.jpg",
+    "archivo": "Rosario-BolaNieve.jpg"
    }
   ]
  },
@@ -787,49 +923,54 @@
    }
   ]
  },
- "rockfellers": {
+ "osm_w509033219": {
   "wikidata": null,
   "fotos": [
    {
-    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Hotel_Esplendor_Savoy_Rosario.jpg/960px-Hotel_Esplendor_Savoy_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "ancho": 800,
-    "alto": 1067,
-    "autor": "Franca Tommasino",
-    "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Hotel_Esplendor_Savoy_Rosario.jpg",
-    "archivo": "Hotel Esplendor Savoy Rosario.jpg"
-   },
-   {
-    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Opensavoy2.jpg/960px-Opensavoy2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Bandera_mia.jpg/960px-Bandera_mia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
     "ancho": 800,
     "alto": 600,
-    "autor": "Dunger Mariana",
-    "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Opensavoy2.jpg",
-    "archivo": "Opensavoy2.jpg"
+    "autor": "Rosario Molfino",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Bandera_mia.jpg",
+    "archivo": "Bandera mia.jpg"
    }
   ]
  },
- "casa_che": {
-  "wikidata": null,
+ "osm_w187615552": {
+  "wikidata": "Q6034219",
   "fotos": [
    {
-    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Casa_Che_Guevara_Rosario_Mapfre.jpg/960px-Casa_Che_Guevara_Rosario_Mapfre.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "ancho": 800,
-    "alto": 594,
-    "autor": "Banfield",
-    "licencia": "CC BY-SA 3.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Casa_Che_Guevara_Rosario_Mapfre.jpg",
-    "archivo": "Casa Che Guevara Rosario Mapfre.jpg"
-   },
-   {
-    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg/960px-Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Museo_de_la_Ciudad_%28Rosario%29.jpg/960px-Museo_de_la_Ciudad_%28Rosario%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
     "ancho": 800,
     "alto": 600,
-    "autor": "César Pérez",
+    "autor": "Pablo D. Flores",
     "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Edificio_donde_vivi%C3%B3_el_Che_Guevara.jpg",
-    "archivo": "Edificio donde vivió el Che Guevara.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Museo_de_la_Ciudad_(Rosario).jpg",
+    "archivo": "Museo de la Ciudad (Rosario).jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/Museo_de_la_ciudad_de_Rosario_2018.jpg/960px-Museo_de_la_ciudad_de_Rosario_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Cesar Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Museo_de_la_ciudad_de_Rosario_2018.jpg",
+    "archivo": "Museo de la ciudad de Rosario 2018.jpg"
+   }
+  ]
+ },
+ "osm_n4685534633": {
+  "wikidata": "Q4810370",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Rosario-LaCapital.jpg/960px-Rosario-LaCapital.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Fulviusbsas",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Rosario-LaCapital.jpg",
+    "archivo": "Rosario-LaCapital.jpg"
    }
   ]
  },
