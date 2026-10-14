@@ -121,4 +121,6 @@ export const PLACES = [
   { id: "plaza_sarmiento", name: "Plaza Sarmiento", type: "verde", lat: -32.948971, lng: -60.642402, a: { ...SIN_DATOS } },
   { id: "plaza_25mayo", name: "Plaza 25 de Mayo", type: "verde", lat: -32.947081, lng: -60.633218, a: { ...SIN_DATOS } },
   { id: "plaza_pringles", name: "Plaza Pringles", type: "verde", lat: -32.945096, lng: -60.644353, a: { ...SIN_DATOS } },
+  // Empresas cargadas a mano (dirección confirmada por el dueño; accesibilidad a relevar)
+  { id: "auckland", name: "Auckland", type: "servicio", lat: -32.94782, lng: -60.6541001, a: { ...SIN_DATOS } },
 ];

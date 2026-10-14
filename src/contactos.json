@@ -236,5 +236,12 @@
   "web": "https://rockandfellers.com.ar/",
   "instagram": "https://instagram.com/rockandfellersrosario",
   "facebook": null
+ },
+ "auckland": {
+  "direccion": "Bulevar Oroño 1121",
+  "telefono": null,
+  "web": null,
+  "instagram": null,
+  "facebook": null
  }
 }
