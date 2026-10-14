@@ -23,6 +23,7 @@ export const PLACES = [
   { id: "riomio", name: "Riomío", type: "restaurant", lat: -32.933136, lng: -60.6464189, gRating: 4.2, a: { ...SIN_DATOS } },
   { id: "wembley", name: "Wembley", type: "restaurant", lat: -32.9647649, lng: -60.6217325, gRating: 4.4, a: { ...SIN_DATOS } },
   { id: "rockfellers", name: "Rock&Feller's Savoy", type: "restaurant", lat: -32.9446607, lng: -60.636258, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "rockfellers_orono", name: "Rock&Feller's Oroño", type: "restaurant", lat: -32.9356944, lng: -60.6516124, a: { ...SIN_DATOS } },
   { id: "escauriza", name: "Escauriza Parrilla", type: "restaurant", lat: -32.880531, lng: -60.6883401, gRating: 4.5, a: { ...SIN_DATOS } },
   { id: "donferro", name: "Parrilla Don Ferro", type: "restaurant", lat: -32.9343572, lng: -60.6435197, gRating: 4.4, a: { ...SIN_DATOS } },
   { id: "rooftop", name: "Rooftop", type: "bar", lat: -32.9320322, lng: -60.6636827, gRating: 4.3, a: { ...SIN_DATOS } },

@@ -229,5 +229,12 @@
   "web": null,
   "instagram": null,
   "facebook": null
+ },
+ "rockfellers_orono": {
+  "direccion": "Bulevar Oroño 106",
+  "telefono": "+54 341 546-7000",
+  "web": "https://rockandfellers.com.ar/",
+  "instagram": "https://instagram.com/rockandfellersrosario",
+  "facebook": null
  }
 }
