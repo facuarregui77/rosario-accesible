@@ -6,6 +6,9 @@ import CONTACTOS from "../contactos.json";
 import { CRITERIA, TYPE_LABELS, TYPE_COLORS, WHEELCHAIR_LABELS, hasAnyData } from "../data/constants";
 import { reverseGeocode } from "../lib/geo";
 import SuggestionForm from "./SuggestionForm";
+import PhotoGallery from "./PhotoGallery";
+// Fotos de uso libre de Wikimedia Commons (las busca scripts/buscar-fotos.mjs)
+import FOTOS_LIBRES from "../fotos.json";
 
 export default function DetailPanel({ place, onClose, reviews, onAddReview, onDeleteReview, onDeletePlace, onSaveAccess, onAddSuggestion, onRoute, routingEnabled, avgRating, admin, onAnnounce }) {
   const dialogRef = useRef(null);
@@ -112,6 +115,12 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
         </div>
 
         <div className="p-5">
+          {!editing && (
+            <PhotoGallery placeName={place.name} photos={[
+              ...photos.map((ph) => ({ url: ph.url, enlace: ph.url, credito: "Foto del equipo de Rosario Access Map" })),
+              ...((FOTOS_LIBRES[place.id] && FOTOS_LIBRES[place.id].fotos) || []).map((f) => ({ url: f.url, enlace: f.pagina, credito: `Foto: ${f.autor}, Wikimedia Commons`, licencia: f.licencia })),
+            ]} />
+          )}
           {routingEnabled && !editing && (
             <button onClick={() => onRoute(place)}
               className="w-full mb-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-600 text-white text-sm font-semibold shadow-sm transition">
@@ -243,9 +252,9 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
           </div>
 
           {/* Fotos del lugar */}
-          {!editing && (photos.length > 0 || admin) && (
+          {!editing && admin && (
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"><ImageIcon size={15} /> Fotos</h3>
+              <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"><ImageIcon size={15} /> Fotos del equipo</h3>
               {photos.length === 0 && <p className="text-xs text-slate-500 italic mb-2">Todavía no hay fotos de este lugar.</p>}
               {photos.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">

@@ -234,7 +234,7 @@
 <li><b>Acceso en silla de ruedas</b>, con el enlace a la fuente cuando el dato viene de OpenStreetMap.</li>
 <li><b>Contacto:</b> dirección, teléfono (se puede tocar para llamar), sitio web, Instagram y Facebook. Si no hay dirección cargada, la app la calcula por la ubicación y la marca como "aprox.".</li>
 <li><b>Detalle de accesibilidad:</b> los cinco criterios con Sí, No o "sin datos", y la fecha de la última actualización.</li>
-<li><b>Fotos</b>, si el administrador subió.</li>
+<li><b>Fotos</b>, arriba de todo: las del equipo y fotos libres de Wikimedia Commons, con su autor.</li>
 </ul>
 </div>
 <h3><span class="k">4.6</span>La capa de rampas</h3>
@@ -342,7 +342,7 @@
 <p>Un lugar agregado desde la app se puede eliminar con el botón <b>Borrar lugar</b> de su ficha. Los 96 lugares originales no se pueden borrar desde la app.</p>
 <h3><span class="k">5.9</span>Fotos y opiniones</h3>
 <ul>
-<li><b>Agregar foto:</b> en la ficha, botón "Agregar foto". El público las ve en la ficha y puede tocarlas para agrandarlas.</li>
+<li><b>Agregar foto:</b> en la ficha, botón "Agregar foto". Aparece primera en la galería del lugar.</li>
 <li><b>Borrar foto:</b> la ✕ que aparece sobre cada foto.</li>
 <li><b>Borrar una opinión:</b> el tachito que aparece al lado de cada opinión cuando estás como administrador.</li>
 </ul>
@@ -367,7 +367,7 @@
 <tr><td>Opiniones</td><td>El público</td><td>Supabase</td></tr>
 <tr><td>Sugerencias de datos</td><td>El público</td><td>Supabase</td></tr>
 <tr><td>Lugares agregados desde la app</td><td>Administradores</td><td>Supabase</td></tr>
-<tr><td>Fotos</td><td>Administradores</td><td>Supabase</td></tr>
+<tr><td>Fotos</td><td>El equipo y Wikimedia Commons (28 lugares)</td><td>Supabase y el código</td></tr>
 <tr><td>Registro de errores</td><td>La app, sola</td><td>Supabase</td></tr>
 </table>
 <h3><span class="k">6.2</span>Quién puede hacer qué</h3>
@@ -558,6 +558,7 @@
 <tr><th style="width:34%">Tarea</th><th style="width:44%">Cómo</th><th>Cada cuánto</th></tr>
 <tr><td>Revisar que la base no esté pausada</td><td>Abrir la app y ver que haya opiniones</td><td>Una vez por semana</td></tr>
 <tr><td>Revisar errores registrados</td><td>Análisis → Errores registrados</td><td>Una vez por semana</td></tr>
+<tr><td>Buscar fotos nuevas</td><td><code>node scripts/buscar-fotos.mjs</code> y revisar cada foto (las malas, a <code>EXCLUIR</code>)</td><td>Cada algunos meses</td></tr>
 <tr><td>Actualizar las rampas</td><td><code>node scripts/actualizar-rampas-osm.mjs</code> y subir el cambio</td><td>Cada algunos meses</td></tr>
 <tr><td>Traer datos de Google</td><td><code>node scripts/enrich-google-places.mjs</code> y aprobar en Sugerencias</td><td>Cuando se suman lugares</td></tr>
 <tr><td>Actualizar guía y folleto</td><td>Editar <code>scripts/guia</code> y doble clic en GENERAR PDF.bat</td><td>Con cada cambio visible</td></tr>

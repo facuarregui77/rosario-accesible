@@ -1,0 +1,790 @@
+{
+ "unr_derecho": {
+  "wikidata": "Q5428854",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Facultad_de_Derecho_Rosario_1.jpg/960px-Facultad_de_Derecho_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Facultad_de_Derecho_Rosario_1.jpg",
+    "archivo": "Facultad de Derecho Rosario 1.jpg"
+   }
+  ]
+ },
+ "unr_economicas": {
+  "wikidata": "Q5854657",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Cseconedifnuevo.JPG/960px-Cseconedifnuevo.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Alancassi",
+    "licencia": "CC0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Cseconedifnuevo.JPG",
+    "archivo": "Cseconedifnuevo.JPG"
+   }
+  ]
+ },
+ "normal_2": {
+  "wikidata": "Q60229206",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Escuela_Normal_Superior_N.%C2%BA_2_Juan_Mar%C3%ADa_Guti%C3%A9rrez.jpg/960px-Escuela_Normal_Superior_N.%C2%BA_2_Juan_Mar%C3%ADa_Guti%C3%A9rrez.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Fitoncho",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Escuela_Normal_Superior_N.%C2%BA_2_Juan_Mar%C3%ADa_Guti%C3%A9rrez.jpg",
+    "archivo": "Escuela Normal Superior N.º 2 Juan María Gutiérrez.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/01-Escuela_Normal_Superior.JPG/960px-01-Escuela_Normal_Superior.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Carlos Berzzi",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:01-Escuela_Normal_Superior.JPG",
+    "archivo": "01-Escuela Normal Superior.JPG"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/00-Escuela_Normal_Superior.JPG/960px-00-Escuela_Normal_Superior.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Carlos Berzzi",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:00-Escuela_Normal_Superior.JPG",
+    "archivo": "00-Escuela Normal Superior.JPG"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/02-Escuela_Normal_Superior.JPG/960px-02-Escuela_Normal_Superior.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Carlos Berzzi",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:02-Escuela_Normal_Superior.JPG",
+    "archivo": "02-Escuela Normal Superior.JPG"
+   }
+  ]
+ },
+ "newells": {
+  "wikidata": "Q221882",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Arco_historico..jpg/960px-Arco_historico..jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Marito nico",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Arco_historico..jpg",
+    "archivo": "Arco historico..jpg"
+   }
+  ]
+ },
+ "cc_fontanarrosa": {
+  "wikidata": "Q5680340",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Centro_Cultural_Bernardino_Rivadavia_%282%29.jpg/960px-Centro_Cultural_Bernardino_Rivadavia_%282%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Roberto Ettore",
+    "licencia": "CC BY 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_Cultural_Bernardino_Rivadavia_(2).jpg",
+    "archivo": "Centro Cultural Bernardino Rivadavia (2).jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Centro_Cultural_Bernardino_Rivadavia.jpg/960px-Centro_Cultural_Bernardino_Rivadavia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_Cultural_Bernardino_Rivadavia.jpg",
+    "archivo": "Centro Cultural Bernardino Rivadavia.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Centro_cultural_Roberto_Fontanarrosa%2C_Rosario.jpg/960px-Centro_cultural_Roberto_Fontanarrosa%2C_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_cultural_Roberto_Fontanarrosa,_Rosario.jpg",
+    "archivo": "Centro cultural Roberto Fontanarrosa, Rosario.jpg"
+   }
+  ]
+ },
+ "cc_lavarden": {
+  "wikidata": "Q7403329",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Sala_Lavard%C3%A9n_-_2.jpg/960px-Sala_Lavard%C3%A9n_-_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Sala_Lavard%C3%A9n_-_2.jpg",
+    "archivo": "Sala Lavardén - 2.jpg"
+   }
+  ]
+ },
+ "cec": {
+  "wikidata": "Q2894466",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Centro_de_Expresiones_Contempor%C3%A1neas_en_Rosario_en_2018.jpg/960px-Centro_de_Expresiones_Contempor%C3%A1neas_en_Rosario_en_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Cesar Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_de_Expresiones_Contempor%C3%A1neas_en_Rosario_en_2018.jpg",
+    "archivo": "Centro de Expresiones Contemporáneas en Rosario en 2018.jpg"
+   }
+  ]
+ },
+ "hosp_centenario": {
+  "wikidata": "Q5902821",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Hospital_Centenario_Rosario_1.jpg/960px-Hospital_Centenario_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Hospital_Centenario_Rosario_1.jpg",
+    "archivo": "Hospital Centenario Rosario 1.jpg"
+   }
+  ]
+ },
+ "heca": {
+  "wikidata": "Q5908700",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Nuevo_HECA_Rosario.jpg/960px-Nuevo_HECA_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 532,
+    "autor": "Darth Andres",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Nuevo_HECA_Rosario.jpg",
+    "archivo": "Nuevo HECA Rosario.jpg"
+   }
+  ]
+ },
+ "hosp_provincial": {
+  "wikidata": "Q9004917",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Hospital_Provincial_Rosario_1.jpg/960px-Hospital_Provincial_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Hospital_Provincial_Rosario_1.jpg",
+    "archivo": "Hospital Provincial Rosario 1.jpg"
+   }
+  ]
+ },
+ "est_rosario_norte": {
+  "wikidata": "Q7367408",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Estaci%C3%B3n_Rosario_Norte_4.jpg/960px-Estaci%C3%B3n_Rosario_Norte_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Estaci%C3%B3n_Rosario_Norte_4.jpg",
+    "archivo": "Estación Rosario Norte 4.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Estaci%C3%B3n_Rosario_Norte_1.jpg/960px-Estaci%C3%B3n_Rosario_Norte_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Estaci%C3%B3n_Rosario_Norte_1.jpg",
+    "archivo": "Estación Rosario Norte 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Estaci%C3%B3n_Rosario_Norte_3.jpg/960px-Estaci%C3%B3n_Rosario_Norte_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Estaci%C3%B3n_Rosario_Norte_3.jpg",
+    "archivo": "Estación Rosario Norte 3.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Rosario_Norte_Train_Station.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Gustavo Durante",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Rosario_Norte_Train_Station.jpg",
+    "archivo": "Rosario Norte Train Station.jpg"
+   }
+  ]
+ },
+ "palacio_leones": {
+  "wikidata": "Q959586",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Palacio_de_los_Leones_5.jpg/960px-Palacio_de_los_Leones_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_de_los_Leones_5.jpg",
+    "archivo": "Palacio de los Leones 5.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Palacio_de_los_Leones.jpg/960px-Palacio_de_los_Leones.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_de_los_Leones.jpg",
+    "archivo": "Palacio de los Leones.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Palacio_de_los_Leones_3.jpg/960px-Palacio_de_los_Leones_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_de_los_Leones_3.jpg",
+    "archivo": "Palacio de los Leones 3.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Palacio_de_los_Leones_4.JPG/960px-Palacio_de_los_Leones_4.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_de_los_Leones_4.JPG",
+    "archivo": "Palacio de los Leones 4.JPG"
+   }
+  ]
+ },
+ "concejo": {
+  "wikidata": "Q7126305",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Palacio_Vasallo%2C_Rosario.jpg/960px-Palacio_Vasallo%2C_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_Vasallo,_Rosario.jpg",
+    "archivo": "Palacio Vasallo, Rosario.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Palacio_Vasallo_2018_01.jpg/960px-Palacio_Vasallo_2018_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 450,
+    "autor": "ElGuruCesar",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_Vasallo_2018_01.jpg",
+    "archivo": "Palacio Vasallo 2018 01.jpg"
+   }
+  ]
+ },
+ "parque_urquiza": {
+  "wikidata": "Q7139674",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Erythrina_crista-galli_2-3.jpg/960px-Erythrina_crista-galli_2-3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Erythrina_crista-galli_2-3.jpg",
+    "archivo": "Erythrina crista-galli 2-3.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Parque_Urquiza_Rosario_1.jpg/960px-Parque_Urquiza_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Parque_Urquiza_Rosario_1.jpg",
+    "archivo": "Parque Urquiza Rosario 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Parque_Urquiza_Rosario_2.jpg/960px-Parque_Urquiza_Rosario_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Parque_Urquiza_Rosario_2.jpg",
+    "archivo": "Parque Urquiza Rosario 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Avenida_Pellegrini_Rosario_3.jpg/960px-Avenida_Pellegrini_Rosario_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Avenida_Pellegrini_Rosario_3.jpg",
+    "archivo": "Avenida Pellegrini Rosario 3.jpg"
+   }
+  ]
+ },
+ "plaza_montenegro": {
+  "wikidata": "Q7203626",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Plaza_Montenegro_Rosario_1.jpg/960px-Plaza_Montenegro_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Montenegro_Rosario_1.jpg",
+    "archivo": "Plaza Montenegro Rosario 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Plaza_Montenegro_Rosario_2.jpg/960px-Plaza_Montenegro_Rosario_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Montenegro_Rosario_2.jpg",
+    "archivo": "Plaza Montenegro Rosario 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Plaza_Montenegro_Rosario_3.jpg/960px-Plaza_Montenegro_Rosario_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Montenegro_Rosario_3.jpg",
+    "archivo": "Plaza Montenegro Rosario 3.jpg"
+   }
+  ]
+ },
+ "museo_castagnino": {
+  "wikidata": "Q6298930",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/MuseoCastagnino.jpg/960px-MuseoCastagnino.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 800,
+    "autor": "Nicolasrnphoto",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:MuseoCastagnino.jpg",
+    "archivo": "MuseoCastagnino.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Navidad_en_el_museo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 1114,
+    "autor": "Jorge Alberto Nieto",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Navidad_en_el_museo.jpg",
+    "archivo": "Navidad en el museo.jpg"
+   }
+  ]
+ },
+ "macro": {
+  "wikidata": "Q6940821",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/MACRo_1.jpg/960px-MACRo_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 572,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:MACRo_1.jpg",
+    "archivo": "MACRo 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Esteban_%C3%81lvarez.jpg/960px-Esteban_%C3%81lvarez.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "MACRo",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Esteban_%C3%81lvarez.jpg",
+    "archivo": "Esteban Álvarez.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/12_-_Imagen_055.jpg/960px-12_-_Imagen_055.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Macro",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:12_-_Imagen_055.jpg",
+    "archivo": "12 - Imagen 055.jpg"
+   }
+  ]
+ },
+ "museo_marc": {
+  "wikidata": "Q6033415",
+  "fotos": [
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Museo_Historico_Provincial_Dr._Julio_Marc.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Roberto Ettore",
+    "licencia": "CC BY 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Museo_Historico_Provincial_Dr._Julio_Marc.jpg",
+    "archivo": "Museo Historico Provincial Dr. Julio Marc.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/De_la_Torre.JPG/960px-De_la_Torre.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Mrexcel",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:De_la_Torre.JPG",
+    "archivo": "De la Torre.JPG"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Museo_hist%C3%B3rico_provincial_de_Rosario_%28Escultura%29.jpg/960px-Museo_hist%C3%B3rico_provincial_de_Rosario_%28Escultura%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 800,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Museo_hist%C3%B3rico_provincial_de_Rosario_(Escultura).jpg",
+    "archivo": "Museo histórico provincial de Rosario (Escultura).jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Museo_hist%C3%B3rico_provincial_de_Rosario_%28vasijas%29.jpg/960px-Museo_hist%C3%B3rico_provincial_de_Rosario_%28vasijas%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Museo_hist%C3%B3rico_provincial_de_Rosario_(vasijas).jpg",
+    "archivo": "Museo histórico provincial de Rosario (vasijas).jpg"
+   }
+  ]
+ },
+ "museo_memoria": {
+  "wikidata": "Q16609965",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Centro_Popular_de_la_Memoria_Rosario.jpg/960px-Centro_Popular_de_la_Memoria_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_Popular_de_la_Memoria_Rosario.jpg",
+    "archivo": "Centro Popular de la Memoria Rosario.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Centro_Popular_de_la_Memoria_Rosario_2.jpg/960px-Centro_Popular_de_la_Memoria_Rosario_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_Popular_de_la_Memoria_Rosario_2.jpg",
+    "archivo": "Centro Popular de la Memoria Rosario 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Centro_Popular_de_la_Memoria_1.jpg/960px-Centro_Popular_de_la_Memoria_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_Popular_de_la_Memoria_1.jpg",
+    "archivo": "Centro Popular de la Memoria 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Centro_Popular_de_la_Memoria_2.jpg/960px-Centro_Popular_de_la_Memoria_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Centro_Popular_de_la_Memoria_2.jpg",
+    "archivo": "Centro Popular de la Memoria 2.jpg"
+   }
+  ]
+ },
+ "teatro_circulo": {
+  "wikidata": "Q3827019",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Teatro_El_C%C3%ADrculo_panorama_1.jpg/960px-Teatro_El_C%C3%ADrculo_panorama_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 681,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Teatro_El_C%C3%ADrculo_panorama_1.jpg",
+    "archivo": "Teatro El Círculo panorama 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Teatro_El_C%C3%ADrculo_1.jpg/960px-Teatro_El_C%C3%ADrculo_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Teatro_El_C%C3%ADrculo_1.jpg",
+    "archivo": "Teatro El Círculo 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Teatro_El_C%C3%ADrculo_2.jpg/960px-Teatro_El_C%C3%ADrculo_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Teatro_El_C%C3%ADrculo_2.jpg",
+    "archivo": "Teatro El Círculo 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Teatro_El_C%C3%ADrculo_interior.JPG/960px-Teatro_El_C%C3%ADrculo_interior.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Mrexcel",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Teatro_El_C%C3%ADrculo_interior.JPG",
+    "archivo": "Teatro El Círculo interior.JPG"
+   }
+  ]
+ },
+ "monumento_bandera": {
+  "wikidata": "Q798629",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Monumento_a_la_Bandera_18.jpg/960px-Monumento_a_la_Bandera_18.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Monumento_a_la_Bandera_18.jpg",
+    "archivo": "Monumento a la Bandera 18.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Monumento_a_la_Bandera_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 598,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 1.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Monumento_a_la_Bandera_(1).jpg",
+    "archivo": "Monumento a la Bandera (1).jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Bandera_argentina_-_Monumento_a_la_Bandera.jpg/960px-Bandera_argentina_-_Monumento_a_la_Bandera.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Bandera_argentina_-_Monumento_a_la_Bandera.jpg",
+    "archivo": "Bandera argentina - Monumento a la Bandera.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Bandera_Argentina_en_el_Monumento_a_la_Bandera.JPG/960px-Bandera_Argentina_en_el_Monumento_a_la_Bandera.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Belgrano",
+    "licencia": "Public domain",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Bandera_Argentina_en_el_Monumento_a_la_Bandera.JPG",
+    "archivo": "Bandera Argentina en el Monumento a la Bandera.JPG"
+   }
+  ]
+ },
+ "fceia": {
+  "wikidata": "Q5428850",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/UNR_Facultad_de_Ingenier%C3%ADa_y_Polit%C3%A9cnico.jpg/960px-UNR_Facultad_de_Ingenier%C3%ADa_y_Polit%C3%A9cnico.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:UNR_Facultad_de_Ingenier%C3%ADa_y_Polit%C3%A9cnico.jpg",
+    "archivo": "UNR Facultad de Ingeniería y Politécnico.jpg"
+   }
+  ]
+ },
+ "parque_espana": {
+  "wikidata": "Q9055890",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Parque_Espa%C3%B1a_Rosario_5.jpg/960px-Parque_Espa%C3%B1a_Rosario_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Autor desconocido",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Parque_Espa%C3%B1a_Rosario_5.jpg",
+    "archivo": "Parque España Rosario 5.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/25_a%C3%B1os_del_CCPE_2.jpg/960px-25_a%C3%B1os_del_CCPE_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 531,
+    "autor": "CCPE Rosario",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:25_a%C3%B1os_del_CCPE_2.jpg",
+    "archivo": "25 años del CCPE 2.jpg"
+   }
+  ]
+ },
+ "parque_scalabrini": {
+  "wikidata": "Q21847763",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Parque_Scalabrini_Ortiz_en_Rosario.jpg/960px-Parque_Scalabrini_Ortiz_en_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "César Pérez",
+    "licencia": "CC BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Parque_Scalabrini_Ortiz_en_Rosario.jpg",
+    "archivo": "Parque Scalabrini Ortiz en Rosario.jpg"
+   }
+  ]
+ },
+ "plaza_san_martin": {
+  "wikidata": "Q370334",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Plaza_San_Mart%C3%ADn_Rosario_5.jpg/960px-Plaza_San_Mart%C3%ADn_Rosario_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_San_Mart%C3%ADn_Rosario_5.jpg",
+    "archivo": "Plaza San Martín Rosario 5.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Plaza_San_Mart%C3%ADn_Rosario_1.jpg/960px-Plaza_San_Mart%C3%ADn_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_San_Mart%C3%ADn_Rosario_1.jpg",
+    "archivo": "Plaza San Martín Rosario 1.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Palacio_de_Justicia_de_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 484,
+    "autor": "Autor desconocido",
+    "licencia": "Public domain",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Palacio_de_Justicia_de_Rosario.jpg",
+    "archivo": "Palacio de Justicia de Rosario.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Plaza_San_Martin_en_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 508,
+    "autor": "Autor desconocido",
+    "licencia": "Public domain",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_San_Martin_en_Rosario.jpg",
+    "archivo": "Plaza San Martin en Rosario.jpg"
+   }
+  ]
+ },
+ "plaza_sarmiento": {
+  "wikidata": "Q5488944",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Plaza_Sarmiento_Rosario_2.jpg/960px-Plaza_Sarmiento_Rosario_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Sarmiento_Rosario_2.jpg",
+    "archivo": "Plaza Sarmiento Rosario 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Plaza_Sarmiento_Rosario_1.jpg/960px-Plaza_Sarmiento_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Sarmiento_Rosario_1.jpg",
+    "archivo": "Plaza Sarmiento Rosario 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Rosario-Square.jpg/960px-Rosario-Square.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Fulviusbsas",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Rosario-Square.jpg",
+    "archivo": "Rosario-Square.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/3/33/Plaza_Sarmiento_de_Rosario_%28postal_Fotoscope%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "ancho": 800,
+    "alto": 443,
+    "autor": "Autor desconocido",
+    "licencia": "Public domain",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Sarmiento_de_Rosario_(postal_Fotoscope).jpg",
+    "archivo": "Plaza Sarmiento de Rosario (postal Fotoscope).jpg"
+   }
+  ]
+ },
+ "plaza_25mayo": {
+  "wikidata": "Q7203574",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Plaza_25_de_Mayo_Rosario_2.jpg/960px-Plaza_25_de_Mayo_Rosario_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 583,
+    "autor": "Pablo D. Flores",
+    "licencia": "CC BY-SA 3.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_25_de_Mayo_Rosario_2.jpg",
+    "archivo": "Plaza 25 de Mayo Rosario 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Plaza_25_de_Mayo_Rosario_1.jpg/960px-Plaza_25_de_Mayo_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 1067,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_25_de_Mayo_Rosario_1.jpg",
+    "archivo": "Plaza 25 de Mayo Rosario 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Pasaje_Juramento.jpg/960px-Pasaje_Juramento.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Pasaje_Juramento.jpg",
+    "archivo": "Pasaje Juramento.jpg"
+   }
+  ]
+ },
+ "plaza_pringles": {
+  "wikidata": "Q7203637",
+  "fotos": [
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Plaza_Pringles_Rosario_1.jpg/960px-Plaza_Pringles_Rosario_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Pringles_Rosario_1.jpg",
+    "archivo": "Plaza Pringles Rosario 1.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Plaza_Pringles_Rosario_2.jpg/960px-Plaza_Pringles_Rosario_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Pringles_Rosario_2.jpg",
+    "archivo": "Plaza Pringles Rosario 2.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Plaza_Pringles_Rosario_3.jpg/960px-Plaza_Pringles_Rosario_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Pablo-flores",
+    "licencia": "CC BY-SA 2.5",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Pringles_Rosario_3.jpg",
+    "archivo": "Plaza Pringles Rosario 3.jpg"
+   },
+   {
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Plaza_Pringles%2C_Rosario.jpg/960px-Plaza_Pringles%2C_Rosario.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "ancho": 800,
+    "alto": 600,
+    "autor": "Alex O'Neal",
+    "licencia": "CC BY-SA 2.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Plaza_Pringles,_Rosario.jpg",
+    "archivo": "Plaza Pringles, Rosario.jpg"
+   }
+  ]
+ }
+}
