@@ -298,7 +298,7 @@ export default function App() {
   const filtered = useMemo(() => {
     const q = norm(query.trim());
     const list = data.filter((p) => {
-      if (q && !norm(p.name).includes(q)) return false;
+      if (q && !norm(p.name).includes(q) && !norm(p.rubro).includes(q)) return false;
       if (typeFilter !== "all" && p.type !== typeFilter) return false;
       if (accessFilter === "si" && p.wheelchair !== "si") return false;
       if (accessFilter === "parcial" && p.wheelchair !== "parcial") return false;

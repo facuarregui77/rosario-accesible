@@ -99,7 +99,7 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
           <div>
             <h2 className="text-xl font-bold text-slate-900">{place.name}</h2>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{TYPE_LABELS[place.type]}</span>
+              <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: TYPE_COLORS[place.type] + "22", color: TYPE_COLORS[place.type] }}>{place.rubro || TYPE_LABELS[place.type]}</span>
               {place.gRating && <span className="text-xs text-slate-500 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {place.gRating} Google</span>}
               {avgRating && <span className="text-xs text-amber-600 flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {avgRating} usuarios</span>}
             </div>
