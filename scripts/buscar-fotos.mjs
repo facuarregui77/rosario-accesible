@@ -9,7 +9,7 @@
 //
 // Uso: node scripts/buscar-fotos.mjs        (tarda unos minutos; después revisar las fotos)
 import fs from "node:fs";
-import { PLACES } from "../src/data/places.js";
+import { PLACES } from "../src/data/places-base.js"; // solo los lugares relevados a mano
 
 const UA = { "User-Agent": "rosario-accesible/1.0 (https://github.com/facuarregui77/rosario-accesible)" };
 const OUT = new URL("../src/fotos.json", import.meta.url);

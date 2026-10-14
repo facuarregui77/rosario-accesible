@@ -40,10 +40,36 @@ const RampMarker = L.CircleMarker.extend({
   },
 });
 
+// Pin liviano para las empresas importadas de OpenStreetMap (son más de 1.500): se dibuja en el canvas del
+// mapa con la misma forma y colores que los pines comunes, así el celular no se traba.
+const PIN_PATH = typeof Path2D !== "undefined" ? new Path2D("M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z") : null;
+const PinMarker = L.CircleMarker.extend({
+  _updatePath() {
+    const r = this._renderer;
+    if (!r || !r._ctx || !PIN_PATH) return L.CircleMarker.prototype._updatePath.call(this);
+    if (!r._drawing || this._empty()) return;
+    const ctx = r._ctx, p = this._point, s = this.options.pinSize / 24;
+    ctx.save();
+    ctx.globalAlpha = 1;
+    // la punta del pin queda en el lugar exacto; el círculo clickeable está en la cabeza del pin
+    ctx.translate(p.x - 12 * s, p.y - 9 * s);
+    ctx.scale(s, s);
+    ctx.fillStyle = this.options.typeColor; ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.6;
+    ctx.fill(PIN_PATH); ctx.stroke(PIN_PATH);
+    ctx.beginPath(); ctx.arc(12, 9, 4.6, 0, Math.PI * 2); ctx.fillStyle = "#fff"; ctx.fill();
+    ctx.beginPath(); ctx.arc(12, 9, 2.4, 0, Math.PI * 2); ctx.fillStyle = this.options.accColor; ctx.fill();
+    ctx.restore();
+  },
+});
+// Las empresas importadas se muestran a partir de este zoom (o siempre, si el filtro deja pocas)
+const OSM_MIN_ZOOM = 15;
+const OSM_POCAS = 250;
+
 export default function RealMap({ places, selected, onSelect, avgRating, ramps, showRamps, onRampsHint, searchTerm, sidebarOpen, route, userPos, picking, onPick }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
+  const osmLayerRef = useRef(null);
   const rampsLayerRef = useRef(null);
   const routeLayerRef = useRef(null);
   const userLayerRef = useRef(null);
@@ -98,6 +124,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     mapRef.current = map;
     map.zoomControl.setPosition("bottomright"); // abajo-derecha: no choca con el panel ni el header
     layerRef.current = L.layerGroup().addTo(map);
+    osmLayerRef.current = L.layerGroup();
     // Varios "empujones" para forzar la carga del mapa dentro del visor
     const kick = () => { if (mapRef.current === map) map.invalidateSize(); }; // (si el mapa ya se desmontó, no hace nada)
     setTimeout(kick, 200);
@@ -122,7 +149,29 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
   useEffect(() => {
     if (!ready || !layerRef.current) return;
     layerRef.current.clearLayers();
+    osmLayerRef.current.clearLayers();
+    const map = mapRef.current;
+    const osm = places.filter((p) => p.osm && selected?.id !== p.id);
+    const osmSize = (z) => (z >= 17 ? 26 : z >= 16 ? 23 : 20);
+    osm.forEach((p) => {
+      const m = new PinMarker([p.lat, p.lng], { radius: 7, stroke: false, fillOpacity: 0, pinSize: osmSize(map.getZoom()),
+        typeColor: TYPE_COLORS[p.type] || "#64748b", accColor: accessColor(p.wheelchair) });
+      m.bindTooltip(p.name, { direction: "top", offset: [0, -10] });
+      m.on("click", () => onSelectRef.current(p));
+      m.addTo(osmLayerRef.current);
+    });
+    // Se ven con el mapa acercado; con la ciudad entera solo si el filtro o la búsqueda dejan pocas
+    const mostrar = () => {
+      const ver = osm.length <= OSM_POCAS || map.getZoom() >= OSM_MIN_ZOOM;
+      if (ver && !map.hasLayer(osmLayerRef.current)) osmLayerRef.current.addTo(map);
+      if (!ver && map.hasLayer(osmLayerRef.current)) osmLayerRef.current.remove();
+      const t = osmSize(map.getZoom());
+      osmLayerRef.current.eachLayer((l) => { if (l.options.pinSize !== t) { l.options.pinSize = t; l.redraw(); } });
+    };
+    mostrar();
+    map.on("zoomend", mostrar);
     places.forEach((p) => {
+      if (p.osm && selected?.id !== p.id) return;
       const isSel = selected?.id === p.id;
       // Color del PIN = TIPO de lugar (bar naranja, restaurante verde, etc.).
       // Puntito central = ACCESIBILIDAD (semáforo verde/ámbar/rojo/gris), para no perder ese dato.
@@ -160,6 +209,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       marker.on("click", () => onSelectRef.current(p));
       marker.on("keypress", (e) => { const k = e.originalEvent && e.originalEvent.key; if (k === "Enter" || k === " ") onSelectRef.current(p); });
     });
+    return () => map.off("zoomend", mostrar);
   }, [places, selected, ready, avgRating]);
 
   // Centrar el mapa en el lugar seleccionado al hacer clic

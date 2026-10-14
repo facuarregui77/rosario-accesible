@@ -48,9 +48,9 @@
 </style>
 <style id="ajustes">
   /* Altos de las capturas: páginas llenas y cada captura al costado de su texto */
-  #f3 img { max-height: 92.0mm !important; }
-  #f4 img { max-height: 98.0mm !important; }
-  #f5 img { max-height: 72.0mm !important; }
+  #f3 img { max-height: 78.0mm !important; }
+  #f4 img { max-height: 70.0mm !important; }
+  #f5 img { max-height: 64.0mm !important; }
   #f6 img { max-height: 90.0mm !important; }
   #f7 img { max-height: 80.0mm !important; }
 </style>
@@ -105,7 +105,7 @@
 <tr><th style="width:26%">Pieza</th><th style="width:38%">Qué es</th><th>Dónde vive</th></tr>
 <tr><td><b>La app</b><br/>lo que ve la gente</td><td>El código del programa.</td><td>Se guarda en <b>GitHub</b> y se publica en internet con <b>Vercel</b>.</td></tr>
 <tr><td><b>La base de datos</b><br/>lo que se va cargando</td><td>Accesibilidad relevada, opiniones, sugerencias, fotos, lugares nuevos y las cuentas de administrador.</td><td><b>Supabase</b> (supabase.com).</td></tr>
-<tr><td><b>Los datos base</b><br/>lo que viene de fábrica</td><td>Los 97 lugares originales, sus datos de contacto y las 1.003 rampas.</td><td>Archivos dentro del propio código.</td></tr>
+<tr><td><b>Los datos base</b><br/>lo que viene de fábrica</td><td>Los 97 lugares relevados por el equipo, 1.555 empresas y comercios con dato de acceso (OpenStreetMap), sus contactos y las 1.003 rampas.</td><td>Archivos dentro del propio código.</td></tr>
 </table>
 <div class="box info">
 <span class="t">Cómo viaja un cambio</span>
@@ -193,7 +193,12 @@
 <span class="dot" style="background:#14b8a6"></span>Salud
          <span class="dot" style="background:#64748b"></span>Transporte
          <span class="dot" style="background:#6366f1"></span>Gobierno
-         <span class="dot" style="background:#84cc16"></span>Espacio verde</p>
+         <span class="dot" style="background:#84cc16"></span>Espacio verde<br/>
+<span class="dot" style="background:#ea580c"></span>Café
+&nbsp; <span class="dot" style="background:#0891b2"></span>Comercio
+&nbsp; <span class="dot" style="background:#475569"></span>Servicios
+&nbsp; <span class="dot" style="background:#be185d"></span>Alojamiento</p>
+<p>Los comercios, oficinas y demás empresas tomados de OpenStreetMap aparecen al acercar el mapa, para que la ciudad entera no quede tapada de pines. En la lista y el buscador están siempre.</p>
 </div>
 </div>
 <ul>
@@ -212,7 +217,7 @@
 <p>Se abren con la pestaña naranja, que muestra un puntito blanco cuando hay algún filtro puesto.</p>
 <ul>
 <li><b>Cerca de mí:</b> usar la ubicación y elegir el radio.</li>
-<li><b>Tipo de lugar:</b> bares, restaurantes, boliches, educativos, deportivos, culturales, salud, transporte, gobierno, espacios verdes.</li>
+<li><b>Tipo de lugar:</b> bares, restaurantes, boliches, educativos, deportivos, culturales, salud, transporte, gobierno, espacios verdes, cafés y comida al paso, comercios, oficinas y servicios, alojamiento.</li>
 <li><b>Accesibilidad:</b> accesible, parcial, sin acceso o sin datos.</li>
 <li><b>Servicios:</b> baño adaptado, rampa de acceso, ascensor, menú en braille, personal con lengua de señas. Si se marcan varios, quedan solo los lugares que tienen todos.</li>
 </ul>
@@ -367,6 +372,7 @@
 <tr><td>Opiniones</td><td>El público</td><td>Supabase</td></tr>
 <tr><td>Sugerencias de datos</td><td>El público</td><td>Supabase</td></tr>
 <tr><td>Lugares agregados desde la app</td><td>Administradores</td><td>Supabase</td></tr>
+<tr><td>1.555 empresas, comercios y servicios</td><td>OpenStreetMap: solo los que tienen dato de acceso. Se actualizan con <code>node scripts/importar-empresas-osm.mjs</code></td><td>En el código</td></tr>
 <tr><td>Fotos</td><td>El equipo, Wikimedia Commons y Mapillary (33 lugares)</td><td>Supabase y el código</td></tr>
 <tr><td>Registro de errores</td><td>La app, sola</td><td>Supabase</td></tr>
 </table>
@@ -611,7 +617,7 @@
 <table>
 <tr><th style="width:30%">Paso</th><th>Por qué</th></tr>
 <tr><td><b>Cuentas de la empresa</b></td><td>Hoy todo está a nombre de una persona. Si el proyecto pasa a la empresa, las cuentas tienen que ser de la empresa (ver 7.4).</td></tr>
-<tr><td><b>Completar datos</b></td><td>De los 97 lugares, 24 tienen dato de acceso. Una tarde de relevamiento por el centro cambia el mapa por completo.</td></tr>
+<tr><td><b>Completar datos</b></td><td>De los 97 lugares relevados por el equipo, 24 tienen dato de acceso. Una tarde de relevamiento por el centro cambia el mapa por completo.</td></tr>
 <tr><td><b>Difusión</b></td><td>Seguir el <b>PLAN DE DIFUSION.pdf</b>: redes sociales, organizaciones, medios y enlaces desde otros sitios, con textos listos, piezas gráficas y cómo medir los resultados.</td></tr>
 <tr><td><b>Dominio propio</b></td><td>Una dirección como rosarioaccesible.com.ar da más confianza que la de Vercel. Se compra en NIC Argentina y se agrega en Vercel → Domains.</td></tr>
 <tr><td><b>Rampas oficiales</b></td><td>Hacer el pedido de información pública a la Municipalidad (ver 6.3) multiplicaría por diez la capa de rampas.</td></tr>

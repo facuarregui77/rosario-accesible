@@ -677,7 +677,7 @@ export default function App() {
             <div role="group" aria-labelledby="f-tipo">
               <p id="f-tipo" className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Filter size={13} /> Tipo de lugar</p>
               <div className="flex flex-wrap gap-2">
-                {["all", "bar", "restaurant", "boliche", "educativo", "deportivo", "cultural", "salud", "transporte", "gobierno", "verde"].map((t) => (
+                {["all", ...Object.keys(TYPE_LABELS)].map((t) => (
                   <button key={t} onClick={() => setTypeFilter(t)} aria-pressed={typeFilter === t}
                     className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${typeFilter === t ? "bg-sky-600 text-white border-sky-600" : "bg-white/90 text-sky-700 border-sky-400 hover:bg-white"}`}>
                     {t === "all" ? "Todos" : TYPE_PLURAL[t]}

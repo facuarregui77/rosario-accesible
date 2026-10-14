@@ -10,7 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { PLACES } from "../src/data/places.js";
+import { PLACES } from "../src/data/places-base.js"; // solo los lugares relevados a mano
 
 const RAIZ = new URL("..", import.meta.url);
 const env = fs.readFileSync(new URL(".env.local", RAIZ), "utf8");

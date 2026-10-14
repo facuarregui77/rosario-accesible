@@ -50,10 +50,10 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
 
   // Contacto y ubicación: dirección/teléfono/web/redes de OSM; la dirección se completa por
   // geolocalización inversa si no está en los datos.
-  const contact = CONTACTOS[place.id] || {};
+  const contact = CONTACTOS[place.id] || place.contacto || {};
   const [addr, setAddr] = useState(contact.direccion || null);
   useEffect(() => {
-    const c = CONTACTOS[place.id] || {};
+    const c = CONTACTOS[place.id] || place.contacto || {};
     if (c.direccion) { setAddr(c.direccion); return; }
     setAddr(null);
     reverseGeocode(place.lat, place.lng).then(setAddr);
