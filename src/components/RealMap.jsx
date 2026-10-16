@@ -76,6 +76,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
   const userLayerRef = useRef(null);
   const isMobileRef = useRef(false);
   const [ready, setReady] = useState(false);
+  const [zoom, setZoom] = useState(HOME.zoom);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
   const onPickRef = useRef(onPick);
@@ -136,6 +137,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       kick();
       if (pickingRef.current && onPickRef.current) onPickRef.current({ lat: e.latlng.lat, lng: e.latlng.lng });
     });
+    map.on("zoomend", () => setZoom(Math.round(map.getZoom())));
     setReady(true);
     return () => { if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -153,7 +155,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     osmLayerRef.current.clearLayers();
     const map = mapRef.current;
     const osm = places.filter((p) => p.osm && selected?.id !== p.id);
-    const osmSize = (z) => (z >= 17 ? 28 : z >= 16 ? 25 : 22);
+    const osmSize = (z) => (z >= 17 ? 22 : z >= 16 ? 20 : 17);
     osm.forEach((p) => {
       const m = new PinMarker([p.lat, p.lng], { radius: 14, stroke: false, fillOpacity: 0, pinSize: osmSize(map.getZoom()),
         type: p.type, wheelchair: p.wheelchair });
@@ -175,7 +177,9 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       if (p.osm && selected?.id !== p.id) return;
       const isSel = selected?.id === p.id;
       // Pin estilo Google Maps: color y dibujito = tipo de lugar; circulito de la esquina = accesibilidad
-      const w = isSel ? 42 : 32;
+      // Tamaño según el zoom: chicos con la ciudad entera (no se enciman), más grandes al acercar
+      const base = zoom <= 13 ? 18 : zoom === 14 ? 20 : zoom === 15 ? 22 : 25;
+      const w = isSel ? base + 10 : base;
       const h = Math.round((w * PIN_H) / PIN_W);
       const icon = L.divIcon({
         className: "",
@@ -193,7 +197,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       marker.on("keypress", (e) => { const k = e.originalEvent && e.originalEvent.key; if (k === "Enter" || k === " ") onSelectRef.current(p); });
     });
     return () => map.off("zoomend", mostrar);
-  }, [places, selected, ready, avgRating]);
+  }, [places, selected, ready, avgRating, zoom]);
 
   // Centrar el mapa en el lugar seleccionado al hacer clic
   useEffect(() => {
