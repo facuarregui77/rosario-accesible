@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { TYPE_COLORS, TYPE_LABELS, ACCESS_LABELS, accessColor, prefersReducedMotion } from "../data/constants";
 import { reverseGeocode, escapeH } from "../lib/geo";
 import { RAMP_ICON_URL } from "../lib/rampIcon";
+import { pinSvg, pinImage, PIN_W, PIN_H } from "../lib/pin";
 
 // Vista inicial: toda la ciudad
 const HOME = { center: [-32.945, -60.66], zoom: 13 };
@@ -42,23 +43,23 @@ const RampMarker = L.CircleMarker.extend({
 
 // Pin liviano para las empresas importadas de OpenStreetMap (son más de 1.500): se dibuja en el canvas del
 // mapa con la misma forma y colores que los pines comunes, así el celular no se traba.
-const PIN_PATH = typeof Path2D !== "undefined" ? new Path2D("M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z") : null;
 const PinMarker = L.CircleMarker.extend({
   _updatePath() {
     const r = this._renderer;
-    if (!r || !r._ctx || !PIN_PATH) return L.CircleMarker.prototype._updatePath.call(this);
+    if (!r || !r._ctx) return L.CircleMarker.prototype._updatePath.call(this);
     if (!r._drawing || this._empty()) return;
-    const ctx = r._ctx, p = this._point, s = this.options.pinSize / 24;
-    ctx.save();
-    ctx.globalAlpha = 1;
-    // la punta del pin queda en el lugar exacto; el círculo clickeable está en la cabeza del pin
-    ctx.translate(p.x - 12 * s, p.y - 9 * s);
-    ctx.scale(s, s);
-    ctx.fillStyle = this.options.typeColor; ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.6;
-    ctx.fill(PIN_PATH); ctx.stroke(PIN_PATH);
-    ctx.beginPath(); ctx.arc(12, 9, 4.6, 0, Math.PI * 2); ctx.fillStyle = "#fff"; ctx.fill();
-    ctx.beginPath(); ctx.arc(12, 9, 2.4, 0, Math.PI * 2); ctx.fillStyle = this.options.accColor; ctx.fill();
-    ctx.restore();
+    const o = this.options, w = o.pinSize, h = Math.round((w * PIN_H) / PIN_W), p = this._point;
+    const img = pinImage(o.type, o.wheelchair, w, () => this.redraw());
+    if (img.complete && img.naturalWidth) {
+      r._ctx.save(); r._ctx.globalAlpha = 1;
+      r._ctx.drawImage(img, p.x - w / 2, p.y - h, w, h);   // la punta del pin queda en el lugar exacto
+      r._ctx.restore();
+    }
+  },
+  // se puede tocar en toda la cabeza del pin (no solo en la punta)
+  _containsPoint(pt) {
+    const w = this.options.pinSize, h = (w * PIN_H) / PIN_W;
+    return pt.distanceTo(L.point(this._point.x, this._point.y - h * 0.62)) <= w * 0.6;
   },
 });
 // Las empresas importadas se muestran a partir de este zoom (o siempre, si el filtro deja pocas)
@@ -152,10 +153,10 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     osmLayerRef.current.clearLayers();
     const map = mapRef.current;
     const osm = places.filter((p) => p.osm && selected?.id !== p.id);
-    const osmSize = (z) => (z >= 17 ? 26 : z >= 16 ? 23 : 20);
+    const osmSize = (z) => (z >= 17 ? 28 : z >= 16 ? 25 : 22);
     osm.forEach((p) => {
-      const m = new PinMarker([p.lat, p.lng], { radius: 7, stroke: false, fillOpacity: 0, pinSize: osmSize(map.getZoom()),
-        typeColor: TYPE_COLORS[p.type] || "#64748b", accColor: accessColor(p.wheelchair) });
+      const m = new PinMarker([p.lat, p.lng], { radius: 14, stroke: false, fillOpacity: 0, pinSize: osmSize(map.getZoom()),
+        type: p.type, wheelchair: p.wheelchair });
       m.bindTooltip(p.name, { direction: "top", offset: [0, -10] });
       m.on("click", () => onSelectRef.current(p));
       m.addTo(osmLayerRef.current);
@@ -173,34 +174,16 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     places.forEach((p) => {
       if (p.osm && selected?.id !== p.id) return;
       const isSel = selected?.id === p.id;
-      // Color del PIN = TIPO de lugar (bar naranja, restaurante verde, etc.).
-      // Puntito central = ACCESIBILIDAD (semáforo verde/ámbar/rojo/gris), para no perder ese dato.
-      const typeColor = TYPE_COLORS[p.type] || "#64748b";
-      const accColor = accessColor(p.wheelchair);
-      const size = isSel ? 38 : 28;
-      const stroke = isSel ? "#0f172a" : "white";   // selección: contorno oscuro + más grande
-      const strokeW = isSel ? 2.5 : 1.5;
-      // En celular evitamos `filter:drop-shadow` (repinta cada frame al panear/zoom → laguea).
-      // Usamos una sombra "barata": un óvalo gris dibujado dentro del SVG, sin filtro.
-      const mobile = isMobileRef.current;
-      const svgShadow = mobile
-        ? `<ellipse cx="12" cy="22.5" rx="4" ry="1.3" fill="rgba(0,0,0,0.28)" stroke="none"/>`
-        : "";
-      const svgFilter = mobile ? "" : "filter:drop-shadow(0 2px 3px rgba(0,0,0,0.5));";
+      // Pin estilo Google Maps: color y dibujito = tipo de lugar; circulito de la esquina = accesibilidad
+      const w = isSel ? 42 : 32;
+      const h = Math.round((w * PIN_H) / PIN_W);
       const icon = L.divIcon({
         className: "",
-        html: `<div style="transform:translate(-50%,-100%);position:relative;width:${size}px;height:${size}px;">
-          <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${typeColor}" stroke="${stroke}" stroke-width="${strokeW}" aria-hidden="true"
-            style="${svgFilter}">
-            ${svgShadow}
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-            <circle cx="12" cy="9" r="4.6" fill="white" stroke="none"/>
-            <circle cx="12" cy="9" r="2.4" fill="${accColor}" stroke="none"/>
-          </svg>
-        </div>`,
-        iconSize: [size, size],
+        html: `<div style="transform:translate(-50%,-100%);width:${w}px;height:${h}px;">${pinSvg(p.type, p.wheelchair, w, isSel)}</div>`,
+        iconSize: [w, h],
         iconAnchor: [0, 0],
       });
+      const size = h;
       const avg = avgRating(p.id);
       // `title`: nombre accesible del pin para teclado y lectores de pantalla (Leaflet lo hace enfocable con Tab).
       const a11yName = `${p.name}, ${TYPE_LABELS[p.type] || p.type}, ${ACCESS_LABELS[p.wheelchair ?? null]}`;
