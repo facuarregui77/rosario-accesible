@@ -121,6 +121,8 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       markerZoomAnimation: !isMobile && animate, // celular: los pines no se animan al pellizcar → menos repintado por frame
       tap: false,                  // mejor respuesta táctil en celulares modernos
     }).setView(HOME.center, HOME.zoom);
+    // créditos sin la banderita que Leaflet agrega por defecto (queda solo el nombre, con su enlace)
+    map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noreferrer">Leaflet</a>');
     // Mapa de respaldo (Esri, imágenes sueltas): se ve mientras carga el mapa de estilo Google y queda si este falla.
     const respaldo = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
       maxZoom: 19,
