@@ -52,8 +52,12 @@ export const PLACES = [
   { id: "sanbartolome", name: "Colegio San Bartolomé", type: "educativo", lat: -32.9550, lng: -60.6580, gRating: 4.3, a: { ...SIN_DATOS } },
   { id: "dante", name: "Colegio Dante Alighieri", type: "educativo", lat: -32.9505, lng: -60.6500, gRating: 4.4, a: { ...SIN_DATOS } },
   // Clubes deportivos y gimnasios de Rosario (ubicaciones reales)
-  { id: "central", name: "Club Atlético Rosario Central", type: "deportivo", lat: -32.914029, lng: -60.674472, gRating: 4.6, a: { ...SIN_DATOS } },
-  { id: "newells", name: "Club Atlético Newell's Old Boys", type: "deportivo", lat: -32.956067, lng: -60.661413, gRating: 4.6, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "1375044787") },
+  { id: "central", name: "Rosario Central · Estadio Gigante de Arroyito", rubro: "Estadio de fútbol", type: "deportivo", lat: -32.914026, lng: -60.674468, gRating: 4.6, a: { ...SIN_DATOS }, src: osm("way", "73878564") },
+  { id: "newells", name: "Newell's Old Boys · Estadio Marcelo Bielsa", rubro: "Estadio de fútbol", type: "deportivo", lat: -32.956067, lng: -60.661413, gRating: 4.6, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "1375044787") },
+  // Los demás estadios de fútbol de Rosario (ubicación de OpenStreetMap)
+  { id: "central_cordoba", name: "Central Córdoba · Estadio Gabino Sosa", rubro: "Estadio de fútbol", type: "deportivo", lat: -32.970716, lng: -60.636133, a: { ...SIN_DATOS }, src: osm("way", "405519405") },
+  { id: "argentino_rosario", name: "Argentino de Rosario · Estadio", rubro: "Estadio de fútbol", type: "deportivo", lat: -32.907539, lng: -60.683712, a: { ...SIN_DATOS }, src: osm("way", "187975740") },
+  { id: "tiro_federal", name: "Tiro Federal · Estadio de Ludueña", rubro: "Estadio de fútbol", type: "deportivo", lat: -32.929154, lng: -60.694991, a: { ...SIN_DATOS }, src: osm("way", "408323277") },
   { id: "regatas", name: "Club de Regatas Rosario", type: "deportivo", lat: -32.9286, lng: -60.6281, gRating: 4.5, a: { ...SIN_DATOS } },
   { id: "gimnasia_ros", name: "Club Gimnasia y Esgrima de Rosario", type: "deportivo", lat: -32.9499, lng: -60.6790, gRating: 4.4, a: { ...SIN_DATOS } },
   { id: "provincial", name: "Club Atlético Provincial", type: "deportivo", lat: -32.9618, lng: -60.6520, gRating: 4.3, a: { ...SIN_DATOS } },
@@ -79,9 +83,9 @@ export const PLACES = [
   { id: "sanatorio_parque", name: "Sanatorio Parque", type: "salud", lat: -32.944263, lng: -60.653745, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("node", "4030806363") },
   { id: "sanatorio_ninos", name: "Sanatorio de Niños", type: "salud", lat: -32.944224, lng: -60.654669, a: { ...SIN_DATOS }, wheelchair: "si", src: osm("node", "4030806362") },
   // Transporte (ubicaciones reales; accesibilidad a relevar)
-  { id: "terminal", name: "Terminal de Ómnibus Mariano Moreno", type: "transporte", lat: -32.9606, lng: -60.6790, a: { ...SIN_DATOS } },
+  { id: "terminal", name: "Terminal de Ómnibus Mariano Moreno", type: "transporte", lat: -32.939373, lng: -60.6726, a: { ...SIN_DATOS } },
   { id: "est_rosario_norte", name: "Estación Rosario Norte", type: "transporte", lat: -32.930733, lng: -60.657531, a: { ...SIN_DATOS } },
-  { id: "aeropuerto", name: "Aeropuerto Internacional de Rosario (Islas Malvinas)", type: "transporte", lat: -32.9036, lng: -60.7846, a: { ...SIN_DATOS } },
+  { id: "aeropuerto", name: "Aeropuerto Internacional de Rosario (Islas Malvinas)", type: "transporte", lat: -32.901303, lng: -60.778328, a: { ...SIN_DATOS } },
   // Gobierno / trámites
   { id: "palacio_leones", name: "Municipalidad de Rosario (Palacio de los Leones)", type: "gobierno", lat: -32.947129, lng: -60.632202, a: { ...SIN_DATOS }, wheelchair: "no", src: osm("way", "187197923") },
   { id: "concejo", name: "Concejo Municipal de Rosario", type: "gobierno", lat: -32.9483, lng: -60.63011, a: { ...SIN_DATOS } },
