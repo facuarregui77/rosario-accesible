@@ -392,7 +392,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       <div ref={containerRef} role="application" aria-label="Mapa de accesibilidad de Rosario. Usá Tab para recorrer los lugares y Enter para abrir uno." className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa" aria-label="Volver a la vista inicial del mapa"
-        className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[900] bottom-7 sm:bottom-3 left-3"}`}>
+        className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[900] bottom-10 sm:bottom-3 left-3"}`}>
         <RotateCcw size={16} />
       </button>
     </>

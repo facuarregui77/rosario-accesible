@@ -433,7 +433,7 @@ export default function App() {
   const anyFilter = typeFilter !== "all" || accessFilter !== "all" || criteriaFilter.length > 0 || (userPos && radius != null);
 
   return (
-    <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className="w-full h-screen h-[100dvh] flex flex-col overflow-hidden bg-sky-50 text-slate-800" style={{ height: "var(--alto-app, 100dvh)", fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       {/* Región para lectores de pantalla: anuncia resultados, guardados, rutas, etc. (invisible) */}
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">{liveMsg}</div>
 

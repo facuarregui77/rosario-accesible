@@ -72,6 +72,9 @@ body,
 }
 /* Créditos del mapa: chiquitos y en un renglón en celular, para que no tapen la ruedita ni el zoom */
 @media (max-width: 640px) {
+  .leaflet-control-zoom {
+    margin-bottom: 26px !important;
+  }
   .leaflet-control-attribution {
     font-size: 10px !important;
     line-height: 1.4 !important;
