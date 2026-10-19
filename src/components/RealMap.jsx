@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { TYPE_COLORS, TYPE_LABELS, ACCESS_LABELS, accessColor, prefersReducedMotion } from "../data/constants";
 import { reverseGeocode, escapeH } from "../lib/geo";
 import { RAMP_ICON_URL } from "../lib/rampIcon";
-import { pinSvg, pinImage, PIN_W, PIN_H } from "../lib/pin";
+import { pinSvg, pinImage, PIN_W, PIN_H, oscuro, ESTILO_NOMBRE } from "../lib/pin";
 
 // Vista inicial: toda la ciudad
 const HOME = { center: [-32.945, -60.66], zoom: 13 };
@@ -53,6 +53,15 @@ const PinMarker = L.CircleMarker.extend({
     if (img.complete && img.naturalWidth) {
       r._ctx.save(); r._ctx.globalAlpha = 1;
       r._ctx.drawImage(img, p.x - w / 2, p.y - h, w, h);   // la punta del pin queda en el lugar exacto
+      if (o.nombre && this._map && this._map.getZoom() >= 17) {
+        const ctx = r._ctx;
+        ctx.font = "600 11px 'Plus Jakarta Sans', system-ui, sans-serif";
+        ctx.textBaseline = "middle";
+        ctx.lineJoin = "round"; ctx.lineWidth = 3; ctx.strokeStyle = "#ffffff";
+        const t = o.nombre.length > 26 ? o.nombre.slice(0, 25) + "…" : o.nombre;
+        ctx.strokeText(t, p.x + w / 2 + 1, p.y - h * 0.62);
+        ctx.fillStyle = o.colorNombre; ctx.fillText(t, p.x + w / 2 + 1, p.y - h * 0.62);
+      }
       r._ctx.restore();
     }
   },
@@ -144,16 +153,20 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
         const maplibregl = modulo.default || modulo;   // según cómo se empaquete, viene con o sin "default"
         maplibregl.setWorkerUrl(workerUrl);   // dónde está la parte que procesa el mapa en segundo plano
         window.maplibregl = maplibregl;
-        const { maplibreGL } = await import("@maplibre/maplibre-gl-leaflet");
+        // Bajamos el estilo y le sacamos, antes de dibujar, las paradas de colectivo con su número
+        // (llenaban el mapa y tapaban los pines) y los iconitos de comercios del propio mapa (para que no se
+        // confundan con nuestros pines: así los únicos pines que se ven son los de la app).
+        const [{ maplibreGL }, estilo] = await Promise.all([
+          import("@maplibre/maplibre-gl-leaflet"),
+          fetch("https://tiles.openfreemap.org/styles/liberty").then((r) => { if (!r.ok) throw new Error("estilo " + r.status); return r.json(); }),
+        ]);
+        estilo.layers = estilo.layers.filter((l) => l["source-layer"] !== "poi" && l.id !== "poi_transit");
         if (mapRef.current !== map) return;
         fondo = maplibreGL({
-          style: "https://tiles.openfreemap.org/styles/liberty",
+          style: estilo,
           attribution: '<a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>',
         }).addTo(map);
         const gl = fondo.getMaplibreMap();
-        // sin las paradas de colectivo con su número: llenaban el mapa y tapaban los pines
-        const ocultar = () => { if (gl.getLayer("poi_transit")) gl.setLayoutProperty("poi_transit", "visibility", "none"); };
-        gl.on("styledata", ocultar);
         let listo = false, errores = 0;
         gl.on("error", (e) => {
           errores++;
@@ -207,7 +220,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     const osmSize = (z) => (z >= 17 ? 22 : z >= 16 ? 20 : 17);
     osm.forEach((p) => {
       const m = new PinMarker([p.lat, p.lng], { radius: 14, stroke: false, fillOpacity: 0, pinSize: osmSize(map.getZoom()),
-        type: p.type, wheelchair: p.wheelchair });
+        type: p.type, wheelchair: p.wheelchair, nombre: p.name, colorNombre: oscuro(TYPE_COLORS[p.type] || "#5F6368", 0.8) });
       m.bindTooltip(p.name, { direction: "top", offset: [0, -10] });
       m.on("click", () => onSelectRef.current(p));
       m.addTo(osmLayerRef.current);
@@ -232,7 +245,8 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       const h = Math.round((w * PIN_H) / PIN_W);
       const icon = L.divIcon({
         className: "",
-        html: `<div style="transform:translate(-50%,-100%);width:${w}px;height:${h}px;">${pinSvg(p.type, p.wheelchair, w, isSel)}</div>`,
+        html: `<div style="transform:translate(-50%,-100%);width:${w}px;height:${h}px;position:relative;">${pinSvg(p.type, p.wheelchair, w, isSel)}` +
+          ((zoom >= 16 || isSel) ? `<span style="position:absolute;left:${w - 2}px;top:${Math.round(h * 0.2)}px;color:${oscuro(TYPE_COLORS[p.type] || "#5F6368", 0.8)};${ESTILO_NOMBRE}">${escapeH(p.name)}</span>` : "") + `</div>`,
         iconSize: [w, h],
         iconAnchor: [0, 0],
       });

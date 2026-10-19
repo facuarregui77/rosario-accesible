@@ -9,7 +9,9 @@ export const CRITERIA = [
 
 export const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacio verde", gastronomia: "Café y comida al paso", comercio: "Comercio", servicio: "Empresa", alojamiento: "Alojamiento" };
 export const TYPE_PLURAL = { bar: "Bares", restaurant: "Restaurantes", boliche: "Boliches", educativo: "Educativos", deportivo: "Deportivos", cultural: "Culturales", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacios verdes", gastronomia: "Cafés y comida al paso", comercio: "Comercios", servicio: "Empresas", alojamiento: "Alojamiento" };
-export const TYPE_COLORS = { bar: "#f59e0b", restaurant: "#10b981", boliche: "#a855f7", educativo: "#3b82f6", deportivo: "#ef4444", cultural: "#d946ef", salud: "#14b8a6", transporte: "#64748b", gobierno: "#6366f1", verde: "#84cc16", gastronomia: "#ea580c", comercio: "#0891b2", servicio: "#475569", alojamiento: "#be185d" };
+// Colores al estilo Google Maps: comida y bebida naranja, compras azul, salud rojo, parques verde, hoteles rosa,
+// cultura turquesa, educación índigo, oficinas y gobierno gris.
+export const TYPE_COLORS = { bar: "#E8710A", restaurant: "#E8710A", boliche: "#9334E6", educativo: "#5C6BC0", deportivo: "#0B8043", cultural: "#12A4AF", salud: "#D93025", transporte: "#1967D2", gobierno: "#5F6368", verde: "#34A853", gastronomia: "#E8710A", comercio: "#4285F4", servicio: "#78909C", alojamiento: "#D81B60" };
 // Ícono (emoji) por categoría — usado en los marcadores y en las etiquetas
 export const TYPE_EMOJI = { bar: "🍺", restaurant: "🍽️", boliche: "🎶", educativo: "🎓", deportivo: "⚽", cultural: "🎭", salud: "🏥", transporte: "🚌", gobierno: "🏛️", verde: "🌳", gastronomia: "☕", comercio: "🛍️", servicio: "🏢", alojamiento: "🛏️" };
 
