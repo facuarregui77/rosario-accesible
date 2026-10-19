@@ -84,7 +84,7 @@ export default function AboutModal({ onClose, stats, highContrast, onToggleContr
 
           <p className="text-xs text-slate-600 border-t border-slate-200 pt-3">
             Proyecto sin fines de lucro con fines educativos y comunitarios · Rosario, Santa Fe, Argentina.
-            Mapa base © Esri · Datos © colaboradores de OpenStreetMap (ODbL).
+            Mapa base: OpenFreeMap (o Esri como respaldo) · Datos © colaboradores de OpenStreetMap (ODbL).
           </p>
         </div>
       </div>

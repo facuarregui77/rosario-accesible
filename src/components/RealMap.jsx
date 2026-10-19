@@ -112,9 +112,9 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       markerZoomAnimation: !isMobile && animate, // celular: los pines no se animan al pellizcar → menos repintado por frame
       tap: false,                  // mejor respuesta táctil en celulares modernos
     }).setView(HOME.center, HOME.zoom);
-    // Mapa con calles (Esri — muy confiable, sin bloqueos ni marca de agua).
-    // detectRetina: en pantallas nítidas carga los tiles al doble de resolución → se ve más nítido.
-    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+    // Mapa de respaldo (Esri, imágenes sueltas): se usa mientras carga el mapa de estilo Google y si el
+    // dispositivo no puede dibujarlo.
+    const respaldo = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
       maxZoom: 19,
       maxNativeZoom: 19,
       detectRetina: true,
@@ -122,7 +122,41 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       keepBuffer: isMobile ? 2 : 6,   // celular: menos tiles en memoria → arrastre mucho más liviano
       updateWhenIdle: isMobile,       // celular: carga tiles al SOLTAR (arrastre fluido); escritorio: mientras se mueve
       updateWhenZooming: false,
-    }).addTo(map);
+    });
+    // Mapa de fondo con estilo parecido a Google Maps: OpenFreeMap, estilo "Liberty" (gratis, sin clave y sin
+    // límite de uso). Se dibuja con MapLibre, que se carga aparte para no demorar la apertura de la página.
+    let conEstilo = false;
+    const ponerRespaldo = () => { if (!conEstilo && mapRef.current === map && !map.hasLayer(respaldo)) respaldo.addTo(map); };
+    const espera = setTimeout(ponerRespaldo, 2500);   // si tarda, mostramos el de respaldo mientras tanto
+    (async () => {
+      try {
+        const [modulo, { default: workerUrl }] = await Promise.all([
+          import("maplibre-gl"), import("maplibre-gl/dist/maplibre-gl-worker.mjs?url"), import("maplibre-gl/dist/maplibre-gl.css")]);
+        const maplibregl = modulo.default || modulo;   // según cómo se empaquete, viene con o sin "default"
+        maplibregl.setWorkerUrl(workerUrl);   // dónde está la parte que procesa el mapa en segundo plano
+        // sin WebGL (celulares muy viejos) no se puede dibujar: queda el de respaldo
+        const prueba = document.createElement("canvas");
+        if (!(prueba.getContext("webgl2") || prueba.getContext("webgl"))) throw new Error("sin WebGL");
+        window.maplibregl = maplibregl;
+        const { maplibreGL } = await import("@maplibre/maplibre-gl-leaflet");
+        if (mapRef.current !== map) return;
+        const fondo = maplibreGL({
+          style: "https://tiles.openfreemap.org/styles/liberty",
+          attribution: '<a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>',
+        }).addTo(map);
+        // sin las paradas de colectivo con su número: llenaban el mapa y tapaban los pines
+        const gl = fondo.getMaplibreMap();
+        const ocultar = () => { if (gl.getLayer("poi_transit")) gl.setLayoutProperty("poi_transit", "visibility", "none"); };
+        gl.on("styledata", ocultar); ocultar();
+        conEstilo = true;
+        clearTimeout(espera);
+        if (map.hasLayer(respaldo)) setTimeout(() => { if (mapRef.current === map) respaldo.remove(); }, 1500);
+      } catch (e) {
+        console.warn("Mapa de estilo no disponible, uso el de respaldo:", e && e.message);
+        clearTimeout(espera);
+        ponerRespaldo();
+      }
+    })();
     mapRef.current = map;
     map.zoomControl.setPosition("bottomright"); // abajo-derecha: no choca con el panel ni el header
     layerRef.current = L.layerGroup().addTo(map);

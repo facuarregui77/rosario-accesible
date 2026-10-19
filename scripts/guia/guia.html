@@ -236,6 +236,7 @@
 <li><b>Nombre, tipo y puntajes</b> (el de Google y el promedio de los usuarios de la app).</li>
 <li><b>Compartir</b> (arriba a la derecha). En el celular abre el menú de compartir; en la computadora copia el enlace. El enlace abre la app directamente en ese lugar.</li>
 <li><b>Cómo llego.</b> Dibuja en el mapa una ruta pensada para silla de ruedas desde donde está la persona, con la distancia y los minutos.</li>
+<li><b>Google Maps.</b> Abre el lugar en Google Maps, con Street View, fotos y reseñas.</li>
 <li><b>Acceso en silla de ruedas</b>, con el enlace a la fuente cuando el dato viene de OpenStreetMap.</li>
 <li><b>Contacto:</b> dirección, teléfono (se puede tocar para llamar), sitio web, Instagram y Facebook. Si no hay dirección cargada, la app la calcula por la ubicación y la marca como "aprox.".</li>
 <li><b>Detalle de accesibilidad:</b> los cinco criterios con Sí, No o "sin datos", y la fecha de la última actualización.</li>
@@ -422,7 +423,7 @@
 <tr><td>Vercel</td><td>Publicación y estadísticas</td><td>El plan Hobby es solo para uso personal y no comercial. Si la app pasa a ser de la empresa, hay que moverla a un equipo con plan Pro.</td></tr>
 <tr><td>OpenRouteService</td><td>Rutas para silla de ruedas</td><td>La clave gratuita permite unas 2.000 rutas por día. Si se superan, "Cómo llego" da error hasta el día siguiente.</td></tr>
 <tr><td>Nominatim (OpenStreetMap)</td><td>Dirección aproximada de rampas y lugares</td><td>Gratis y sin clave, pensado para uso moderado: como máximo una consulta por segundo. Con mucho tráfico habría que pasar a un servicio pago o propio.</td></tr>
-<tr><td>Mapa base de Esri</td><td>El dibujo de las calles</td><td>Se usa sin clave, con la mención "Tiles © Esri" visible. Si el uso se vuelve comercial, revisar sus condiciones o cambiar de proveedor.</td></tr>
+<tr><td>Mapa base (OpenFreeMap)</td><td>El dibujo de las calles, con estilo parecido a Google Maps</td><td>Gratis, sin clave y sin límite de uso, mencionando OpenFreeMap y OpenStreetMap. Si falla, la app usa sola el de Esri como respaldo.</td></tr>
 <tr><td>OpenStreetMap (datos)</td><td>Rampas, contactos y parte de la accesibilidad</td><td>Licencia ODbL: hay que citar la fuente, cosa que la app ya hace.</td></tr>
 </table>
 <h3><span class="k">7.4</span>Si el proyecto pasa a la empresa</h3>
@@ -510,7 +511,7 @@
 <table>
 <tr><th style="width:30%">Parte</th><th>Tecnología</th></tr>
 <tr><td>Pantallas</td><td>React 18, armado con Vite 6 y estilos con Tailwind CSS 3</td></tr>
-<tr><td>Mapa</td><td>Leaflet 1.9 con el mapa base de Esri; las rampas se dibujan en canvas para que vaya fluido</td></tr>
+<tr><td>Mapa</td><td>Leaflet 1.9; el fondo es OpenFreeMap (estilo Liberty) dibujado con MapLibre, con Esri de respaldo. Pines y rampas en canvas para que vaya fluido</td></tr>
 <tr><td>App instalable</td><td>vite-plugin-pwa: funciona sin conexión y avisa cuando hay versión nueva</td></tr>
 <tr><td>Datos, fotos y cuentas</td><td>Supabase (PostgreSQL con permisos por fila, Storage y Auth) a través de supabase-js</td></tr>
 <tr><td>Publicación y estadísticas</td><td>Vercel, conectado a GitHub, y Vercel Analytics</td></tr>

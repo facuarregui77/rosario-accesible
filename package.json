@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@maplibre/maplibre-gl-leaflet": "^0.1.4",
     "@supabase/supabase-js": "^2.108.2",
     "@vercel/analytics": "^2.0.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.460.0",
+    "maplibre-gl": "^6.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

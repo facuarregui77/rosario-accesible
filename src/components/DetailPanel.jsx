@@ -121,11 +121,21 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
               ...((FOTOS_LIBRES[place.id] && FOTOS_LIBRES[place.id].fotos) || []).map((f) => ({ url: f.url, enlace: f.pagina, credito: `Foto: ${f.autor}, ${f.fuente || "Wikimedia Commons"}${f.anio ? " (" + f.anio + ")" : ""}`, licencia: f.licencia })),
             ]} />
           )}
-          {routingEnabled && !editing && (
-            <button onClick={() => onRoute(place)}
-              className="w-full mb-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-600 text-white text-sm font-semibold shadow-sm transition">
-              <Navigation size={16} /> Cómo llego (ruta accesible)
-            </button>
+          {!editing && (
+            <div className="flex gap-2 mb-4">
+              {routingEnabled && (
+                <button onClick={() => onRoute(place)}
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold shadow-sm transition">
+                  <Navigation size={16} /> Cómo llego (ruta accesible)
+                </button>
+              )}
+              {/* Enlace oficial y gratuito de Google Maps: abre el lugar con Street View, fotos y reseñas de Google */}
+              <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name + ", Rosario")}`}
+                target="_blank" rel="noreferrer" title="Ver este lugar en Google Maps (Street View, fotos y reseñas)"
+                className={`${routingEnabled ? "" : "flex-1 "}flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-white hover:bg-sky-50 text-sky-800 border border-sky-300 text-sm font-semibold shadow-sm transition whitespace-nowrap`}>
+                <MapPin size={16} /> Google Maps
+              </a>
+            </div>
           )}
           {place.wheelchair && !editing && (
             <div className={`mb-4 p-3 rounded-xl border text-sm ${place.wheelchair === "si" ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
