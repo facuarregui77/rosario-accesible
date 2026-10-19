@@ -35,7 +35,7 @@ const RampMarker = L.CircleMarker.extend({
       ctx.drawImage(rampImg, p.x - d / 2, p.y - d / 2, d, d);
     } else {
       // (mientras carga el ícono, un círculo del mismo color)
-      ctx.beginPath(); ctx.arc(p.x, p.y, d / 2, 0, Math.PI * 2); ctx.fillStyle = "#0369a1"; ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x, p.y, d / 2, 0, Math.PI * 2); ctx.fillStyle = "#0B3A7E"; ctx.fill();
     }
     ctx.restore();
   },
@@ -356,10 +356,10 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     if (!ready || !mapRef.current) return;
     if (routeLayerRef.current) { routeLayerRef.current.remove(); routeLayerRef.current = null; }
     if (route && route.coords && route.coords.length) {
-      const line = L.polyline(route.coords, { color: "#0284c7", weight: 5, opacity: 0.9 });
+      const line = L.polyline(route.coords, { color: "#1D4F94", weight: 5, opacity: 0.9 });
       const grp = L.layerGroup([line]);
       if (route.origin) {
-        L.circleMarker(route.origin, { radius: 7, color: "#fff", weight: 2, fillColor: "#0284c7", fillOpacity: 1 })
+        L.circleMarker(route.origin, { radius: 7, color: "#fff", weight: 2, fillColor: "#1D4F94", fillOpacity: 1 })
           .bindTooltip("Tu ubicación", { direction: "top" }).addTo(grp);
       }
       grp.addTo(mapRef.current);
@@ -390,7 +390,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
   return (
     <>
       <div ref={containerRef} role="application" aria-label="Mapa de accesibilidad de Rosario. Usá Tab para recorrer los lugares y Enter para abrir uno." className="absolute inset-0 w-full h-full"
-        style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
+        style={{ background: "radial-gradient(circle at 30% 20%, #E2ECF5 0%, #F1F7F7 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa" aria-label="Volver a la vista inicial del mapa"
         className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[900] bottom-10 sm:bottom-3 left-3"}`}>
         <RotateCcw size={16} />

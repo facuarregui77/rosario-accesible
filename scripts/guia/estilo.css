@@ -1,20 +1,20 @@
 /* Sistema de diseño compartido por GUIA.pdf y FOLLETO.pdf.
-   Misma tipografía que la app (Plus Jakarta Sans), misma paleta y la franja azul → celeste → naranja. */
+   Misma tipografía que la app (Plus Jakarta Sans), misma paleta y la franja azul marino → celeste (paleta de Auckland). */
 
 @font-face { font-family: "Jakarta"; src: url("fonts/PlusJakartaSans.woff2") format("woff2"); font-weight: 400 800; font-style: normal; }
 @font-face { font-family: "Jakarta"; src: url("fonts/PlusJakartaSans-Italic.woff2") format("woff2"); font-weight: 400 800; font-style: italic; }
 
 :root {
-  --tinta: #0b1b3f;      /* títulos */
-  --marino: #0f2a5f;     /* bloques oscuros */
-  --azul: #1e40af;       /* marca */
-  --celeste: #0284c7;    /* enlaces, números */
-  --naranja: #ea580c;    /* acento */
+  --tinta: #06153D;      /* títulos */
+  --marino: #032761;     /* bloques oscuros */
+  --azul: #0B3A7E;       /* marca */
+  --celeste: #007DAE;    /* enlaces, números */
+  --naranja: #1E8FD9;    /* acento */
   --texto: #334155;
   --suave: #64748b;
   --linea: #e2e8f0;
   --fondo: #f6f8fb;
-  --franja: linear-gradient(90deg, #1e40af 0%, #38bdf8 55%, #fb923c 100%);
+  --franja: linear-gradient(90deg, #0B3A7E 0%, #3B6AA5 55%, #33A0FF 100%);
 }
 
 * { box-sizing: border-box; }
@@ -31,7 +31,7 @@ code { font: 500 8.2pt Consolas, "Courier New", monospace; color: var(--marino);
 /* ---------- Marca ---------- */
 .franja { height: 2.6mm; background: var(--franja); }
 .marca { display: flex; align-items: center; gap: 3.2mm; }
-.marca .iso { width: 11mm; height: 11mm; border-radius: 2.8mm; background: linear-gradient(135deg, #1d4ed8 0%, #38bdf8 58%, #fb923c 100%); display: flex; align-items: center; justify-content: center; flex: none; }
+.marca .iso { width: 11mm; height: 11mm; border-radius: 2.8mm; background: linear-gradient(135deg, #06153D 0%, #3B6AA5 58%, #33A0FF 100%); display: flex; align-items: center; justify-content: center; flex: none; }
 .marca .iso svg { width: 62%; height: 62%; }
 .marca .nombre { font-weight: 800; font-size: 12.5pt; letter-spacing: -0.2pt; color: var(--tinta); line-height: 1.1; }
 .marca .nombre small { display: block; font-weight: 500; font-size: 7.6pt; letter-spacing: 0; color: var(--suave); margin-top: 0.6mm; }
@@ -65,14 +65,14 @@ td .sub { display: block; font-weight: 400; color: var(--suave); font-size: 8pt;
 .box::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1.1mm; border-radius: 2mm 0 0 2mm; background: var(--celeste); }
 .box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom: 0; }
 .box .t { display: block; font-size: 7.2pt; font-weight: 700; letter-spacing: 1.1pt; text-transform: uppercase; color: var(--celeste); margin-bottom: 1.2mm; }
-.box.oro { background: #fff7ed; } .box.oro::before { background: var(--naranja); } .box.oro .t { color: #c2410c; }
+.box.oro { background: #EAF5FF; } .box.oro::before { background: var(--naranja); } .box.oro .t { color: #00668F; }
 .box.ok { background: #effaf5; } .box.ok::before { background: #059669; } .box.ok .t { color: #047857; }
 .box.ojo { background: #fef3f2; } .box.ojo::before { background: #dc2626; } .box.ojo .t { color: #b91c1c; }
 
 /* ---------- Figuras ---------- */
 body { counter-reset: fig; }
 figure { margin: 3.5mm 0 5mm; break-inside: avoid; text-align: left; }
-figure img { display: block; max-width: 100%; max-height: 70mm; width: auto; border: 0.6px solid #cfd8e3; border-radius: 2.2mm; box-shadow: 0 1.2mm 3.5mm rgba(11, 27, 63, .10); }
+figure img { display: block; max-width: 100%; max-height: 70mm; width: auto; border: 0.6px solid #cfd8e3; border-radius: 2.2mm; box-shadow: 0 1.2mm 3.5mm rgba(6, 21, 61, .10); }
 figcaption { counter-increment: fig; font-size: 7.6pt; color: var(--suave); margin-top: 1.8mm; }
 figcaption::before { content: "Figura " counter(fig) "  "; font-weight: 700; color: var(--tinta); letter-spacing: 0.2pt; }
 /* Capturas centradas: la figura toma el ancho de la imagen y el pie queda alineado debajo */

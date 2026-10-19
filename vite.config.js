@@ -24,7 +24,7 @@ export default defineConfig({
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
-        theme_color: "#0ea5e9",
+        theme_color: "#06153D",
         icons: [
           {
             src: "/pwa-192x192.png",
