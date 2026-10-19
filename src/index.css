@@ -70,6 +70,18 @@ body,
 .leaflet-control-zoom {
   margin-bottom: 14px !important;
 }
+/* Créditos del mapa: chiquitos y en un renglón en celular, para que no tapen la ruedita ni el zoom */
+@media (max-width: 640px) {
+  .leaflet-control-attribution {
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+    padding: 1px 5px !important;
+    white-space: nowrap;
+    max-width: calc(100vw - 8px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 
 /* Solo para lectores de pantalla (invisible, pero se anuncia) */
 .sr-only {

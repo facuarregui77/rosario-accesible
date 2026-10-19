@@ -121,8 +121,9 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       markerZoomAnimation: !isMobile && animate, // celular: los pines no se animan al pellizcar → menos repintado por frame
       tap: false,                  // mejor respuesta táctil en celulares modernos
     }).setView(HOME.center, HOME.zoom);
-    // créditos sin la banderita que Leaflet agrega por defecto (queda solo el nombre, con su enlace)
-    map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noreferrer">Leaflet</a>');
+    // créditos cortos (sin la banderita ni el "Leaflet" que se agregan solos), para que en celular entren en
+    // un renglón y no tapen los botones de abajo
+    map.attributionControl.setPrefix(false);
     // Mapa de respaldo (Esri, imágenes sueltas): se ve mientras carga el mapa de estilo Google y queda si este falla.
     const respaldo = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
       maxZoom: 19,
@@ -166,7 +167,8 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
         if (mapRef.current !== map) return;
         fondo = maplibreGL({
           style: estilo,
-          attribution: '<a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>',
+          // créditos que pide OpenFreeMap, en versión corta (si no, el complemento arma uno largo de dos renglones)
+          attributionControl: { customAttribution: '<a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> · <a href="https://openmaptiles.org" target="_blank" rel="noreferrer">OpenMapTiles</a> · &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>' },
         }).addTo(map);
         const gl = fondo.getMaplibreMap();
         let listo = false, errores = 0;
@@ -390,7 +392,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       <div ref={containerRef} role="application" aria-label="Mapa de accesibilidad de Rosario. Usá Tab para recorrer los lugares y Enter para abrir uno." className="absolute inset-0 w-full h-full"
         style={{ background: "radial-gradient(circle at 30% 20%, #e0f2fe 0%, #f0f9ff 60%, #ffffff 100%)" }} />
       <button onClick={resetView} title="Volver a la vista inicial del mapa" aria-label="Volver a la vista inicial del mapa"
-        className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[500] bottom-3 left-3"}`}>
+        className={`absolute flex items-center justify-center w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-sky-700 border border-sky-400 backdrop-blur shadow-lg transition-all duration-300 ${sidebarOpen ? "z-[1060] bottom-20 sm:bottom-3 left-[calc(86%_+_0.5rem)] sm:left-[21rem]" : "z-[900] bottom-7 sm:bottom-3 left-3"}`}>
         <RotateCcw size={16} />
       </button>
     </>
