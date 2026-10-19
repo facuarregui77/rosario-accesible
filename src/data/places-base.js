@@ -52,8 +52,8 @@ export const PLACES = [
   { id: "sanbartolome", name: "Colegio San Bartolomé", type: "educativo", lat: -32.9550, lng: -60.6580, gRating: 4.3, a: { ...SIN_DATOS } },
   { id: "dante", name: "Colegio Dante Alighieri", type: "educativo", lat: -32.9505, lng: -60.6500, gRating: 4.4, a: { ...SIN_DATOS } },
   // Clubes deportivos y gimnasios de Rosario (ubicaciones reales)
-  { id: "central", name: "Club Atlético Rosario Central", type: "deportivo", lat: -32.9080, lng: -60.6303, gRating: 4.6, a: { ...SIN_DATOS } },
-  { id: "newells", name: "Club Atlético Newell's Old Boys", type: "deportivo", lat: -32.9582, lng: -60.6655, gRating: 4.6, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "1375044787") },
+  { id: "central", name: "Club Atlético Rosario Central", type: "deportivo", lat: -32.914029, lng: -60.674472, gRating: 4.6, a: { ...SIN_DATOS } },
+  { id: "newells", name: "Club Atlético Newell's Old Boys", type: "deportivo", lat: -32.956067, lng: -60.661413, gRating: 4.6, a: { ...SIN_DATOS }, wheelchair: "parcial", src: osm("way", "1375044787") },
   { id: "regatas", name: "Club de Regatas Rosario", type: "deportivo", lat: -32.9286, lng: -60.6281, gRating: 4.5, a: { ...SIN_DATOS } },
   { id: "gimnasia_ros", name: "Club Gimnasia y Esgrima de Rosario", type: "deportivo", lat: -32.9499, lng: -60.6790, gRating: 4.4, a: { ...SIN_DATOS } },
   { id: "provincial", name: "Club Atlético Provincial", type: "deportivo", lat: -32.9618, lng: -60.6520, gRating: 4.3, a: { ...SIN_DATOS } },
