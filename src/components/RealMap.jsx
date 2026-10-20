@@ -351,21 +351,29 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     return () => { map.off(many ? "moveend" : "zoomend", onMove); if (rampImg) rampImg.onload = null; };
   }, [showRamps, ramps, ready]);
 
-  // Dibujar la ruta accesible (línea celeste + punto de origen) cuando hay una calculada.
+  // Dibujar la ruta del medio elegido en "Cómo llego" (con su color; a pie, punteada como en Google Maps)
+  // y el punto de partida.
   useEffect(() => {
     if (!ready || !mapRef.current) return;
     if (routeLayerRef.current) { routeLayerRef.current.remove(); routeLayerRef.current = null; }
-    if (route && route.coords && route.coords.length) {
-      const line = L.polyline(route.coords, { color: "#1D4F94", weight: 5, opacity: 0.9 });
-      const grp = L.layerGroup([line]);
-      if (route.origin) {
-        L.circleMarker(route.origin, { radius: 7, color: "#fff", weight: 2, fillColor: "#1D4F94", fillOpacity: 1 })
-          .bindTooltip("Tu ubicación", { direction: "top" }).addTo(grp);
-      }
-      grp.addTo(mapRef.current);
-      routeLayerRef.current = grp;
-      try { mapRef.current.fitBounds(line.getBounds(), { padding: [60, 60], maxZoom: 17, animate }); } catch (e) {}
+    if (!route || (!route.origin && !(route.coords && route.coords.length))) return;
+    const color = route.color || "#1D4F94";
+    const grp = L.layerGroup();
+    let line = null;
+    if (route.coords && route.coords.length) {
+      // borde blanco debajo para que la línea se lea sobre cualquier calle
+      L.polyline(route.coords, { color: "#ffffff", weight: route.punteado ? 8 : 9, opacity: 0.9, interactive: false }).addTo(grp);
+      line = L.polyline(route.coords, route.punteado
+        ? { color, weight: 6, opacity: 1, dashArray: "1 10", lineCap: "round", interactive: false }
+        : { color, weight: 6, opacity: 0.95, interactive: false }).addTo(grp);
     }
+    if (route.origin) {
+      L.circleMarker(route.origin, { radius: 7, color: "#fff", weight: 3, fillColor: color, fillOpacity: 1 })
+        .bindTooltip("Punto de partida", { direction: "top" }).addTo(grp);
+    }
+    grp.addTo(mapRef.current);
+    routeLayerRef.current = grp;
+    if (line) { try { mapRef.current.fitBounds(line.getBounds(), { padding: [70, 70], paddingTopLeft: [40, 230], maxZoom: 17, animate }); } catch (e) {} }
   }, [route, ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Punto azul "estás acá" (cuando el usuario activa "Cerca de mí")

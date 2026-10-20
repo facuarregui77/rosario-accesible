@@ -19,7 +19,8 @@ import LoginModal from "./components/LoginModal";
 import AboutModal from "./components/AboutModal";
 import AddPlaceModal from "./components/AddPlaceModal";
 import ContactButtons from "./components/ContactButtons";
-import { ROUTING_ON, fetchRoute } from "./lib/routing";
+import { ROUTING_ON, fetchRoute, MODOS, fmtMin } from "./lib/routing";
+import RoutePanel from "./components/RoutePanel";
 import { updateHead } from "./lib/seo";
 
 // Aplica los cambios guardados (relevamiento) sobre los datos base
@@ -183,7 +184,10 @@ export default function App() {
     announce("Lugar borrado.");
   };
   const startPick = () => { setPicking(true); setSidebarOpen(false); setFiltersOpen(false); announce("Tocá el mapa donde está el lugar."); };
-  const onMapPick = (pos) => { setPicked(pos); setPicking(false); };
+  const onMapPick = (pos) => {
+    if (route && route.eligiendo) { calcularRutas(route.to, [pos.lat, pos.lng], "Punto elegido en el mapa"); return; }
+    setPicked(pos); setPicking(false);
+  };
 
   // ---- Sugerencias del público (capa 2) ----
   // Cargar las pendientes cuando el usuario es admin (en la nube, RLS solo deja leerlas al admin).
@@ -365,29 +369,55 @@ export default function App() {
     setShowSuggestions(false);
   };
 
-  // "Cómo llego": traza una ruta accesible desde la ubicación del usuario hasta el lugar.
-  const requestRoute = (place) => {
-    setSelected(null);          // cerrar la ficha para ver el mapa y la ruta
-    setSidebarOpen(false);
-    setRoute({ loading: true, to: place });
-    announce("Calculando ruta accesible…");
-    if (!navigator.geolocation) { setRoute({ error: "Tu dispositivo no permite ubicación.", to: place }); return; }
+  // "Cómo llego" (como Google Maps): calcula a la vez la ruta en silla de ruedas, a pie, en bici y en auto
+  // desde la ubicación del usuario (o un punto elegido en el mapa) hasta el lugar. El colectivo lo resuelve
+  // Google Maps con un enlace. `route` = { to, origin, origenTexto, modo, res: { silla: {...}, ... } }.
+  const pedidoRuta = useRef(0);
+  const calcularRutas = (place, origin, origenTexto) => {
+    const id = ++pedidoRuta.current;
+    const res = {};
+    MODOS.forEach((m) => { if (m.perfil) res[m.id] = { loading: true }; });
+    setRoute((r) => ({ to: place, origin, origenTexto, modo: (r && r.to === place && r.modo) || "silla", res }));
+    announce(`Calculando cómo llegar a ${place.name}…`);
+    MODOS.filter((m) => m.perfil).forEach(async (m) => {
+      let x;
+      try { x = await fetchRoute([origin[1], origin[0]], [place.lng, place.lat], m.perfil); }
+      catch (e) { x = { error: e.message || "No se pudo calcular." }; }
+      if (pedidoRuta.current !== id) return;   // ya se pidió otra ruta
+      setRoute((r) => (r && r.to === place ? { ...r, res: { ...r.res, [m.id]: x } } : r));
+      if (m.id === "silla" && !x.error) announce(`En silla de ruedas: ${fmtMin(x.duration)}. Hay más medios en las pestañas.`);
+    });
+  };
+  const rutaDesdeMiUbicacion = (place) => {
+    setRoute((r) => ({ to: place, modo: (r && r.to === place && r.modo) || "silla", res: {}, cargandoUbicacion: true, origenTexto: "buscando tu ubicación…" }));
+    if (!navigator.geolocation) { setRoute({ to: place, modo: "silla", res: {}, origenTexto: null, error: "Tu dispositivo no permite ubicación: elegí el punto de partida en el mapa." }); return; }
     navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          const start = [pos.coords.longitude, pos.coords.latitude];
-          const r = await fetchRoute(start, [place.lng, place.lat]);
-          setRoute({ ...r, origin: [pos.coords.latitude, pos.coords.longitude], to: place });
-          announce(`Ruta accesible a ${place.name}: ${(r.distance / 1000).toFixed(2)} kilómetros, unos ${Math.round(r.duration / 60)} minutos.`);
-        } catch (e) {
-          setRoute({ error: e.message || "No se pudo calcular la ruta.", to: place });
-          announce(e.message || "No se pudo calcular la ruta.");
-        }
-      },
-      () => setRoute({ error: "Necesitamos tu ubicación para trazar la ruta.", to: place }),
+      (pos) => calcularRutas(place, [pos.coords.latitude, pos.coords.longitude], "Tu ubicación"),
+      () => setRoute({ to: place, modo: "silla", res: {}, origenTexto: null, error: "No pudimos usar tu ubicación. Tocá \"elegir en el mapa\" para marcar desde dónde salís." }),
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
+  const requestRoute = (place) => {
+    setSelected(null);          // cerrar la ficha para ver el mapa y la ruta
+    setSidebarOpen(false);
+    rutaDesdeMiUbicacion(place);
+  };
+  // Elegir el punto de partida tocando el mapa (si no se quiere o no se puede usar la ubicación)
+  const elegirOrigenEnMapa = () => {
+    setRoute((r) => ({ ...r, eligiendo: true, error: null }));
+    announce("Tocá el mapa en el punto desde donde salís.");
+  };
+  // Lo que se dibuja en el mapa: la ruta del medio elegido, con su color
+  // (solo cambia cuando cambia esa ruta, así el mapa no salta cada vez que llega el cálculo de otro medio)
+  const modoRuta = route && route.modo;
+  const coordsRuta = route && route.res && route.res[route.modo] && route.res[route.modo].coords;
+  const origenRuta = route && route.origin;
+  const rutaEnMapa = useMemo(() => {
+    if (!modoRuta) return null;
+    const m = MODOS.find((x) => x.id === modoRuta) || MODOS[0];
+    if (coordsRuta) return { coords: coordsRuta, origin: origenRuta, color: m.color, punteado: m.punteado };
+    return origenRuta ? { coords: [], origin: origenRuta, color: m.color } : null;
+  }, [modoRuta, coordsRuta, origenRuta]);
 
   // Navegación del desplegable con el teclado (flechas / Enter / Esc).
   const onSearchKeyDown = (e) => {
@@ -569,8 +599,8 @@ export default function App() {
       <main className="relative flex-1 min-h-0">
         <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating}
           ramps={RAMPS.points} showRamps={showRamps} onRampsHint={setRampsHint}
-          searchTerm={query} sidebarOpen={sidebarOpen} route={route} userPos={userPos}
-          picking={picking} onPick={onMapPick} />
+          searchTerm={query} sidebarOpen={sidebarOpen} route={rutaEnMapa} userPos={userPos}
+          picking={picking || Boolean(route && route.eligiendo)} onPick={onMapPick} />
         <Legend showRamps={showRamps} />
 
         {/* Aviso de las rampas (cuántas se ven / acercar el mapa) */}
@@ -589,19 +619,11 @@ export default function App() {
           </div>
         )}
 
-        {/* Banner de la ruta accesible (arriba, centrado) */}
-        {route && (
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[600] w-[92%] max-w-sm">
-            <div className="flex items-center gap-2 rounded-xl bg-white/95 border border-sky-300 shadow-lg px-3 py-2 backdrop-blur">
-              <Navigation size={16} className="text-sky-700 shrink-0" />
-              <div className="flex-1 min-w-0 text-xs text-slate-700 leading-snug">
-                {route.loading ? "Calculando ruta accesible…"
-                  : route.error ? <span className="text-rose-700">{route.error}</span>
-                  : <>Ruta accesible a <b>{route.to?.name}</b>: <b>{(route.distance / 1000).toFixed(2)} km</b> · ~{Math.round(route.duration / 60)} min<br /><span className="text-[11px] text-slate-600">Ruta sugerida — verificá el terreno.</span></>}
-              </div>
-              <button onClick={() => setRoute(null)} aria-label="Cerrar ruta" className="shrink-0 p-1 rounded-lg hover:bg-slate-100 text-slate-600"><X size={16} /></button>
-            </div>
-          </div>
+        {/* Panel "Cómo llego": medios de transporte, tiempos e indicaciones (arriba, centrado) */}
+        {route && !sidebarOpen && !filtersOpen && (
+          <RoutePanel route={route} onModo={(modo) => setRoute((r) => ({ ...r, modo }))}
+            onCerrar={() => { pedidoRuta.current++; setRoute(null); }}
+            onElegirOrigen={elegirOrigenEnMapa} onMiUbicacion={() => rutaDesdeMiUbicacion(route.to)} />
         )}
 
         {/* Fondo oscuro al abrir el panel en celular */}

@@ -126,7 +126,7 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
               {routingEnabled && (
                 <button onClick={() => onRoute(place)}
                   className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold shadow-sm transition">
-                  <Navigation size={16} /> Cómo llego (ruta accesible)
+                  <Navigation size={16} /> Cómo llego
                 </button>
               )}
               {/* Enlace oficial y gratuito de Google Maps: abre el lugar con Street View, fotos y reseñas de Google */}

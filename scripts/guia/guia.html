@@ -133,7 +133,7 @@
 <tr><td>Encontrar un lugar por nombre</td><td>El buscador</td><td>Cualquiera</td><td>4.1</td></tr>
 <tr><td>Ver qué hay accesible cerca de donde estoy</td><td>Botón "Cerca de mí"</td><td>Cualquiera</td><td>4.1</td></tr>
 <tr><td>Ver solo lugares con baño adaptado, rampa, etc.</td><td>Filtros (pestaña celeste)</td><td>Cualquiera</td><td>4.4</td></tr>
-<tr><td>Saber cómo llegar en silla de ruedas</td><td>"Cómo llego" en la ficha</td><td>Cualquiera</td><td>4.5</td></tr>
+<tr><td>Saber cómo llegar (silla, a pie, bici, auto o colectivo)</td><td>"Cómo llego" en la ficha</td><td>Cualquiera</td><td>4.5</td></tr>
 <tr><td>Ver las rampas de la vereda</td><td>Botón "Rampas"</td><td>Cualquiera</td><td>4.6</td></tr>
 <tr><td>Contar cómo me fue en un lugar</td><td>Opiniones en la ficha</td><td>Cualquiera</td><td>4.7</td></tr>
 <tr><td>Proponer un dato de accesibilidad</td><td>"¿Conocés este lugar?"</td><td>Cualquiera</td><td>4.7</td></tr>
@@ -233,7 +233,7 @@
 <ul>
 <li><b>Nombre, tipo y puntajes</b> (el de Google y el promedio de los usuarios de la app).</li>
 <li><b>Compartir</b> (arriba a la derecha). En el celular abre el menú de compartir; en la computadora copia el enlace. El enlace abre la app directamente en ese lugar.</li>
-<li><b>Cómo llego.</b> Dibuja en el mapa una ruta pensada para silla de ruedas desde donde está la persona, con la distancia y los minutos.</li>
+<li><b>Cómo llego.</b> Como en Google Maps: una pestaña por medio (silla de ruedas, a pie, bici, auto y colectivo) con los minutos, los kilómetros, el recorrido dibujado y las indicaciones paso a paso. Sale desde la ubicación de la persona o desde un punto que se toca en el mapa. El colectivo abre el viaje en Google Maps, porque las líneas de Rosario no están en datos abiertos.</li>
 <li><b>Google Maps.</b> Abre el lugar en Google Maps, con Street View, fotos y reseñas.</li>
 <li><b>Acceso en silla de ruedas</b>, con el enlace a la fuente cuando el dato viene de OpenStreetMap.</li>
 <li><b>Contacto:</b> dirección, teléfono (se puede tocar para llamar), sitio web, Instagram y Facebook. Si no hay dirección cargada, la app la calcula por la ubicación y la marca como "aprox.".</li>
@@ -241,6 +241,10 @@
 <li><b>Fotos</b>, arriba de todo: las del equipo y fotos libres de Wikimedia Commons, con su autor.</li>
 </ul>
 </div>
+<figure id="f11">
+<img alt="Cómo llego" src="img/como-llego.jpg"/>
+<figcaption>"Cómo llego": una pestaña por medio, con los minutos y el recorrido en el mapa.</figcaption>
+</figure>
 <h3><span class="k">4.6</span>La capa de rampas</h3>
 <p>Con el botón <b>Rampas</b> aparecen 1.003 íconos de silla de ruedas: rebajes de cordón, rampas, ascensores públicos, entradas accesibles y cruces con baldosas para personas ciegas. Al tocar uno se ve la dirección aproximada. Los datos son de OpenStreetMap.</p>
 <figure id="f6">
@@ -402,7 +406,7 @@
 <tr><td>GitHub<span class="sub">repositorio rosario-accesible</span></td><td>Guarda el código y su historial.</td><td>Cuenta personal de Facundo. El repositorio es público.</td><td>Gratis</td></tr>
 <tr><td>Vercel<span class="sub">proyecto access-app-rosario</span></td><td>Publica la app y mide las visitas.</td><td>Cuenta personal de Facundo.</td><td>Hobby, gratis</td></tr>
 <tr><td>Supabase<span class="sub">proyecto xclzrsvlbbaguhlfgmyf</span></td><td>Base de datos, fotos y cuentas de administrador.</td><td>Organización personal de Facundo.</td><td>Gratis</td></tr>
-<tr><td>OpenRouteService</td><td>Calcula las rutas de "Cómo llego".</td><td>Clave a nombre de quien la creó.</td><td>Gratis</td></tr>
+<tr><td>OpenRouteService</td><td>Calcula las rutas de "Cómo llego" (silla, a pie, bici y auto).</td><td>Clave a nombre de quien la creó.</td><td>Gratis</td></tr>
 <tr><td>Google Search Console</td><td>Que la app aparezca en Google.</td><td>Cuenta de Google de Facundo.</td><td>Gratis</td></tr>
 </table>
 <h3><span class="k">7.2</span>Darle acceso a alguien</h3>
@@ -419,7 +423,7 @@
 <tr><th style="width:24%">Servicio</th><th style="width:27%">Qué usa la app</th><th>A tener en cuenta</th></tr>
 <tr><td>Supabase</td><td>Base de datos y fotos</td><td>En el plan gratis se pausa tras una semana sin uso (ver 8.3) y tiene un límite de espacio. Con uso diario de la empresa conviene el plan pago.</td></tr>
 <tr><td>Vercel</td><td>Publicación y estadísticas</td><td>El plan Hobby es solo para uso personal y no comercial. Si la app pasa a ser de la empresa, hay que moverla a un equipo con plan Pro.</td></tr>
-<tr><td>OpenRouteService</td><td>Rutas para silla de ruedas</td><td>La clave gratuita permite unas 2.000 rutas por día. Si se superan, "Cómo llego" da error hasta el día siguiente.</td></tr>
+<tr><td>OpenRouteService</td><td>Rutas de "Cómo llego"</td><td>La clave gratuita permite unas 2.000 rutas por día; cada "Cómo llego" pide 4 (una por medio), o sea unas 500 consultas diarias. Si se superan, da error hasta el día siguiente.</td></tr>
 <tr><td>Nominatim (OpenStreetMap)</td><td>Dirección aproximada de rampas y lugares</td><td>Gratis y sin clave, pensado para uso moderado: como máximo una consulta por segundo. Con mucho tráfico habría que pasar a un servicio pago o propio.</td></tr>
 <tr><td>Mapa base (OpenFreeMap)</td><td>El dibujo de las calles, con estilo parecido a Google Maps</td><td>Gratis, sin clave y sin límite de uso, mencionando OpenFreeMap y OpenStreetMap. Si falla, la app usa sola el de Esri como respaldo.</td></tr>
 <tr><td>OpenStreetMap (datos)</td><td>Rampas, contactos y parte de la accesibilidad</td><td>Licencia ODbL: hay que citar la fuente, cosa que la app ya hace.</td></tr>
@@ -469,7 +473,7 @@
 <table>
 <tr><th style="width:36%">Clave</th><th>Para qué</th><th style="width:34%">Si falta</th></tr>
 <tr><td><code>VITE_SUPABASE_URL</code><br/><code>VITE_SUPABASE_ANON_KEY</code></td><td>Conectar con la base de datos</td><td>La app guarda todo solo en el navegador de cada persona</td></tr>
-<tr><td><code>VITE_ORS_API_KEY</code></td><td>Calcular la ruta accesible</td><td>No aparece el botón "Cómo llego"</td></tr>
+<tr><td><code>VITE_ORS_API_KEY</code></td><td>Calcular las rutas de "Cómo llego"</td><td>No aparece el botón "Cómo llego"</td></tr>
 <tr><td><code>GOOGLE_MAPS_API_KEY</code></td><td>Solo el programa que trae datos de Google (ver 6.4). Va únicamente en <code>.env.local</code>.</td><td>Ese programa no funciona; la app, sí</td></tr>
 </table>
 <h3><span class="k">8.5</span>Estadísticas de visitas</h3>
