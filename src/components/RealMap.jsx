@@ -75,13 +75,16 @@ const PinMarker = L.CircleMarker.extend({
 const OSM_MIN_ZOOM = 15;
 const OSM_POCAS = 250;
 
-export default function RealMap({ places, selected, onSelect, avgRating, ramps, showRamps, onRampsHint, searchTerm, sidebarOpen, route, userPos, picking, onPick }) {
+export default function RealMap({ places, selected, onSelect, avgRating, ramps, showRamps, onRampsHint, searchTerm, sidebarOpen, route, margenRuta = 0, userPos, picking, onPick }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
   const osmLayerRef = useRef(null);
   const rampsLayerRef = useRef(null);
   const routeLayerRef = useRef(null);
+  const limitesRutaRef = useRef(null);   // dónde está la ruta dibujada (para reencuadrarla si cambia el panel)
+  const margenRutaRef = useRef(margenRuta);
+  margenRutaRef.current = margenRuta;
   const userLayerRef = useRef(null);
   const isMobileRef = useRef(false);
   const [ready, setReady] = useState(false);
@@ -351,6 +354,20 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     return () => { map.off(many ? "moveend" : "zoomend", onMove); if (rampImg) rampImg.onload = null; };
   }, [showRamps, ramps, ready]);
 
+  // Encuadra la ruta en la parte del mapa que no tapa el panel "Cómo llego"
+  const encuadrarRuta = () => {
+    const map = mapRef.current, lim = limitesRutaRef.current;
+    if (!map || !lim) return;
+    const alto = map.getSize().y, arriba = Math.min(margenRutaRef.current + 30, alto * 0.7);
+    try { map.fitBounds(lim, { paddingTopLeft: [40, arriba], paddingBottomRight: [60, 40], maxZoom: 17, animate }); } catch (e) {}
+  };
+  // si el panel cambia de alto (se achica, se abren los pasos, otra opción), se vuelve a encuadrar
+  useEffect(() => {
+    if (!ready || !limitesRutaRef.current) return;
+    const t = setTimeout(encuadrarRuta, 120);
+    return () => clearTimeout(t);
+  }, [margenRuta, ready]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Dibujar la ruta del medio elegido en "Cómo llego": cada tramo con su color (a pie, punteado como en
   // Google Maps), las paradas de colectivo donde se sube y se baja, y el punto de partida.
   useEffect(() => {
@@ -378,10 +395,8 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     }
     grp.addTo(mapRef.current);
     routeLayerRef.current = grp;
-    if (lineas.length) {
-      const limites = L.featureGroup(lineas).getBounds();
-      try { mapRef.current.fitBounds(limites, { padding: [70, 70], paddingTopLeft: [40, 230], maxZoom: 17, animate }); } catch (e) {}
-    }
+    limitesRutaRef.current = lineas.length ? L.featureGroup(lineas).getBounds() : null;
+    encuadrarRuta();
   }, [route, ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Punto azul "estás acá" (cuando el usuario activa "Cerca de mí")

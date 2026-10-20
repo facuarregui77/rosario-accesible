@@ -58,6 +58,7 @@ export default function App() {
   const [showSuggPanel, setShowSuggPanel] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [criteriaFilter, setCriteriaFilter] = useState([]); // criterios que el lugar DEBE tener ("si")
+  const [altoPanelRuta, setAltoPanelRuta] = useState(0); // cuánto tapa el panel "Cómo llego" (para encuadrar la ruta)
   const [route, setRoute] = useState(null); // ruta accesible: {loading|error|coords, origin, distance, duration, to}
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
@@ -629,7 +630,7 @@ export default function App() {
       <main className="relative flex-1 min-h-0">
         <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating}
           ramps={RAMPS.points} showRamps={showRamps} onRampsHint={setRampsHint}
-          searchTerm={query} sidebarOpen={sidebarOpen} route={rutaEnMapa} userPos={userPos}
+          searchTerm={query} sidebarOpen={sidebarOpen} route={rutaEnMapa} margenRuta={altoPanelRuta} userPos={userPos}
           picking={picking || Boolean(route && route.eligiendo)} onPick={onMapPick} />
         <Legend showRamps={showRamps} />
 
@@ -654,6 +655,7 @@ export default function App() {
           <RoutePanel route={route} onModo={(modo) => setRoute((r) => ({ ...r, modo }))}
             onCerrar={() => { pedidoRuta.current++; setRoute(null); }}
             onElegirOrigen={elegirOrigenEnMapa} onMiUbicacion={() => rutaDesdeMiUbicacion(route.to, true)}
+            onAlto={setAltoPanelRuta}
             onOpcion={(i) => setRoute((r) => ({ ...r, res: { ...r.res, colectivo: { ...r.res.colectivo, elegida: i } } }))} />
         )}
 

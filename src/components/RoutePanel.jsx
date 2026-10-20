@@ -1,6 +1,6 @@
 // Panel "Cómo llego" (al estilo Google Maps): una pestaña por medio de transporte con su tiempo, la
 // distancia, las indicaciones paso a paso y el enlace para seguir el viaje en Google Maps.
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Accessibility, Footprints, Bike, Car, Bus, X, MapPin, LocateFixed, ChevronDown, ChevronUp, ExternalLink, Loader2 } from "lucide-react";
 import { MODOS, enlaceGoogle, fmtMin, fmtKm } from "../lib/routing";
 
@@ -12,16 +12,24 @@ const NOTAS = {
   auto: "Tiempo estimado sin tránsito en tiempo real.",
 };
 
-export default function RoutePanel({ route, onModo, onCerrar, onElegirOrigen, onMiUbicacion, onOpcion }) {
+export default function RoutePanel({ route, onModo, onCerrar, onElegirOrigen, onMiUbicacion, onOpcion, onAlto }) {
   const [verPasos, setVerPasos] = useState(false);
   const [chico, setChico] = useState(false);   // panel achicado: solo el encabezado y las pestañas, para ver el mapa
+  // Avisa cuánto ocupa el panel, para que el mapa encuadre el recorrido en la parte que queda libre
+  const caja = useRef(null);
+  useEffect(() => {
+    if (!caja.current || !onAlto || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => onAlto(Math.round(caja.current.getBoundingClientRect().height)));
+    ro.observe(caja.current);
+    return () => { ro.disconnect(); onAlto(0); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const modo = MODOS.find((m) => m.id === route.modo) || MODOS[0];
   const r = route.res && route.res[modo.id];
   const google = enlaceGoogle(route.origin, route.to, modo.id);
 
   return (
     <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1055] w-[94%] max-w-md" role="region" aria-label="Cómo llego">
-      <div className="rounded-2xl bg-white/95 border border-sky-300 shadow-2xl backdrop-blur overflow-hidden">
+      <div ref={caja} className="rounded-2xl bg-white/95 border border-sky-300 shadow-2xl backdrop-blur overflow-hidden">
         {/* Encabezado: a dónde y desde dónde */}
         <div className="flex items-start gap-2 px-3 pt-2.5 pb-2 bg-sky-50 border-b border-sky-200">
           <div className="flex-1 min-w-0 text-xs text-slate-700 leading-snug">
@@ -71,7 +79,7 @@ export default function RoutePanel({ route, onModo, onCerrar, onElegirOrigen, on
             {/* Detalle del medio elegido (se oculta con el panel achicado) */}
             {chico ? <div className="h-2" /> : <div className="px-3 pt-2 pb-3 text-xs text-slate-700 max-h-[52vh] overflow-y-auto">
               {modo.id === "colectivo" ? (
-                <Colectivo r={r} google={google} onOpcion={onOpcion} />
+                <Colectivo r={r} google={google} onOpcion={onOpcion} verPasos={verPasos} setVerPasos={setVerPasos} />
               ) : !r || r.loading ? (
                 <p className="flex items-center gap-2"><Loader2 size={14} className="animate-spin" /> Calculando {modo.nombre.toLowerCase()}…</p>
               ) : r.error ? (
@@ -118,15 +126,15 @@ export default function RoutePanel({ route, onModo, onCerrar, onElegirOrigen, on
 }
 
 // Pestaña Colectivo: hasta 3 opciones (línea directa o con un trasbordo) y los pasos de la elegida
-function Colectivo({ r, google, onOpcion }) {
+function Colectivo({ r, google, onOpcion, verPasos, setVerPasos }) {
   const botonGoogle = (
-    <a href={google} target="_blank" rel="noreferrer"
-      className="mt-2 flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-sky-300 bg-white hover:bg-sky-50 text-sky-800 font-semibold">
-      <ExternalLink size={13} /> Ver horarios en Google Maps
+    <a href={google} target="_blank" rel="noreferrer" title="Ver horarios en Google Maps"
+      className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-sky-300 bg-white hover:bg-sky-50 text-sky-800 font-semibold whitespace-nowrap">
+      <ExternalLink size={13} /> Horarios en Google
     </a>
   );
   if (!r || r.loading) return <p className="flex items-center gap-2"><Loader2 size={14} className="animate-spin" /> Buscando líneas de colectivo…</p>;
-  if (r.error) return <><p className="text-rose-700">{r.error}</p>{botonGoogle}</>;
+  if (r.error) return <><p className="text-rose-700">{r.error}</p><div className="mt-2 flex">{botonGoogle}</div></>;
   const o = r.opciones[r.elegida || 0];
   const Chip = ({ t }) => <span className="inline-block px-1.5 py-0.5 rounded-md bg-sky-900 text-white text-[11px] font-bold leading-none">{t}</span>;
   return (
@@ -144,7 +152,15 @@ function Colectivo({ r, google, onOpcion }) {
           </button>
         ))}
       </div>
+      <div className="mt-2 flex gap-2">
+        <button onClick={() => setVerPasos((v) => !v)} aria-expanded={verPasos}
+          className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border border-sky-300 bg-white hover:bg-sky-50 text-sky-800 font-semibold">
+          {verPasos ? <ChevronUp size={14} /> : <ChevronDown size={14} />} {verPasos ? "Ocultar pasos" : "Ver pasos"}
+        </button>
+        {botonGoogle}
+      </div>
       {/* Pasos de la opción elegida */}
+      {verPasos && <>
       <ol className="mt-2 space-y-1.5">
         {o.tramos.map((t, i) => (
           <li key={i} className="flex gap-2 leading-snug">
@@ -161,7 +177,7 @@ function Colectivo({ r, google, onOpcion }) {
       </ol>
       {r.aPie < o.total && <p className="mt-2 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg px-2 py-1">Caminando tardás menos: unos {fmtMin(r.aPie)}.</p>}
       <p className="mt-2 text-[11px] text-slate-500 leading-snug">Tiempo estimado con los recorridos de OpenStreetMap: velocidad promedio del colectivo y una espera típica. No incluye horarios ni demoras en tiempo real.</p>
-      {botonGoogle}
+      </>}
     </>
   );
 }
