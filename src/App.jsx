@@ -628,7 +628,8 @@ export default function App() {
 
       {/* Contenido: mapa a pantalla completa + panel lateral desplegable */}
       <main className="relative flex-1 min-h-0">
-        <RealMap places={filtered} selected={selected} onSelect={setSelected} avgRating={avgRating}
+        {/* Con "Cómo llego" abierto queda solo el pin del destino y su recorrido: el resto se oculta para que no tape */}
+        <RealMap places={route && route.to ? [route.to] : filtered} selected={selected} onSelect={setSelected} avgRating={avgRating}
           ramps={RAMPS.points} showRamps={showRamps} onRampsHint={setRampsHint}
           searchTerm={query} sidebarOpen={sidebarOpen} route={rutaEnMapa} margenRuta={altoPanelRuta} userPos={userPos}
           picking={picking || Boolean(route && route.eligiendo)} onPick={onMapPick} />
