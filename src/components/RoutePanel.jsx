@@ -1,7 +1,7 @@
 // Panel "Cómo llego" (al estilo Google Maps): una pestaña por medio de transporte con su tiempo, la
 // distancia, las indicaciones paso a paso y el enlace para seguir el viaje en Google Maps.
 import { useState, useEffect, useRef } from "react";
-import { Accessibility, Footprints, Bike, Car, Bus, X, MapPin, LocateFixed, ChevronDown, ChevronUp, ExternalLink, Loader2 } from "lucide-react";
+import { Accessibility, Footprints, Bike, Car, Bus, X, GripHorizontal, MapPin, LocateFixed, ChevronDown, ChevronUp, ExternalLink, Loader2 } from "lucide-react";
 import { MODOS, enlaceGoogle, fmtMin, fmtKm } from "../lib/routing";
 
 const ICONOS = { silla: Accessibility, pie: Footprints, bici: Bike, auto: Car, colectivo: Bus };
@@ -19,19 +19,46 @@ export default function RoutePanel({ route, onModo, onCerrar, onElegirOrigen, on
   const caja = useRef(null);
   useEffect(() => {
     if (!caja.current || !onAlto || typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(() => onAlto(Math.round(caja.current.getBoundingClientRect().height)));
+    const ro = new ResizeObserver(() => { const r = caja.current.getBoundingClientRect(); onAlto({ alto: Math.round(r.height), ancho: Math.round(r.width) }); });
     ro.observe(caja.current);
-    return () => { ro.disconnect(); onAlto(0); };
+    return () => { ro.disconnect(); onAlto(null); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Se puede arrastrar desde el encabezado (mouse o dedo) para ver lo que tapa
+  const [corrido, setCorrido] = useState({ x: 0, y: 0 });
+  const arrastre = useRef(null);
+  const empezar = (e) => {
+    if (e.target.closest("button, a")) return;   // los botones del encabezado siguen funcionando
+    arrastre.current = { x0: e.clientX - corrido.x, y0: e.clientY - corrido.y };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const mover = (e) => {
+    if (!arrastre.current || !caja.current) return;
+    const marco = caja.current.parentElement.offsetParent;   // el contenedor del mapa
+    let x = e.clientX - arrastre.current.x0, y = e.clientY - arrastre.current.y0;
+    if (marco) {   // que siempre quede al menos el encabezado a la vista
+      const m = marco.getBoundingClientRect(), r = caja.current.getBoundingClientRect();
+      const bx = r.left - corrido.x, by = r.top - corrido.y;   // dónde estaría sin correrlo
+      x = Math.min(Math.max(x, m.left - bx - r.width + 80), m.right - bx - 80);
+      y = Math.min(Math.max(y, m.top - by), m.bottom - by - 60);
+    }
+    setCorrido({ x, y });
+  };
+  const soltar = () => { arrastre.current = null; };
   const modo = MODOS.find((m) => m.id === route.modo) || MODOS[0];
   const r = route.res && route.res[modo.id];
   const google = enlaceGoogle(route.origin, route.to, modo.id);
 
   return (
-    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1055] w-[94%] max-w-md" role="region" aria-label="Cómo llego">
-      <div ref={caja} className="rounded-2xl bg-white/95 border border-sky-300 shadow-2xl backdrop-blur overflow-hidden">
+    // En celular arriba y centrado; en la computadora a la izquierda, como en Google Maps
+    <div className="absolute top-3 left-1/2 -translate-x-1/2 sm:left-3 sm:translate-x-0 z-[1055] w-[94%] max-w-md sm:w-[390px]" role="region" aria-label="Cómo llego">
+      <div ref={caja} style={{ transform: `translate(${corrido.x}px, ${corrido.y}px)` }}
+        className="rounded-2xl bg-white/95 border border-sky-300 shadow-2xl backdrop-blur overflow-hidden">
         {/* Encabezado: a dónde y desde dónde */}
-        <div className="flex items-start gap-2 px-3 pt-2.5 pb-2 bg-sky-50 border-b border-sky-200">
+        <div onPointerDown={empezar} onPointerMove={mover} onPointerUp={soltar} onPointerCancel={soltar}
+          title="Arrastrá para mover el panel" style={{ touchAction: "none" }}
+          className="relative flex items-start gap-2 px-3 pt-3 pb-2 bg-sky-50 border-b border-sky-200 cursor-move select-none">
+          <GripHorizontal size={16} aria-hidden="true" className="absolute top-0.5 left-1/2 -translate-x-1/2 text-sky-300" />
           <div className="flex-1 min-w-0 text-xs text-slate-700 leading-snug">
             <div className="text-sm font-bold text-sky-900 truncate">Cómo llegar a {route.to?.name}</div>
             <div className="mt-0.5 flex flex-wrap items-center gap-x-2">

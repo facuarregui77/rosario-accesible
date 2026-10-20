@@ -58,7 +58,7 @@ export default function App() {
   const [showSuggPanel, setShowSuggPanel] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [criteriaFilter, setCriteriaFilter] = useState([]); // criterios que el lugar DEBE tener ("si")
-  const [altoPanelRuta, setAltoPanelRuta] = useState(0); // cuánto tapa el panel "Cómo llego" (para encuadrar la ruta)
+  const [altoPanelRuta, setAltoPanelRuta] = useState(null); // tamaño del panel "Cómo llego" { alto, ancho } (para encuadrar la ruta)
   const [route, setRoute] = useState(null); // ruta accesible: {loading|error|coords, origin, distance, duration, to}
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");

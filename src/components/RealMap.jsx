@@ -75,7 +75,7 @@ const PinMarker = L.CircleMarker.extend({
 const OSM_MIN_ZOOM = 15;
 const OSM_POCAS = 250;
 
-export default function RealMap({ places, selected, onSelect, avgRating, ramps, showRamps, onRampsHint, searchTerm, sidebarOpen, route, margenRuta = 0, userPos, picking, onPick }) {
+export default function RealMap({ places, selected, onSelect, avgRating, ramps, showRamps, onRampsHint, searchTerm, sidebarOpen, route, margenRuta = null, userPos, picking, onPick }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const layerRef = useRef(null);
@@ -358,8 +358,12 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
   const encuadrarRuta = () => {
     const map = mapRef.current, lim = limitesRutaRef.current;
     if (!map || !lim) return;
-    const alto = map.getSize().y, arriba = Math.min(margenRutaRef.current + 30, alto * 0.7);
-    try { map.fitBounds(lim, { paddingTopLeft: [40, arriba], paddingBottomRight: [60, 40], maxZoom: 17, animate }); } catch (e) {}
+    const t = map.getSize(), p = margenRutaRef.current || { alto: 0, ancho: 0 };
+    // computadora: el panel está a la izquierda → la ruta va a la derecha; celular: está arriba → la ruta va abajo
+    const relleno = t.x >= 640
+      ? { paddingTopLeft: [Math.min(p.ancho + 50, t.x * 0.6), 40], paddingBottomRight: [70, 50] }
+      : { paddingTopLeft: [40, Math.min(p.alto + 30, t.y * 0.7)], paddingBottomRight: [60, 40] };
+    try { map.fitBounds(lim, { ...relleno, maxZoom: 17, animate }); } catch (e) {}
   };
   // si el panel cambia de alto (se achica, se abren los pasos, otra opción), se vuelve a encuadrar
   useEffect(() => {
