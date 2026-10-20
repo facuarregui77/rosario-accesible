@@ -48,9 +48,9 @@
 </style>
 <style id="ajustes">
   /* Altos de las capturas calculados para que ninguna página quede con hueco al pie */
-  #f5 img { max-height: 70.0mm !important; }
-  #f6 img { max-height: 82.0mm !important; }
-  #f7 img { max-height: 76.0mm !important; }
+  #f5 img { max-height: 52.0mm !important; }
+  #f6 img { max-height: 58.0mm !important; }
+  #f7 img { max-height: 90.0mm !important; }
 </style>
 </head>
 <body>
@@ -233,7 +233,7 @@
 <ul>
 <li><b>Nombre, tipo y puntajes</b> (el de Google y el promedio de los usuarios de la app).</li>
 <li><b>Compartir</b> (arriba a la derecha). En el celular abre el menú de compartir; en la computadora copia el enlace. El enlace abre la app directamente en ese lugar.</li>
-<li><b>Cómo llego.</b> Como en Google Maps: una pestaña por medio (silla de ruedas, a pie, bici, auto y colectivo) con los minutos, los kilómetros, el recorrido dibujado y las indicaciones paso a paso. Sale desde la ubicación de la persona o desde un punto que se toca en el mapa. El colectivo abre el viaje en Google Maps, porque las líneas de Rosario no están en datos abiertos.</li>
+<li><b>Cómo llego.</b> Como en Google Maps: una pestaña por medio (silla de ruedas, a pie, bici, auto y colectivo) con los minutos, los kilómetros, el recorrido dibujado y las indicaciones paso a paso. Sale solo desde donde está la persona (o desde un punto que se toca en el mapa). En colectivo dice qué línea tomar, dónde subir y bajar, si hay que combinar y cuánto tarda: es un estimado con los recorridos de OpenStreetMap, sin horarios en tiempo real.</li>
 <li><b>Google Maps.</b> Abre el lugar en Google Maps, con Street View, fotos y reseñas.</li>
 <li><b>Acceso en silla de ruedas</b>, con el enlace a la fuente cuando el dato viene de OpenStreetMap.</li>
 <li><b>Contacto:</b> dirección, teléfono (se puede tocar para llamar), sitio web, Instagram y Facebook. Si no hay dirección cargada, la app la calcula por la ubicación y la marca como "aprox.".</li>
@@ -376,6 +376,7 @@
 <tr><td>Sugerencias de datos</td><td>El público</td><td>Supabase</td></tr>
 <tr><td>Lugares agregados desde la app</td><td>Administradores</td><td>Supabase</td></tr>
 <tr><td>384 empresas, comercios y servicios</td><td>OpenStreetMap: solo los que tienen dato de acceso. Se actualizan con <code>node scripts/importar-empresas-osm.mjs</code></td><td>En el código</td></tr>
+<tr><td>72 líneas de colectivo con sus paradas</td><td>OpenStreetMap (para "Cómo llego" en colectivo). Se actualizan con <code>node scripts/importar-colectivos-osm.mjs</code></td><td>En el código</td></tr>
 <tr><td>Fotos</td><td>El equipo, Wikimedia Commons y Mapillary (36 lugares)</td><td>Supabase y el código</td></tr>
 <tr><td>Registro de errores</td><td>La app, sola</td><td>Supabase</td></tr>
 </table>

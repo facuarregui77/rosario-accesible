@@ -21,6 +21,7 @@ import AddPlaceModal from "./components/AddPlaceModal";
 import ContactButtons from "./components/ContactButtons";
 import { ROUTING_ON, fetchRoute, MODOS, fmtMin } from "./lib/routing";
 import RoutePanel from "./components/RoutePanel";
+import { cargarLineas, planificar } from "./lib/colectivo";
 import { updateHead } from "./lib/seo";
 
 // Aplica los cambios guardados (relevamiento) sobre los datos base
@@ -376,7 +377,7 @@ export default function App() {
   const calcularRutas = (place, origin, origenTexto) => {
     const id = ++pedidoRuta.current;
     const res = {};
-    MODOS.forEach((m) => { if (m.perfil) res[m.id] = { loading: true }; });
+    MODOS.forEach((m) => { res[m.id] = { loading: true }; });
     setRoute((r) => ({ to: place, origin, origenTexto, modo: (r && r.to === place && r.modo) || "silla", res }));
     announce(`Calculando cómo llegar a ${place.name}…`);
     MODOS.filter((m) => m.perfil).forEach(async (m) => {
@@ -387,15 +388,31 @@ export default function App() {
       setRoute((r) => (r && r.to === place ? { ...r, res: { ...r.res, [m.id]: x } } : r));
       if (m.id === "silla" && !x.error) announce(`En silla de ruedas: ${fmtMin(x.duration)}. Hay más medios en las pestañas.`);
     });
+    // Colectivo: se calcula en el propio celular con los recorridos de OpenStreetMap (se bajan la primera vez)
+    cargarLineas().then((lineas) => {
+      const plan = planificar(lineas, origin, [place.lat, place.lng]);
+      return plan.opciones.length ? { ...plan, elegida: 0 }
+        : { ...plan, error: "No encontramos una línea que pase a menos de 800 m de la salida y de la llegada." };
+    }).catch(() => ({ error: "No se pudieron cargar los recorridos de colectivo." }))
+      .then((x) => {
+        if (pedidoRuta.current !== id) return;
+        setRoute((r) => (r && r.to === place ? { ...r, res: { ...r.res, colectivo: x } } : r));
+      });
   };
-  const rutaDesdeMiUbicacion = (place) => {
+  // Sale siempre solo desde donde está la persona: usa la ubicación de "Cerca de mí" si ya la tiene; si no,
+  // la pide al GPS y, si tarda o falla, reintenta con la ubicación aproximada del celular (wifi / antena).
+  const rutaDesdeMiUbicacion = (place, forzar = false) => {
+    if (userPos && !forzar) { calcularRutas(place, [userPos.lat, userPos.lng], "Tu ubicación"); return; }
     setRoute((r) => ({ to: place, modo: (r && r.to === place && r.modo) || "silla", res: {}, cargandoUbicacion: true, origenTexto: "buscando tu ubicación…" }));
-    if (!navigator.geolocation) { setRoute({ to: place, modo: "silla", res: {}, origenTexto: null, error: "Tu dispositivo no permite ubicación: elegí el punto de partida en el mapa." }); return; }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => calcularRutas(place, [pos.coords.latitude, pos.coords.longitude], "Tu ubicación"),
-      () => setRoute({ to: place, modo: "silla", res: {}, origenTexto: null, error: "No pudimos usar tu ubicación. Tocá \"elegir en el mapa\" para marcar desde dónde salís." }),
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+    const sinUbicacion = (msg) => setRoute((r) => ({ to: place, modo: (r && r.modo) || "silla", res: {}, origenTexto: null, error: msg }));
+    if (!navigator.geolocation) { sinUbicacion("Este dispositivo no da la ubicación. Tocá \"cambiar\" y marcá en el mapa desde dónde salís."); return; }
+    const ok = (pos) => calcularRutas(place, [pos.coords.latitude, pos.coords.longitude], "Tu ubicación");
+    navigator.geolocation.getCurrentPosition(ok, (e) => {
+      if (e && e.code === 1) { sinUbicacion("El navegador no tiene permiso para usar tu ubicación. Activalo (el candadito al lado de la dirección de la página) o tocá \"cambiar\" y marcá en el mapa desde dónde salís."); return; }
+      navigator.geolocation.getCurrentPosition(ok,
+        () => sinUbicacion("No pudimos encontrar tu ubicación. Tocá \"cambiar\" y marcá en el mapa desde dónde salís."),
+        { enableHighAccuracy: false, timeout: 12000, maximumAge: 10 * 60 * 1000 });
+    }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60 * 1000 });
   };
   const requestRoute = (place) => {
     setSelected(null);          // cerrar la ficha para ver el mapa y la ruta
@@ -410,14 +427,27 @@ export default function App() {
   // Lo que se dibuja en el mapa: la ruta del medio elegido, con su color
   // (solo cambia cuando cambia esa ruta, así el mapa no salta cada vez que llega el cálculo de otro medio)
   const modoRuta = route && route.modo;
-  const coordsRuta = route && route.res && route.res[route.modo] && route.res[route.modo].coords;
+  const resRuta = route && route.res && route.res[route.modo];
   const origenRuta = route && route.origin;
   const rutaEnMapa = useMemo(() => {
     if (!modoRuta) return null;
     const m = MODOS.find((x) => x.id === modoRuta) || MODOS[0];
-    if (coordsRuta) return { coords: coordsRuta, origin: origenRuta, color: m.color, punteado: m.punteado };
-    return origenRuta ? { coords: [], origin: origenRuta, color: m.color } : null;
-  }, [modoRuta, coordsRuta, origenRuta]);
+    // Colectivo: tramos a pie (punteados, grises) y en colectivo (llenos), con las paradas de subida y bajada
+    if (modoRuta === "colectivo" && resRuta && resRuta.opciones && resRuta.opciones[resRuta.elegida || 0]) {
+      const o = resRuta.opciones[resRuta.elegida || 0];
+      const segmentos = [], paradas = [];
+      o.tramos.forEach((t) => {
+        if (t.tipo === "pie" && t.forma) segmentos.push({ coords: t.forma, color: "#5F6368", punteado: true });
+        if (t.tipo === "colectivo") {
+          segmentos.push({ coords: t.forma, color: m.color });
+          paradas.push({ pos: t.desdeP, texto: `Subís al ${t.ref}: ${t.sube}` }, { pos: t.hastaP, texto: `Bajás del ${t.ref}: ${t.baja}` });
+        }
+      });
+      return { segmentos, paradas, origin: origenRuta, color: m.color };
+    }
+    if (resRuta && resRuta.coords) return { segmentos: [{ coords: resRuta.coords, color: m.color, punteado: m.punteado }], origin: origenRuta, color: m.color };
+    return origenRuta ? { segmentos: [], origin: origenRuta, color: m.color } : null;
+  }, [modoRuta, resRuta, origenRuta]);
 
   // Navegación del desplegable con el teclado (flechas / Enter / Esc).
   const onSearchKeyDown = (e) => {
@@ -623,7 +653,8 @@ export default function App() {
         {route && !sidebarOpen && !filtersOpen && (
           <RoutePanel route={route} onModo={(modo) => setRoute((r) => ({ ...r, modo }))}
             onCerrar={() => { pedidoRuta.current++; setRoute(null); }}
-            onElegirOrigen={elegirOrigenEnMapa} onMiUbicacion={() => rutaDesdeMiUbicacion(route.to)} />
+            onElegirOrigen={elegirOrigenEnMapa} onMiUbicacion={() => rutaDesdeMiUbicacion(route.to, true)}
+            onOpcion={(i) => setRoute((r) => ({ ...r, res: { ...r.res, colectivo: { ...r.res.colectivo, elegida: i } } }))} />
         )}
 
         {/* Fondo oscuro al abrir el panel en celular */}

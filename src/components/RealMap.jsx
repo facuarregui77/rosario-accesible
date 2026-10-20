@@ -351,21 +351,26 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     return () => { map.off(many ? "moveend" : "zoomend", onMove); if (rampImg) rampImg.onload = null; };
   }, [showRamps, ramps, ready]);
 
-  // Dibujar la ruta del medio elegido en "Cómo llego" (con su color; a pie, punteada como en Google Maps)
-  // y el punto de partida.
+  // Dibujar la ruta del medio elegido en "Cómo llego": cada tramo con su color (a pie, punteado como en
+  // Google Maps), las paradas de colectivo donde se sube y se baja, y el punto de partida.
   useEffect(() => {
     if (!ready || !mapRef.current) return;
     if (routeLayerRef.current) { routeLayerRef.current.remove(); routeLayerRef.current = null; }
-    if (!route || (!route.origin && !(route.coords && route.coords.length))) return;
+    if (!route) return;
     const color = route.color || "#1D4F94";
     const grp = L.layerGroup();
-    let line = null;
-    if (route.coords && route.coords.length) {
+    const lineas = [];
+    for (const sg of route.segmentos || []) {
+      if (!sg.coords || sg.coords.length < 2) continue;
       // borde blanco debajo para que la línea se lea sobre cualquier calle
-      L.polyline(route.coords, { color: "#ffffff", weight: route.punteado ? 8 : 9, opacity: 0.9, interactive: false }).addTo(grp);
-      line = L.polyline(route.coords, route.punteado
-        ? { color, weight: 6, opacity: 1, dashArray: "1 10", lineCap: "round", interactive: false }
-        : { color, weight: 6, opacity: 0.95, interactive: false }).addTo(grp);
+      L.polyline(sg.coords, { color: "#ffffff", weight: sg.punteado ? 8 : 9, opacity: 0.9, interactive: false }).addTo(grp);
+      lineas.push(L.polyline(sg.coords, sg.punteado
+        ? { color: sg.color, weight: 6, opacity: 1, dashArray: "1 10", lineCap: "round", interactive: false }
+        : { color: sg.color, weight: 6, opacity: 0.95, interactive: false }).addTo(grp));
+    }
+    for (const pa of route.paradas || []) {
+      L.circleMarker(pa.pos, { radius: 6, color: color, weight: 3, fillColor: "#ffffff", fillOpacity: 1 })
+        .bindTooltip(pa.texto, { direction: "top" }).addTo(grp);
     }
     if (route.origin) {
       L.circleMarker(route.origin, { radius: 7, color: "#fff", weight: 3, fillColor: color, fillOpacity: 1 })
@@ -373,7 +378,10 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     }
     grp.addTo(mapRef.current);
     routeLayerRef.current = grp;
-    if (line) { try { mapRef.current.fitBounds(line.getBounds(), { padding: [70, 70], paddingTopLeft: [40, 230], maxZoom: 17, animate }); } catch (e) {} }
+    if (lineas.length) {
+      const limites = L.featureGroup(lineas).getBounds();
+      try { mapRef.current.fitBounds(limites, { padding: [70, 70], paddingTopLeft: [40, 230], maxZoom: 17, animate }); } catch (e) {}
+    }
   }, [route, ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Punto azul "estás acá" (cuando el usuario activa "Cerca de mí")

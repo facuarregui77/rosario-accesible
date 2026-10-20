@@ -19,3 +19,6 @@ guia-facu-vscode-github-vercel-supabase.html
 metodologia-project-manager.html
 
 .vercel
+
+# Temporales del ajuste de páginas de la guía (scripts/guia/ajustar-paginas.py)
+scripts/guia/_*.html
