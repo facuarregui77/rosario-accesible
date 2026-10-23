@@ -635,6 +635,15 @@ export default function App() {
           picking={picking || Boolean(route && route.eligiendo)} onPick={onMapPick} />
         <Legend showRamps={showRamps} />
 
+        {/* Aviso si "Cerca de mí" no pudo usar la ubicación */}
+        {(geoState === "denied" || geoState === "error") && !route && (
+          <div role="alert" className="absolute top-3 left-1/2 -translate-x-1/2 z-[650] w-[92%] max-w-sm flex items-start gap-2 rounded-xl bg-white/95 border border-rose-300 shadow-lg px-3 py-2 text-xs text-rose-800">
+            <LocateFixed size={15} className="shrink-0 mt-0.5" />
+            <span className="flex-1">{geoState === "denied" ? "No diste permiso de ubicación. Activalo en el navegador (el candadito al lado de la dirección) y volvé a tocar \"Cerca de mí\"." : "No pudimos obtener tu ubicación. Probá de nuevo en un momento."}</span>
+            <button onClick={() => setGeoState("idle")} aria-label="Cerrar aviso" className="shrink-0 p-0.5 rounded hover:bg-rose-50"><X size={14} /></button>
+          </div>
+        )}
+
         {/* Aviso de las rampas (cuántas se ven / acercar el mapa) */}
         {showRamps && rampsHint && !route && !picking && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[600] px-3 py-1.5 rounded-full bg-white/95 border border-sky-300 shadow text-xs text-sky-800 font-medium pointer-events-none">{rampsHint}</div>
@@ -666,10 +675,21 @@ export default function App() {
         {/* Panel lateral desplegable (overlay sobre el mapa, no lo deforma) */}
         <div className={`absolute inset-y-0 left-0 z-[1050] w-[86%] max-w-xs transition-transform duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <nav aria-label="Lista de lugares" className="h-full overflow-y-auto bg-sky-100 border-r border-sky-300 scroll-orange shadow-2xl">
+            {/* Con "Cerca de mí" activo: hasta qué distancia mostrar (antes estaba en Filtros; ahora todo en un lugar) */}
             {userPos && (
-              <div className="px-4 py-2 bg-blue-50 border-b border-blue-200 text-xs text-blue-900 flex items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5"><LocateFixed size={13} /> Ordenado por cercanía{radius != null && <> · hasta {RADII.find(([r]) => r === radius)?.[1] || fmtDist(radius)}</>}</span>
-                <button onClick={() => setFiltersOpen(true)} className="underline hover:text-blue-700">cambiar</button>
+              <div role="group" aria-label="Distancia de Cerca de mí" className="px-4 py-2 bg-blue-50 border-b border-blue-200 text-xs text-blue-900">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-1.5 font-medium"><LocateFixed size={13} /> Ordenado por cercanía</span>
+                  <button onClick={clearNearMe} className="underline hover:text-blue-700">quitar</button>
+                </div>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {RADII.map(([r, l]) => (
+                    <button key={String(r)} onClick={() => setRadius(r)} aria-pressed={radius === r}
+                      className={`whitespace-nowrap px-2.5 py-0.5 rounded-full text-xs font-medium transition border ${radius === r ? "bg-blue-700 text-white border-blue-700" : "bg-white/90 text-blue-800 border-blue-600 hover:bg-white"}`}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             {filtered.length === 0 && (
@@ -708,28 +728,6 @@ export default function App() {
         {/* Panel de filtros desplegable (derecha) — gemelo del de lugares, con ícono distinto */}
         <div className={`absolute inset-y-0 right-0 z-[1050] w-[86%] max-w-xs transition-transform duration-300 ease-in-out ${filtersOpen ? "translate-x-0" : "translate-x-full"}`}>
           <div role="region" aria-label="Filtros" className="h-full overflow-y-auto bg-sky-100 border-l border-sky-300 scroll-orange shadow-2xl p-4 space-y-5">
-            <div role="group" aria-labelledby="f-cerca">
-              <p id="f-cerca" className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2 flex items-center gap-1.5"><LocateFixed size={13} /> Cerca de mí</p>
-              {!userPos ? (
-                <button onClick={locateMe} disabled={geoState === "loading"} className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-600 disabled:opacity-60 text-white text-xs font-medium">
-                  <LocateFixed size={14} /> {geoState === "loading" ? "Buscando tu ubicación…" : "Usar mi ubicación"}
-                </button>
-              ) : (
-                <>
-                  <div className="flex flex-wrap gap-2">
-                    {RADII.map(([r, l]) => (
-                      <button key={String(r)} onClick={() => setRadius(r)} aria-pressed={radius === r}
-                        className={`whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition border ${radius === r ? "bg-blue-700 text-white border-blue-700" : "bg-white/90 text-blue-800 border-blue-600 hover:bg-white"}`}>
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                  <button onClick={clearNearMe} className="mt-2 text-xs text-slate-600 underline hover:text-slate-800">Quitar mi ubicación</button>
-                </>
-              )}
-              {geoState === "denied" && <p className="text-xs text-rose-700 mt-1">No diste permiso de ubicación. Activalo en el navegador y volvé a intentar.</p>}
-              {geoState === "error" && <p className="text-xs text-rose-700 mt-1">No pudimos obtener tu ubicación.</p>}
-            </div>
             <div role="group" aria-labelledby="f-tipo">
               <p id="f-tipo" className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Filter size={13} /> Tipo de lugar</p>
               <div className="flex flex-wrap gap-2">
