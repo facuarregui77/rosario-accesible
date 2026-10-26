@@ -1,5 +1,5 @@
 // Posicionamiento en Google y medición de campañas.
-import { CRITERIA, TYPE_LABELS, WHEELCHAIR_LABELS } from "../data/constants";
+import { CRITERIA, TYPE_LABELS, WHEELCHAIR_LABELS } from "../data/constants.js";
 
 export const SITE_URL = "https://access-app-rosario.vercel.app";
 const HOME_TITLE = "Rosario Accesible — Mapa de accesibilidad de Rosario";
@@ -16,19 +16,27 @@ function setMeta(selector, attr, value) {
   el.setAttribute(attr, value);
 }
 
+// Dirección propia de cada lugar. scripts/generar-paginas-lugares.mjs arma una página ya escrita para cada una
+// (así Google lee el lugar sin esperar a la app); los enlaces viejos …/?lugar=<id> siguen andando.
+export const placePath = (place) => `/lugar/${encodeURIComponent(place.id)}`;
+
+// Título y descripción de la ficha de un lugar (los usa la app y también el script de páginas por lugar).
+export function placeMeta(place) {
+  const acceso = place.wheelchair ? WHEELCHAIR_LABELS[place.wheelchair] : "todavía sin datos de acceso en silla de ruedas";
+  const tiene = CRITERIA.filter((c) => place.a && place.a[c.key] === "si").map((c) => c.label.toLowerCase());
+  return {
+    title: `${place.name}: accesibilidad | Rosario Access Map`,
+    desc: `${place.name} (${(TYPE_LABELS[place.type] || "lugar").toLowerCase()}, Rosario): ${acceso.charAt(0).toLowerCase() + acceso.slice(1)}` +
+      (tiene.length ? `. Tiene ${tiene.join(", ")}` : "") +
+      ". Mirá su accesibilidad y cómo llegar en el mapa colaborativo de Rosario.",
+    url: SITE_URL + placePath(place),
+  };
+}
+
 // Título, descripción y dirección "oficial" (canonical) de la página: los de la portada o los del lugar abierto.
-// Google lee esto al recorrer cada enlace ?lugar=… del sitemap, así cada lugar puede aparecer en las búsquedas.
 export function updateHead(place) {
   let title = HOME_TITLE, desc = HOME_DESC, url = SITE_URL + "/";
-  if (place) {
-    const acceso = place.wheelchair ? WHEELCHAIR_LABELS[place.wheelchair] : "todavía sin datos de acceso en silla de ruedas";
-    const tiene = CRITERIA.filter((c) => place.a && place.a[c.key] === "si").map((c) => c.label.toLowerCase());
-    title = `${place.name}: accesibilidad | Rosario Access Map`;
-    desc = `${place.name} (${(TYPE_LABELS[place.type] || "lugar").toLowerCase()}, Rosario): ${acceso.charAt(0).toLowerCase() + acceso.slice(1)}` +
-      (tiene.length ? `. Tiene ${tiene.join(", ")}` : "") +
-      ". Mirá su accesibilidad y cómo llegar en el mapa colaborativo de Rosario.";
-    url = `${SITE_URL}/?lugar=${encodeURIComponent(place.id)}`;
-  }
+  if (place) ({ title, desc, url } = placeMeta(place));
   document.title = title;
   setMeta('meta[name="description"]', "content", desc);
   setMeta('link[rel="canonical"]', "href", url);

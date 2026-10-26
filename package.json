@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generar-sitemap.mjs && vite build",
+    "build": "node scripts/generar-sitemap.mjs && vite build && node scripts/generar-paginas-lugares.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

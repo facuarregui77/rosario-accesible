@@ -22,7 +22,7 @@ import ContactButtons from "./components/ContactButtons";
 import { ROUTING_ON, fetchRoute, MODOS, fmtMin } from "./lib/routing";
 import RoutePanel from "./components/RoutePanel";
 import { cargarLineas, planificar } from "./lib/colectivo";
-import { updateHead } from "./lib/seo";
+import { updateHead, placePath } from "./lib/seo";
 
 // Aplica los cambios guardados (relevamiento) sobre los datos base
 const mergePlaces = (base, overrides) => base.map((p) => {
@@ -241,9 +241,13 @@ export default function App() {
     [selected, data]
   );
 
-  // Compartir lugar por URL: al abrir con ?lugar=<id> se selecciona ese lugar automáticamente.
-  // Capturamos el parámetro inicial ANTES de que el efecto de sincronía pueda borrarlo.
-  const initialLugarRef = useRef(typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("lugar") : null);
+  // Compartir lugar por URL: al abrir /lugar/<id> (o el formato viejo ?lugar=<id>) se selecciona ese lugar automáticamente.
+  // Capturamos el lugar inicial ANTES de que el efecto de sincronía pueda borrarlo.
+  const initialLugarRef = useRef((() => {
+    if (typeof window === "undefined") return null;
+    const m = window.location.pathname.match(/^\/lugar\/([^/]+)/);
+    return m ? decodeURIComponent(m[1]) : new URLSearchParams(window.location.search).get("lugar");
+  })());
   const urlAppliedRef = useRef(false);
   useEffect(() => {
     if (urlAppliedRef.current || loading || !data.length) return;
@@ -261,7 +265,8 @@ export default function App() {
   useEffect(() => {
     if (!urlAppliedRef.current) return;
     try {
-      const url = selected ? `${window.location.pathname}?lugar=${selected.id}` : window.location.pathname;
+      const path = window.location.pathname;
+      const url = selected ? placePath(selected) : path.startsWith("/lugar/") ? "/" : path;
       window.history.replaceState(null, "", url);
     } catch (e) { /* ignorar */ }
   }, [selected]);

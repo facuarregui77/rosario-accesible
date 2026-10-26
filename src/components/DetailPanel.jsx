@@ -5,6 +5,7 @@ import * as db from "../db";
 import CONTACTOS from "../contactos.json";
 import { CRITERIA, TYPE_LABELS, TYPE_COLORS, WHEELCHAIR_LABELS, hasAnyData } from "../data/constants";
 import { reverseGeocode } from "../lib/geo";
+import { placePath } from "../lib/seo";
 import SuggestionForm from "./SuggestionForm";
 import PhotoGallery from "./PhotoGallery";
 // Fotos de uso libre de Wikimedia Commons (las busca scripts/buscar-fotos.mjs)
@@ -83,7 +84,7 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
   // Compartir: usa el menú nativo del celular si existe; si no, copia el link al portapapeles.
   const [shared, setShared] = useState(false);
   const share = async () => {
-    const url = `${window.location.origin}${window.location.pathname}?lugar=${place.id}`;
+    const url = window.location.origin + placePath(place);
     try {
       if (navigator.share) await navigator.share({ title: place.name, text: `Accesibilidad de ${place.name} en Rosario Access Map`, url });
       else { await navigator.clipboard.writeText(url); setShared(true); onAnnounce && onAnnounce("Link copiado."); setTimeout(() => setShared(false), 2000); }
