@@ -61,6 +61,10 @@ export default function App() {
   const [altoPanelRuta, setAltoPanelRuta] = useState(null); // tamaño del panel "Cómo llego" { alto, ancho } (para encuadrar la ruta)
   const [route, setRoute] = useState(null); // ruta accesible: {loading|error|coords, origin, distance, duration, to}
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
+  // Las solapas de lugares (izquierda) y filtros (derecha) nunca están abiertas a la vez:
+  // al abrir una, la otra se cierra sola para que no se encimen.
+  useEffect(() => { if (sidebarOpen) setFiltersOpen(false); }, [sidebarOpen]);
+  useEffect(() => { if (filtersOpen) setSidebarOpen(false); }, [filtersOpen]);
   const [admin, setAdmin] = useState(() => !db.cloud && typeof window !== "undefined" && localStorage.getItem("admin_mode") === "1");
   const [showLogin, setShowLogin] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
