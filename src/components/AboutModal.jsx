@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Info, X, Accessibility, Lightbulb, MessageSquare, Contrast, Github, Mail, Share2 } from "lucide-react";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import { CONTACT_EMAIL, CONTACT_WHATSAPP, REPO_URL } from "../data/constants";
-import { WhatsAppIcon, whatsappUrl } from "./ContactButtons";
+import { WhatsAppMenu } from "./ContactButtons";
 
 // "Acerca de": qué es el proyecto, de dónde salen los datos, cómo colaborar y ajustes de accesibilidad.
 export default function AboutModal({ onClose, stats, highContrast, onToggleContrast }) {
@@ -58,10 +58,8 @@ export default function AboutModal({ onClose, stats, highContrast, onToggleContr
               <button onClick={share} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium"><Share2 size={13} /> Compartir el mapa</button>
               {CONTACT_EMAIL && <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-sky-300 text-sky-700 hover:bg-sky-50 text-xs font-medium"><Mail size={13} /> Escribinos</a>}
               {CONTACT_WHATSAPP && (
-                <a href={whatsappUrl()} target="_blank" rel="noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-medium">
-                  <WhatsAppIcon size={13} /> WhatsApp
-                </a>
+                <WhatsAppMenu tamIcono={13} texto="WhatsApp" arriba
+                  claseBoton="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-medium" />
               )}
               {REPO_URL && <a href={REPO_URL} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-medium"><Github size={13} /> Código abierto</a>}
             </div>

@@ -43,4 +43,10 @@ export const CONTACT_EMAIL = "facuarregui77@gmail.com";
 // WhatsApp de contacto (botón en "Acerca de"). Formato internacional, solo números:
 // 54 (Argentina) + 9 + característica sin el 0 + número sin el 15. Ej.: "5493415551234". Vacío = no se muestra.
 export const CONTACT_WHATSAPP = "5493412517777";
+// A quién se puede escribir por WhatsApp: al tocar el botón aparece un menú para elegir.
+// `numero` en formato internacional, solo números (como CONTACT_WHATSAPP); `ver` es como se muestra.
+export const WHATSAPP_CONTACTOS = [
+  { nombre: "Facundo Arregui", ver: "+54 9 341 251-7777", numero: CONTACT_WHATSAPP },
+  { nombre: "Welcome Rosario", ver: "+54 9 341 325-2526", numero: "5493413252526" },
+];
 export const REPO_URL = "https://github.com/facuarregui77/rosario-accesible";
