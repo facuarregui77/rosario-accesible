@@ -5,13 +5,14 @@ import { RAMP_ICON_URL } from "../lib/rampIcon";
 import { pinSvg } from "../lib/pin";
 
 // Leyenda del mapa: qué significa el color del pin (tipo de lugar) y el puntito del centro (accesibilidad).
-// Botón flotante abajo a la derecha (arriba del zoom); se abre como una tarjetita.
+// Botón flotante abajo a la derecha (arriba del zoom); se abre como una tarjetita, corrida a la izquierda
+// para que la pestaña de filtros no le tape la X de cerrar.
 export default function Legend({ showRamps }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="absolute right-3 bottom-[7.5rem] z-[500] flex flex-col items-end gap-2">
       {open && (
-        <div role="region" aria-label="Leyenda del mapa" className="w-72 max-w-[85vw] rounded-2xl bg-white/95 backdrop-blur border border-sky-300 shadow-2xl p-3 text-xs text-slate-700">
+        <div role="region" aria-label="Leyenda del mapa" className="mr-10 w-72 max-w-[78vw] rounded-2xl bg-white/95 backdrop-blur border border-sky-300 shadow-2xl p-3 text-xs text-slate-700">
           <div className="flex items-center justify-between mb-2">
             <span className="font-bold text-slate-800">Cómo leer el mapa</span>
             <button onClick={() => setOpen(false)} aria-label="Cerrar leyenda" className="p-1 rounded-lg hover:bg-slate-100 text-slate-600"><X size={14} /></button>

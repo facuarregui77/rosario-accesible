@@ -22,3 +22,6 @@ metodologia-project-manager.html
 
 # Temporales del ajuste de páginas de la guía (scripts/guia/ajustar-paginas.py)
 scripts/guia/_*.html
+
+# Video tutorial: se genera con GENERAR VIDEO.bat (pesado, no hace falta guardarlo en GitHub)
+VIDEO TUTORIAL.mp4
