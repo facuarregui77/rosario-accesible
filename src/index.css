@@ -52,6 +52,12 @@ body,
   font-weight: 600;
 }
 
+/* Cartelito de los pines: nombre, tipo de lugar y accesibilidad (cada uno con su puntito de color) */
+.cartel-pin { display: flex; flex-direction: column; gap: 2px; font: 12px/1.3 'Plus Jakarta Sans', system-ui, sans-serif; }
+.cartel-pin b { font-size: 13px; color: #06153D; }
+.cartel-pin span { display: flex; align-items: center; gap: 6px; font-weight: 500; color: #334155; }
+.cartel-pin i { width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px rgba(0,0,0,.15); }
+
 /* Controles de zoom (+ / -) del mapa en celeste, igual que las categorías */
 .leaflet-control-zoom a {
   color: #0B3A7E !important;

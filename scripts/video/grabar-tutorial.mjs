@@ -27,8 +27,8 @@ const esperar = (ms) => new Promise((ok) => setTimeout(ok, ms));
 const ESCENAS = [
   { texto: "Hola. Este es Rosario Access Map, un mapa gratuito que muestra qué tan accesibles son los lugares de Rosario: bares, restaurantes, escuelas, clubes, hospitales y oficinas públicas. Te mostramos cómo usarlo.",
     hacer: async (a) => { await a.titulo("Cómo usar Rosario Access Map", "access-app-rosario.vercel.app", 4500); } },
-  { texto: "Cada pin es un lugar. El color y el dibujito dicen qué tipo de lugar es, y el circulito de la esquina dice si es accesible: verde, accesible; amarillo, parcial; rojo, sin acceso; y gris, todavía sin datos.",
-    hacer: async (a, p, ms) => { await a.tocar(p.getByLabel("Ver leyenda del mapa")); await esperar(ms - 4500); await a.tocar(p.getByLabel("Cerrar leyenda")); } },
+  { texto: "Cada pin es un lugar. El color y el dibujito dicen qué tipo de lugar es, y el circulito de la esquina dice si es accesible. Al pasar el mouse por un pin aparece un cartelito con el nombre, el tipo de lugar y si se puede entrar en silla de ruedas.",
+    hacer: async (a, p, ms) => { await esperar(4500); await a.posar(p.locator('.leaflet-marker-icon[title*="Teatro La Comedia"]').first()); await esperar(4500); await a.posar(p.locator('.leaflet-marker-icon[title*="Museo"]').first()); await esperar(Math.max(1500, ms - 14000)); await p.mouse.move(5, 400); } },
   { texto: "Para encontrar un lugar, escribí su nombre en el buscador y elegilo de la lista.",
     hacer: async (a, p) => { await a.escribir(p.getByLabel("Buscar un lugar por nombre"), "comedia"); await esperar(900); await a.tocar(p.getByRole("option").first()); } },
   { texto: "Se abre la ficha del lugar: si se puede entrar en silla de ruedas, la dirección, el teléfono, las redes, y el detalle de accesibilidad, como baño adaptado, rampa de acceso o ascensor.",
@@ -100,6 +100,7 @@ function acciones(p) {
   return {
     async tocar(loc) { const [x, y] = await centro(loc); await mover(x, y); await onda(); await loc.click({ timeout: 8000 }); await esperar(500); },
     async escribir(loc, texto) { const [x, y] = await centro(loc); await mover(x, y); await onda(); await loc.click(); await loc.fill(""); await loc.pressSequentially(texto, { delay: 140 }); },
+    async posar(loc) { const [x, y] = await centro(loc); const b = await loc.boundingBox(); const yy = b.y + b.height / 3; await mover(x, yy); await p.mouse.move(x, yy, { steps: 6 }); },
     async dobleClic(x, y) { await mover(x, y); await onda(); await p.mouse.dblclick(x, y); },
     async mostrar(loc) { await loc.evaluate((e) => e.scrollIntoView({ behavior: "smooth", block: "center" })); await esperar(1200); const [x, y] = await centro(loc); await mover(x, y); },
     async deslizar(loc, dy, ms) {

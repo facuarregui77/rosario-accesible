@@ -10,7 +10,6 @@ import RAMPS from "./rampas-rosario.json";
 import { distanceM, fmtDist } from "./lib/geo";
 import { AccessChip } from "./components/AccessChip";
 import RealMap from "./components/RealMap";
-import Legend from "./components/Legend";
 import SurveyMode from "./components/SurveyMode";
 import SuggestionsPanel from "./components/SuggestionsPanel";
 import DetailPanel from "./components/DetailPanel";
@@ -642,7 +641,6 @@ export default function App() {
           ramps={RAMPS.points} showRamps={showRamps} onRampsHint={setRampsHint}
           searchTerm={query} sidebarOpen={sidebarOpen} route={rutaEnMapa} margenRuta={altoPanelRuta} userPos={userPos}
           picking={picking || Boolean(route && route.eligiendo)} onPick={onMapPick} />
-        <Legend showRamps={showRamps} />
 
         {/* Aviso si "Cerca de mí" no pudo usar la ubicación */}
         {(geoState === "denied" || geoState === "error") && !route && (

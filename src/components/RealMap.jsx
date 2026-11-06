@@ -75,6 +75,17 @@ const PinMarker = L.CircleMarker.extend({
 const OSM_MIN_ZOOM = 15;
 const OSM_POCAS = 250;
 
+// Cartelito de cada pin (al pasar el mouse): nombre, tipo de lugar con su color y si es accesible.
+// Reemplaza a la leyenda: cada pin explica lo suyo.
+const ACCESO_CARTEL = { si: "Accesible en silla de ruedas", parcial: "Parcialmente accesible", no: "Sin acceso en silla de ruedas", null: "Todavía sin datos de accesibilidad" };
+function cartelPin(p, avg) {
+  const color = TYPE_COLORS[p.type] || "#5F6368";
+  const w = p.wheelchair ?? null;
+  return `<div class="cartel-pin"><b>${escapeH(p.name)}</b>` +
+    `<span><i style="background:${color}"></i>${escapeH(p.rubro || TYPE_LABELS[p.type] || "Lugar")}${avg ? ` · ★ ${avg}` : ""}</span>` +
+    `<span><i style="background:${accessColor(w)}"></i>${ACCESO_CARTEL[w] || ACCESO_CARTEL.null}</span></div>`;
+}
+
 export default function RealMap({ places, selected, onSelect, avgRating, ramps, showRamps, onRampsHint, searchTerm, sidebarOpen, route, margenRuta = null, userPos, picking, onPick }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -228,7 +239,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     osm.forEach((p) => {
       const m = new PinMarker([p.lat, p.lng], { radius: 14, stroke: false, fillOpacity: 0, pinSize: osmSize(map.getZoom()),
         type: p.type, wheelchair: p.wheelchair, nombre: p.name, colorNombre: oscuro(TYPE_COLORS[p.type] || "#5F6368", 0.8) });
-      m.bindTooltip(p.name, { direction: "top", offset: [0, -10] });
+      m.bindTooltip(cartelPin(p), { direction: "top", offset: [0, -10] });
       m.on("click", () => onSelectRef.current(p));
       m.addTo(osmLayerRef.current);
     });
@@ -262,7 +273,7 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       // `title`: nombre accesible del pin para teclado y lectores de pantalla (Leaflet lo hace enfocable con Tab).
       const a11yName = `${p.name}, ${TYPE_LABELS[p.type] || p.type}, ${ACCESS_LABELS[p.wheelchair ?? null]}`;
       const marker = L.marker([p.lat, p.lng], { icon, title: a11yName, riseOnHover: true }).addTo(layerRef.current);
-      marker.bindTooltip(`${p.name}${avg ? ` · ★${avg}` : ""}`, { direction: "top", offset: [0, -size] });
+      marker.bindTooltip(cartelPin(p, avg), { direction: "top", offset: [0, -size] });
       marker.on("click", () => onSelectRef.current(p));
       marker.on("keypress", (e) => { const k = e.originalEvent && e.originalEvent.key; if (k === "Enter" || k === " ") onSelectRef.current(p); });
     });
