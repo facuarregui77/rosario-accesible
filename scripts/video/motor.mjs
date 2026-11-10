@@ -139,13 +139,26 @@ export async function grabar(g, { raiz, puerto }) {
   console.log("2/4 Grabando la app…");
   const nav = await chromium.launch({ executablePath: CHROME, headless: true, args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
   const escala = g.escala || 1;
+  // Celular (escala > 1): la grabación común sale a la mitad de tamaño, así que se capturan los cuadros de la
+  // pantalla uno por uno en alta resolución. Computadora: grabación común.
+  const cuadros = escala > 1 ? [] : null;
   const ctx = await nav.newContext({
     viewport: { width: g.ancho, height: g.alto }, deviceScaleFactor: escala, isMobile: escala > 1, hasTouch: escala > 1,
     locale: "es-AR", serviceWorkers: "block", geolocation: g.ubicacion, permissions: ["geolocation"],
-    recordVideo: { dir: TMP, size: { width: g.ancho * escala, height: g.alto * escala } },
+    ...(cuadros ? {} : { recordVideo: { dir: TMP, size: { width: g.ancho, height: g.alto } } }),
   });
   await simularNube(ctx, g.sugerenciasEjemplo);
   const p = await ctx.newPage();
+  if (cuadros) {
+    const cdp = await ctx.newCDPSession(p);
+    cdp.on("Page.screencastFrame", (f) => {
+      const archivo = path.join(TMP, `c${String(cuadros.length).padStart(6, "0")}.jpg`);
+      fs.writeFileSync(archivo, Buffer.from(f.data, "base64"));
+      cuadros.push({ archivo, t: Date.now() });
+      cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {});
+    });
+    await cdp.send("Page.startScreencast", { format: "jpeg", quality: 92, maxWidth: g.ancho * escala, maxHeight: g.alto * escala, everyNthFrame: 1 });
+  }
   const t0 = Date.now();
   await p.goto(`http://localhost:${puerto}/`);
   await p.waitForFunction(() => { const a = document.querySelector(".leaflet-control-attribution"); return a && a.innerText.includes("OpenFreeMap") && !a.innerText.includes("Esri"); }, null, { timeout: 60000 }).catch(() => {});
@@ -164,11 +177,30 @@ export async function grabar(g, { raiz, puerto }) {
   }
   await esperar(800);
   const fin = Date.now() - t0;
-  const webm = await p.video().path();
-  await ctx.close(); await nav.close();
+  let webm, desdeSeg = (inicio / 1000).toFixed(2), hastaSeg = (fin / 1000).toFixed(2);
+  if (cuadros) {
+    // Los cuadros llegan solo cuando cambia algo: cada uno dura hasta que llega el siguiente
+    await ctx.close(); await nav.close();
+    const desde = t0 + inicio, hasta = t0 + fin;
+    let i0 = cuadros.findLastIndex((c) => c.t <= desde); if (i0 < 0) i0 = 0;
+    const usados = cuadros.slice(i0).filter((c) => c.t < hasta);
+    const lista = usados.map((c, k) => {
+      const ini = Math.max(c.t, desde), sig = k + 1 < usados.length ? usados[k + 1].t : hasta;
+      return `file '${c.archivo.replace(/\\/g, "/")}'\nduration ${((sig - ini) / 1000).toFixed(3)}`;
+    });
+    lista.push(`file '${usados[usados.length - 1].archivo.replace(/\\/g, "/")}'`);
+    fs.writeFileSync(path.join(TMP, "cuadros.txt"), lista.join("\n"));
+    webm = path.join(TMP, "pantalla.mp4");
+    execFileSync("ffmpeg", ["-y", "-f", "concat", "-safe", "0", "-i", path.join(TMP, "cuadros.txt"), "-vf", `scale=${g.ancho * escala}:${g.alto * escala}:flags=lanczos,fps=25,format=yuv420p`,
+      "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", webm], { stdio: "ignore" });
+    desdeSeg = "0"; hastaSeg = ((fin - inicio) / 1000).toFixed(2);
+  } else {
+    webm = await p.video().path();
+    await ctx.close(); await nav.close();
+  }
 
   console.log("3/4 Armando el video…");
-  const entradas = ["-y", "-ss", (inicio / 1000).toFixed(2), "-to", (fin / 1000).toFixed(2), "-i", webm];
+  const entradas = ["-y", "-ss", desdeSeg, "-to", hastaSeg, "-i", webm];
   const filtros = [];
   g.escenas.forEach((e, i) => {
     const d = Math.max(0, Math.round(e.desde - inicio));

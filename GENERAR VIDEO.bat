@@ -4,9 +4,10 @@ cd /d "%~dp0"
 title Generar los videos de Rosario Access Map
 
 echo.
-echo   Arma los dos videos, grabando la app y poniendoles voz y subtitulos:
+echo   Arma los videos, grabando la app y poniendoles voz y subtitulos:
 echo     - VIDEO TUTORIAL.mp4    (como se usa, como se colabora y las herramientas del equipo)
-echo     - VIDEO PROMOCIONAL.mp4 (vertical, para redes)
+echo     - VIDEO PROMOCIONAL.mp4 (vertical: Reels, Stories, TikTok, estados)
+echo     - VIDEO PROMOCIONAL CUADRADO.mp4 (para el muro de Instagram y Facebook)
 echo   Tarda unos 10 minutos. No hace falta tocar nada mientras tanto.
 echo.
 
@@ -40,4 +41,5 @@ echo.
 echo   Abriendo los videos...
 start "" "VIDEO TUTORIAL.mp4"
 start "" "VIDEO PROMOCIONAL.mp4"
+start "" "VIDEO PROMOCIONAL CUADRADO.mp4"
 pause

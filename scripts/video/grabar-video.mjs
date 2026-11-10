@@ -1,14 +1,16 @@
 // GENERA LOS VIDEOS DE ROSARIO ACCESS MAP
 //   node scripts/video/grabar-video.mjs            → los dos
 //   node scripts/video/grabar-video.mjs tutorial   → solo "VIDEO TUTORIAL.mp4"
-//   node scripts/video/grabar-video.mjs promo      → solo "VIDEO PROMOCIONAL.mp4"
+//   node scripts/video/grabar-video.mjs promo      → solo el promocional (vertical y cuadrado)
 // Antes hay que armar la app (npm run build). Lo más fácil: doble clic en "GENERAR VIDEO.bat".
 // Requisitos: Google Chrome, ffmpeg (winget install Gyan.FFmpeg) y edge-tts (python -m pip install edge-tts).
 // Lo que se dice y se muestra está en guion-tutorial.mjs y guion-promo.mjs.
 import { spawn, execFileSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import { grabar, esperar } from "./motor.mjs";
+import { armarCuadrado } from "./cuadrado.mjs";
 import tutorial from "./guion-tutorial.mjs";
 import promo from "./guion-promo.mjs";
 
@@ -22,6 +24,10 @@ await esperar(5000);
 let error = false;
 try {
   for (const g of guiones) await grabar(g, { raiz: RAIZ, puerto: PUERTO });
+  if (guiones.includes(promo)) {
+    const chrome = ["C:/Program Files/Google/Chrome/Application/chrome.exe", "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"].find((c) => fs.existsSync(c));
+    await armarCuadrado(RAIZ, chrome);
+  }
 } catch (e) {
   error = true;
   console.log("\nNo se pudo terminar el video: " + e.message.split("\n")[0]);
