@@ -1,11 +1,13 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title Generar el video tutorial de Rosario Access Map
+title Generar los videos de Rosario Access Map
 
 echo.
-echo   Arma "VIDEO TUTORIAL.mp4": graba la app, le pone voz y subtitulos.
-echo   Tarda unos 5 minutos. No hace falta tocar nada mientras tanto.
+echo   Arma los dos videos, grabando la app y poniendoles voz y subtitulos:
+echo     - VIDEO TUTORIAL.mp4    (como se usa, como se colabora y las herramientas del equipo)
+echo     - VIDEO PROMOCIONAL.mp4 (vertical, para redes)
+echo   Tarda unos 10 minutos. No hace falta tocar nada mientras tanto.
 echo.
 
 where ffmpeg >nul 2>nul || (
@@ -27,7 +29,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-node scripts\video\grabar-tutorial.mjs
+node scripts\video\grabar-video.mjs
 if errorlevel 1 (
   echo.
   echo   Algo fallo. Fijate que haya internet y que Google Chrome este instalado, y volve a probar.
@@ -35,6 +37,7 @@ if errorlevel 1 (
   exit /b 1
 )
 echo.
-echo   Abriendo el video...
+echo   Abriendo los videos...
 start "" "VIDEO TUTORIAL.mp4"
+start "" "VIDEO PROMOCIONAL.mp4"
 pause
