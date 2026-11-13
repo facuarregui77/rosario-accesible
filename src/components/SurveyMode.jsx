@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import { Accessibility, X, CheckCircle2, Save, ChevronLeft, ClipboardList, LocateFixed, ChevronRight } from "lucide-react";
-import { CRITERIA, TYPE_LABELS, TYPE_EMOJI, hasAnyData } from "../data/constants";
+import { criteriosDe, TYPE_LABELS, TYPE_EMOJI, hasAnyData } from "../data/constants";
 import { distanceM, fmtDist } from "../lib/geo";
 import { AccessChip } from "./AccessChip";
 
@@ -137,7 +137,7 @@ export default function SurveyMode({ places, onSaveAccess, onClose }) {
             <div>
               <p className="text-sm font-semibold text-slate-700 mb-2">Detalle</p>
               <div className="space-y-2">
-                {CRITERIA.map((c) => {
+                {criteriosDe(active.type).map((c) => {
                   const Icon = c.icon;
                   const val = draftA[c.key];
                   return (

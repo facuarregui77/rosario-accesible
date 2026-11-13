@@ -3,7 +3,7 @@ import { useFocusTrap } from "../hooks/useFocusTrap";
 import { MapPin, Accessibility, Star, X, Trash2, CheckCircle2, XCircle, MessageSquare, Pencil, Save, Lightbulb, Share2, Image as ImageIcon, Navigation, Phone, Globe, Instagram, Facebook } from "lucide-react";
 import * as db from "../db";
 import CONTACTOS from "../contactos.json";
-import { CRITERIA, TYPE_LABELS, TYPE_COLORS, WHEELCHAIR_LABELS, hasAnyData } from "../data/constants";
+import { criteriosDe, TYPE_LABELS, TYPE_COLORS, WHEELCHAIR_LABELS, hasAnyData } from "../data/constants";
 import { reverseGeocode } from "../lib/geo";
 import { placePath } from "../lib/seo";
 import SuggestionForm from "./SuggestionForm";
@@ -225,7 +225,7 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
           )}
 
           <div className="space-y-2 mb-3">
-            {CRITERIA.map((c) => {
+            {criteriosDe(place.type).map((c) => {
               const val = editing ? draft[c.key] : place.a[c.key];
               const Icon = c.icon;
               if (editing) {
@@ -289,7 +289,7 @@ export default function DetailPanel({ place, onClose, reviews, onAddReview, onDe
           )}
 
           {/* Sugerir datos de accesibilidad (público, no admin) */}
-          {!admin && !editing && <SuggestionForm onSubmit={(s) => onAddSuggestion(place.id, s)} />}
+          {!admin && !editing && <SuggestionForm tipo={place.type} onSubmit={(s) => onAddSuggestion(place.id, s)} />}
 
           {/* Opiniones y sugerencias */}
           <h3 className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2"><MessageSquare size={15} /> Opiniones y sugerencias ({reviews.length})</h3>

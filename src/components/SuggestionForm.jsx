@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { CheckCircle2, Lightbulb } from "lucide-react";
-import { CRITERIA } from "../data/constants";
+import { CRITERIA, criteriosDe } from "../data/constants";
 
 // Mini-formulario para que el público SUGIERA datos de accesibilidad (entran como propuesta pendiente).
-export default function SuggestionForm({ onSubmit }) {
+export default function SuggestionForm({ onSubmit, tipo }) {
   const [sugg, setSugg] = useState({ wheelchair: null, bano: null, rampa: null, ascensor: null, braille: null, senas: null });
   const [comment, setComment] = useState("");
   const [name, setName] = useState("");
@@ -42,7 +42,7 @@ export default function SuggestionForm({ onSubmit }) {
       </div>
 
       <div className="space-y-1.5 mb-2">
-        {CRITERIA.map((c) => {
+        {criteriosDe(tipo).map((c) => {
           const Icon = c.icon;
           return (
             <div key={c.key} className="flex items-center justify-between">

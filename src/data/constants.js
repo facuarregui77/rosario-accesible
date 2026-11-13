@@ -3,9 +3,38 @@ export const CRITERIA = [
   { key: "bano", label: "Baño adaptado", icon: Bath },
   { key: "rampa", label: "Rampa de acceso", icon: ArrowUpDown },
   { key: "ascensor", label: "Ascensor", icon: MoveUp },
-  { key: "braille", label: "Menú en braille", icon: BookOpen },
+  { key: "braille", label: "Menú o carteles en braille", icon: BookOpen },
   { key: "senas", label: "Personal con lengua de señas", icon: Hand },
 ];
+
+// Qué criterios tienen sentido según el tipo de lugar (un parque no tiene menú ni ascensor, un comercio no
+// suele tener baño para clientes…). Se usa en la ficha, al sugerir, al relevar y en los filtros.
+const CRITERIOS_POR_TIPO = {
+  bar: ["bano", "rampa", "ascensor", "braille", "senas"],
+  restaurant: ["bano", "rampa", "ascensor", "braille", "senas"],
+  gastronomia: ["bano", "rampa", "braille", "senas"],
+  boliche: ["bano", "rampa", "ascensor", "senas"],
+  educativo: ["bano", "rampa", "ascensor", "braille", "senas"],
+  cultural: ["bano", "rampa", "ascensor", "braille", "senas"],
+  salud: ["bano", "rampa", "ascensor", "braille", "senas"],
+  gobierno: ["bano", "rampa", "ascensor", "braille", "senas"],
+  transporte: ["bano", "rampa", "ascensor", "braille", "senas"],
+  alojamiento: ["bano", "rampa", "ascensor", "senas"],
+  deportivo: ["bano", "rampa", "ascensor"],
+  comercio: ["rampa", "ascensor", "senas"],
+  servicio: ["bano", "rampa", "ascensor", "senas"],
+  verde: ["bano", "rampa"],
+};
+// En los lugares donde se come, el braille es del menú; en el resto, de la cartelería
+const COMIDA = ["bar", "restaurant", "gastronomia"];
+export function criteriosDe(type) {
+  const claves = CRITERIOS_POR_TIPO[type];
+  if (!claves) return CRITERIA;
+  return CRITERIA.filter((c) => claves.includes(c.key))
+    .map((c) => (c.key === "braille" ? { ...c, label: COMIDA.includes(type) ? "Menú en braille" : "Carteles en braille" } : c));
+}
+// Criterios de varios tipos juntos (para los filtros cuando se eligen todos los tipos)
+export const criteriosDeTipos = (tipos) => CRITERIA.filter((c) => tipos.some((t) => criteriosDe(t).some((x) => x.key === c.key)));
 
 export const TYPE_LABELS = { bar: "Bar", restaurant: "Restaurante", boliche: "Boliche", educativo: "Educativo", deportivo: "Deportivo", cultural: "Cultural", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacio verde", gastronomia: "Café y comida al paso", comercio: "Comercio", servicio: "Empresa", alojamiento: "Alojamiento" };
 export const TYPE_PLURAL = { bar: "Bares", restaurant: "Restaurantes", boliche: "Boliches", educativo: "Educativos", deportivo: "Deportivos", cultural: "Culturales", salud: "Salud", transporte: "Transporte", gobierno: "Gobierno", verde: "Espacios verdes", gastronomia: "Cafés y comida al paso", comercio: "Comercios", servicio: "Empresas", alojamiento: "Alojamiento" };

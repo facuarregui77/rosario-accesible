@@ -4,7 +4,7 @@ import { Accessibility, Star, X, Filter, BarChart3, CheckCircle2, Search, Chevro
 // Capa de datos: nube (Supabase) con fallback automático a localStorage
 import * as db from "./db";
 import { PLACES } from "./data/places";
-import { CRITERIA, TYPE_LABELS, TYPE_PLURAL, TYPE_COLORS, ADMIN_CODE, hasAnyData, norm, accessColor } from "./data/constants";
+import { CRITERIA, criteriosDe, TYPE_LABELS, TYPE_PLURAL, TYPE_COLORS, ADMIN_CODE, hasAnyData, norm, accessColor } from "./data/constants";
 // Rebajes de cordón / cruces accesibles de Rosario (datos reales de OpenStreetMap, ODbL)
 import RAMPS from "./rampas-rosario.json";
 import { distanceM, fmtDist } from "./lib/geo";
@@ -57,6 +57,12 @@ export default function App() {
   const [showSuggPanel, setShowSuggPanel] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [criteriaFilter, setCriteriaFilter] = useState([]); // criterios que el lugar DEBE tener ("si")
+  // Los servicios que se pueden filtrar dependen del tipo elegido (un parque no tiene menú en braille):
+  // al cambiar de tipo se sacan los que ya no corresponden.
+  const serviciosFiltro = typeFilter === "all" ? CRITERIA : criteriosDe(typeFilter);
+  useEffect(() => {
+    setCriteriaFilter((prev) => { const ok = prev.filter((k) => serviciosFiltro.some((c) => c.key === k)); return ok.length === prev.length ? prev : ok; });
+  }, [typeFilter]); // eslint-disable-line react-hooks/exhaustive-deps
   const [altoPanelRuta, setAltoPanelRuta] = useState(null); // tamaño del panel "Cómo llego" { alto, ancho } (para encuadrar la ruta)
   const [route, setRoute] = useState(null); // ruta accesible: {loading|error|coords, origin, distance, duration, to}
   const [sidebarOpen, setSidebarOpen] = useState(() => (typeof window !== "undefined" ? window.innerWidth >= 640 : true));
@@ -760,7 +766,7 @@ export default function App() {
             <div role="group" aria-labelledby="f-serv">
               <p id="f-serv" className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2 flex items-center gap-1.5"><CheckCircle2 size={13} /> Servicios (que tenga…)</p>
               <div className="flex flex-wrap gap-2">
-                {CRITERIA.map((c) => {
+                {serviciosFiltro.map((c) => {
                   const on = criteriaFilter.includes(c.key);
                   const Icon = c.icon;
                   return (

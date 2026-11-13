@@ -217,7 +217,7 @@
 <ul>
 <li><b>Tipo de lugar:</b> bares, restaurantes, boliches, educativos, deportivos, culturales, salud, transporte, gobierno, espacios verdes, cafés y comida al paso, comercios, empresas, alojamiento.</li>
 <li><b>Accesibilidad:</b> accesible, parcial, sin acceso o sin datos.</li>
-<li><b>Servicios:</b> baño adaptado, rampa de acceso, ascensor, menú en braille, personal con lengua de señas. Si se marcan varios, quedan solo los lugares que tienen todos.</li>
+<li><b>Servicios:</b> baño adaptado, rampa de acceso, ascensor, menú o carteles en braille, personal con lengua de señas. Si se marcan varios, quedan solo los lugares que tienen todos. Al elegir un tipo de lugar se muestran solo los servicios que tienen sentido para ese tipo (por ejemplo, en espacios verdes solo baño y rampa).</li>
 </ul>
 <p>Los filtros actúan a la vez sobre el mapa, la lista y el buscador.</p>
 <figure id="f4">
@@ -307,7 +307,7 @@
 <p>Todas las formas de cargar datos llenan lo mismo:</p>
 <ul>
 <li><b>Acceso en silla de ruedas</b> (el dato más importante, porque pinta el color del mapa): Accesible, Parcial, Sin acceso o Sin datos.</li>
-<li><b>Cinco criterios</b>, cada uno con Sí, No o "—" (sin datos): baño adaptado, rampa de acceso, ascensor, menú en braille y personal con lengua de señas.</li>
+<li><b>Los criterios que corresponden al tipo de lugar</b>, cada uno con Sí, No o "—" (sin datos): baño adaptado, rampa de acceso, ascensor, braille (menú en bares y restaurantes, carteles en el resto) y personal con lengua de señas. Un parque, por ejemplo, solo pide baño y rampa; un comercio, rampa, ascensor y lengua de señas. La lista por tipo está en <code>CRITERIOS_POR_TIPO</code> (<code>src/data/constants.js</code>).</li>
 </ul>
 <h3><span class="k">5.4</span>Relevar en la calle</h3>
 <p>Para cuando estás parado frente al lugar o caminando por la zona.</p>
