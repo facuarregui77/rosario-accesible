@@ -27,3 +27,5 @@ scripts/guia/_*.html
 VIDEO TUTORIAL.mp4
 VIDEO PROMOCIONAL.mp4
 VIDEO PROMOCIONAL CUADRADO.mp4
+# Musica elegida a mano para los videos (puede tener derechos de autor: no va al repo, que es publico)
+scripts/video/musica.mp3

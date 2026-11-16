@@ -8,7 +8,9 @@ echo   Arma los videos, grabando la app y poniendoles voz y subtitulos:
 echo     - VIDEO TUTORIAL.mp4    (como se usa, como se colabora y las herramientas del equipo)
 echo     - VIDEO PROMOCIONAL.mp4 (vertical: Reels, Stories, TikTok, estados)
 echo     - VIDEO PROMOCIONAL CUADRADO.mp4 (para el muro de Instagram y Facebook)
-echo   Tarda unos 10 minutos. No hace falta tocar nada mientras tanto.
+echo   Los dos promocionales tienen el mismo diseno y musica de fondo propia.
+echo   Para usar otra musica, deja un archivo musica.mp3 en scriptsideo.
+echo   Tarda unos 15 minutos. No hace falta tocar nada mientras tanto.
 echo.
 
 where ffmpeg >nul 2>nul || (
@@ -21,6 +23,10 @@ where ffmpeg >nul 2>nul || (
 python -c "import edge_tts" 2>nul || (
   echo   Instalando la voz...
   python -m pip install --quiet edge-tts
+)
+python -c "import numpy" 2>nul || (
+  echo   Instalando lo necesario para la musica...
+  python -m pip install --quiet numpy
 )
 
 echo   Preparando la app...

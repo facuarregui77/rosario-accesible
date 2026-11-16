@@ -81,15 +81,29 @@ function acciones(p) {
   };
 }
 
-// Subtítulos: la frase se reparte en partes cortas, cada una el tiempo proporcional a su largo
-async function subtitular(p, texto, ms) {
-  const partes = texto.match(/[^.:;?!]+[.:;?!]?/g).map((x) => x.trim()).filter(Boolean);
+// Subtítulos: la frase se reparte en partes cortas, cada una el tiempo proporcional a su largo.
+// Con `anotar` (videos promocionales) no se pintan en la app: se anotan sus tiempos para ponerlos después afuera del celular.
+export function partirFrase(texto, max = 58) {
+  const partes = [];
+  for (const oracion of texto.match(/[^.:;?!]+[.:;?!]?/g).map((x) => x.trim()).filter(Boolean)) {
+    if (oracion.length <= max) { partes.push(oracion); continue; }
+    let actual = "";
+    for (const trozo of oracion.split(/(?<=,)\s+/)) {
+      if (actual && (actual + " " + trozo).length > max) { partes.push(actual); actual = trozo; }
+      else actual = actual ? actual + " " + trozo : trozo;
+    }
+    if (actual) partes.push(actual);
+  }
+  return partes;
+}
+async function subtitular(p, texto, ms, anotar) {
+  const partes = partirFrase(texto);
   const total = partes.reduce((s, x) => s + x.length, 0);
   for (const parte of partes) {
-    await p.evaluate((t) => { document.getElementById("tut-sub").textContent = t; }, parte);
+    if (anotar) anotar(parte); else await p.evaluate((t) => { document.getElementById("tut-sub").textContent = t; }, parte);
     await esperar((ms * parte.length) / total);
   }
-  await p.evaluate(() => { document.getElementById("tut-sub").textContent = ""; });
+  if (anotar) anotar(null); else await p.evaluate(() => { document.getElementById("tut-sub").textContent = ""; });
 }
 
 // ---------- Base de datos simulada (nada sale hacia Supabase) ----------
@@ -157,7 +171,7 @@ export async function grabar(g, { raiz, puerto }) {
       cuadros.push({ archivo, t: Date.now() });
       cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {});
     });
-    await cdp.send("Page.startScreencast", { format: "jpeg", quality: 92, maxWidth: g.ancho * escala, maxHeight: g.alto * escala, everyNthFrame: 1 });
+    await cdp.send("Page.startScreencast", { format: "jpeg", quality: 96, maxWidth: g.ancho * escala, maxHeight: g.alto * escala, everyNthFrame: 1 });
   }
   const t0 = Date.now();
   await p.goto(`http://localhost:${puerto}/`);
@@ -168,12 +182,19 @@ export async function grabar(g, { raiz, puerto }) {
   if (g.preparar) await g.preparar(a, p);
   await esperar(1200);
   const inicio = Date.now() - t0;   // desde acá empieza el video final
+  const subtitulos = [];
+  const anotar = g.componer ? (texto) => {
+    const t = (Date.now() - t0 - inicio) / 1000;
+    if (subtitulos.length && subtitulos.at(-1).hasta == null) subtitulos.at(-1).hasta = t;
+    if (texto) subtitulos.push({ texto, desde: t, hasta: null });
+  } : null;
   for (const [i, e] of g.escenas.entries()) {
     e.desde = Date.now() - t0;
     console.log(`   escena ${i + 1} de ${g.escenas.length}`);
     const hecho = e.hacer(a, p, e.ms).catch((err) => console.log(`   (escena ${i + 1}: ${err.message.split("\n")[0]})`));
-    await Promise.all([hecho, subtitular(p, e.texto, e.ms)]);
+    await Promise.all([hecho, subtitular(p, e.texto, e.ms, anotar)]);
     await esperar(e.pausa ?? 600);
+    e.hasta = Date.now() - t0;
   }
   await esperar(800);
   const fin = Date.now() - t0;
@@ -191,12 +212,25 @@ export async function grabar(g, { raiz, puerto }) {
     lista.push(`file '${usados[usados.length - 1].archivo.replace(/\\/g, "/")}'`);
     fs.writeFileSync(path.join(TMP, "cuadros.txt"), lista.join("\n"));
     webm = path.join(TMP, "pantalla.mp4");
-    execFileSync("ffmpeg", ["-y", "-f", "concat", "-safe", "0", "-i", path.join(TMP, "cuadros.txt"), "-vf", `scale=${g.ancho * escala}:${g.alto * escala}:flags=lanczos,fps=25,format=yuv420p`,
-      "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", webm], { stdio: "ignore" });
+    execFileSync("ffmpeg", ["-y", "-f", "concat", "-safe", "0", "-i", path.join(TMP, "cuadros.txt"), "-vf", `scale=${g.ancho * escala}:${g.alto * escala}:flags=lanczos,fps=30,format=yuv420p`,
+      "-c:v", "libx264", "-preset", "veryfast", "-crf", "12", webm], { stdio: "ignore" });
     desdeSeg = "0"; hastaSeg = ((fin - inicio) / 1000).toFixed(2);
   } else {
     webm = await p.video().path();
     await ctx.close(); await nav.close();
+  }
+
+  if (g.componer) {
+    // La pantalla del celular y la voz quedan sueltas: compositor.mjs arma con ellas las versiones finales
+    const voz = path.join(TMP, "voz.wav");
+    const ent = [], fil = [];
+    g.escenas.forEach((e, i) => { const d = Math.max(0, Math.round(e.desde - inicio)); ent.push("-i", e.audio); fil.push(`[${i}:a]adelay=${d}|${d}[v${i}]`); });
+    fil.push(`${g.escenas.map((_, i) => `[v${i}]`).join("")}amix=inputs=${g.escenas.length}:normalize=0,apad[voz]`);
+    const largo = (fin - inicio) / 1000;
+    execFileSync("ffmpeg", ["-y", ...ent, "-filter_complex", fil.join(";"), "-map", "[voz]", "-t", largo.toFixed(2), "-ar", "44100", "-ac", "2", voz], { stdio: "ignore" });
+    const escenas = g.escenas.map((e) => ({ ...e, desde: (e.desde - inicio) / 1000, hasta: (e.hasta - inicio) / 1000 }));
+    console.log(`   grabado: ${Math.round(largo)} segundos`);
+    return { pantalla: webm, voz, largo, subtitulos, escenas, tmp: TMP };
   }
 
   console.log("3/4 Armando el video…");
