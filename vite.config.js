@@ -52,9 +52,16 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
-        // Cachea el shell de la app para que abra incluso sin conexión
-        globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
-        navigateFallback: "/index.html",
+        // La página (index.html) se pide SIEMPRE primero a internet, así al abrir se ve directamente la última
+        // versión (antes se veía unos segundos la guardada y después cambiaba). Solo sin conexión se usa la guardada.
+        // El resto (código, estilos, íconos) sí queda guardado: sus nombres cambian en cada versión.
+        globPatterns: ["**/*.{js,css,svg,png,woff2}"],
+        navigateFallback: null,
+        runtimeCaching: [{
+          urlPattern: ({ request }) => request.mode === "navigate",
+          handler: "NetworkFirst",
+          options: { cacheName: "paginas", networkTimeoutSeconds: 4, expiration: { maxEntries: 10 } },
+        }],
       },
     }),
   ],

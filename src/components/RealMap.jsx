@@ -148,9 +148,10 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       updateWhenIdle: isMobile,       // celular: carga tiles al SOLTAR (arrastre fluido); escritorio: mientras se mueve
       updateWhenZooming: false,
     });
-    // El de respaldo está SIEMPRE desde el principio (así el mapa nunca queda en blanco) y solo se retira
-    // cuando el mapa de estilo Google terminó de dibujarse de verdad.
-    respaldo.addTo(map);
+    // Con clave de Google NO se muestra el de respaldo al abrir (si no, se veía unos segundos el mapa viejo y después
+    // cambiaba): solo aparece si Google falla. Sin clave, el de respaldo está desde el principio hasta que dibuja
+    // OpenFreeMap, así el mapa nunca queda en blanco.
+    if (!(import.meta.env.VITE_GOOGLE_MAPS_KEY || "").trim()) respaldo.addTo(map);
     // Mapa de fondo con estilo parecido a Google Maps: OpenFreeMap, estilo "Liberty" (gratis, sin clave y sin
     // límite de uso). Se dibuja con MapLibre, que se carga aparte para no demorar la apertura de la página.
     // Si algo falla (sin WebGL, un bloqueador, el servicio caído o no termina de dibujar), queda el de respaldo.
@@ -233,13 +234,12 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       }).addTo(map);
       google.bringToBack();
       // si después la clave falla (por ejemplo, se llegó al tope del día), vuelve el mapa gratuito
-      window.gm_authFailure = () => { if (map.hasLayer(google)) google.remove(); cargarOpenFreeMap(); };
-      setTimeout(() => { if (mapRef.current === map && map.hasLayer(google)) respaldo.remove(); }, 2500);
+      window.gm_authFailure = () => { if (map.hasLayer(google)) google.remove(); if (!map.hasLayer(respaldo)) respaldo.addTo(map); cargarOpenFreeMap(); };
     };
     (async () => {
       if (CLAVE_GOOGLE) {
         try { await cargarGoogle(); return; }
-        catch (e) { console.warn("Google Maps no disponible, uso OpenFreeMap:", e && e.message); }
+        catch (e) { console.warn("Google Maps no disponible, uso OpenFreeMap:", e && e.message); if (mapRef.current === map && !map.hasLayer(respaldo)) respaldo.addTo(map); }
       }
       await cargarOpenFreeMap();
     })();
