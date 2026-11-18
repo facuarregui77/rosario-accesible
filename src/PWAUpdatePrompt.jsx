@@ -12,8 +12,11 @@ export default function PWAUpdatePrompt() {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
+    // apenas hay una versión nueva instalada, se recarga la página sola (sin cartel)
+    onNeedRefresh() { updateServiceWorker(true); },
     onRegisteredSW(_swUrl, registration) {
       if (!registration) return;
+      registration.update(); // revisar enseguida al abrir la app
       // Chequeo periódico de actualizaciones.
       setInterval(() => { registration.update(); }, CHECK_EVERY_MS);
     },

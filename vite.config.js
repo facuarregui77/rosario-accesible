@@ -10,7 +10,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "prompt",
+      // "autoUpdate": cuando se publica una versión nueva, la app se actualiza sola al abrirla (antes había que
+      // tocar "Actualizar" y mientras tanto se seguía viendo la versión vieja)
+      registerType: "autoUpdate",
       // Archivos del /public que no entran al precache automático
       includeAssets: ["favicon.svg", "apple-touch-icon.png", "og-image.png"],
       manifest: {
@@ -47,6 +49,9 @@ export default defineConfig({
         ],
       },
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         // Cachea el shell de la app para que abra incluso sin conexión
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
         navigateFallback: "/index.html",
