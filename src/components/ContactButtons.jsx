@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Mail, ChevronDown } from "lucide-react";
-import { CONTACT_EMAIL, CONTACT_WHATSAPP, WHATSAPP_CONTACTOS } from "../data/constants";
+import { CONTACT_EMAIL, CONTACT_WHATSAPP, WHATSAPP_CONTACTOS, MAIL_CONTACTOS } from "../data/constants";
 
 // Logo de WhatsApp (el de lucide no existe; este es el glifo oficial simplificado)
 export function WhatsAppIcon({ size = 16 }) {
@@ -14,9 +14,11 @@ export function WhatsAppIcon({ size = 16 }) {
 export const whatsappUrl = (numero = CONTACT_WHATSAPP) =>
   `https://wa.me/${numero.replace(/\D/g, "")}?text=${encodeURIComponent("Hola, te escribo por Rosario Access Map.")}`;
 
-// Botón de WhatsApp con un menú para elegir a quién escribir (Facundo o Welcome).
+export const mailUrl = (mail) => `mailto:${mail}?subject=${encodeURIComponent("Rosario Access Map")}`;
+
+// Botón con un menú para elegir a quién escribir (Facundo o Welcome). Lo usan WhatsApp y el mail.
 // Se cierra al elegir, al tocar afuera o con Esc. `claseCaja` ubica el botón; `claseBoton` le da el estilo.
-export function WhatsAppMenu({ claseCaja = "", claseBoton = "", tamIcono = 16, texto = null, claseFlecha = "", arriba = false }) {
+function MenuContacto({ Icono, nombreBoton, contactos, colorItem, claseCaja = "", claseBoton = "", tamIcono = 16, texto = null, claseFlecha = "", arriba = false }) {
   const [abierto, setAbierto] = useState(false);
   const caja = useRef(null);
   useEffect(() => {
@@ -30,20 +32,20 @@ export function WhatsAppMenu({ claseCaja = "", claseBoton = "", tamIcono = 16, t
   return (
     <div ref={caja} className={`relative ${claseCaja}`}>
       <button type="button" onClick={() => setAbierto((v) => !v)} aria-haspopup="menu" aria-expanded={abierto}
-        title="Escribinos por WhatsApp" aria-label="Escribinos por WhatsApp: elegí a quién" className={claseBoton}>
-        <WhatsAppIcon size={tamIcono} /> {texto}{texto && <ChevronDown size={13} className={`transition ${abierto ? "rotate-180" : ""} ${claseFlecha}`} aria-hidden="true" />}
+        title={nombreBoton} aria-label={`${nombreBoton}: elegí a quién`} className={claseBoton}>
+        <Icono size={tamIcono} /> {texto}{texto && <ChevronDown size={13} className={`transition ${abierto ? "rotate-180" : ""} ${claseFlecha}`} aria-hidden="true" />}
       </button>
       {abierto && (
         <div role="menu" aria-label="¿A quién le escribís?"
-          className={`absolute right-0 ${arriba ? "bottom-full mb-2" : "top-full mt-2"} z-[2100] w-60 rounded-xl bg-white border border-emerald-200 shadow-2xl p-1.5 text-left`}>
+          className={`absolute right-0 ${arriba ? "bottom-full mb-2" : "top-full mt-2"} z-[2100] w-64 rounded-xl bg-white border border-slate-200 shadow-2xl p-1.5 text-left`}>
           <p className="px-2 pt-1 pb-1.5 text-[11px] font-semibold text-slate-500 uppercase tracking-wide">¿A quién le escribís?</p>
-          {WHATSAPP_CONTACTOS.map((c) => (
-            <a key={c.numero} role="menuitem" href={whatsappUrl(c.numero)} target="_blank" rel="noreferrer" onClick={() => setAbierto(false)}
-              className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-emerald-50 focus:bg-emerald-50 outline-none">
-              <span className="shrink-0 w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center"><WhatsAppIcon size={15} /></span>
+          {contactos.map((c) => (
+            <a key={c.href} role="menuitem" href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" onClick={() => setAbierto(false)}
+              className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-sky-50 focus:bg-sky-50 outline-none">
+              <span className={`shrink-0 w-8 h-8 rounded-full text-white flex items-center justify-center ${colorItem}`}><Icono size={15} /></span>
               <span className="min-w-0">
                 <span className="block text-sm font-semibold text-slate-800">{c.nombre}</span>
-                <span className="block text-xs text-slate-500">{c.ver}</span>
+                <span className="block text-xs text-slate-500 truncate">{c.ver}</span>
               </span>
             </a>
           ))}
@@ -52,6 +54,15 @@ export function WhatsAppMenu({ claseCaja = "", claseBoton = "", tamIcono = 16, t
     </div>
   );
 }
+
+export const WhatsAppMenu = (props) => (
+  <MenuContacto {...props} Icono={WhatsAppIcon} nombreBoton="Escribinos por WhatsApp" colorItem="bg-emerald-700"
+    contactos={WHATSAPP_CONTACTOS.map((c) => ({ nombre: c.nombre, ver: c.ver, href: whatsappUrl(c.numero) }))} />
+);
+export const MailMenu = (props) => (
+  <MenuContacto {...props} Icono={Mail} nombreBoton="Escribinos por mail" colorItem="bg-blue-700"
+    contactos={MAIL_CONTACTOS.map((c) => ({ nombre: c.nombre, ver: c.mail, href: mailUrl(c.mail) }))} />
+);
 
 // Botones de contacto de la pantalla principal (WhatsApp + mail), dentro del bloque de botones de la barra.
 //  - Celular: dos cuadraditos con ícono al final de la fila.
@@ -68,10 +79,9 @@ export default function ContactButtons() {
           claseBoton={`${base} w-full bg-emerald-700 hover:bg-emerald-600 text-white border-emerald-700`} />
       )}
       {CONTACT_EMAIL && (
-        <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Rosario Access Map")}`} title="Escribinos por mail" aria-label="Escribinos por mail"
-          className={`${base} bg-white/90 hover:bg-white text-blue-800 border-blue-700`}>
-          <Mail size={16} /> <span className="hidden lg:inline">Escribinos</span>
-        </a>
+        <MailMenu claseCaja="flex w-10 sm:w-auto sm:flex-1 lg:w-full" tamIcono={16} claseFlecha="hidden lg:inline"
+          texto={<span className="hidden lg:inline">Escribinos</span>}
+          claseBoton={`${base} w-full bg-white/90 hover:bg-white text-blue-800 border-blue-700`} />
       )}
     </div>
   );

@@ -78,4 +78,9 @@ export const WHATSAPP_CONTACTOS = [
   { nombre: "Facundo Arregui", ver: "+54 9 341 251-7777", numero: CONTACT_WHATSAPP },
   { nombre: "Welcome Rosario", ver: "+54 9 341 325-2526", numero: "5493413252526" },
 ];
+// A quién se puede escribir por mail: al tocar "Escribinos" aparece un menú para elegir.
+export const MAIL_CONTACTOS = [
+  { nombre: "Facundo Arregui", mail: CONTACT_EMAIL },
+  { nombre: "Welcome Rosario", mail: "info@welcome.com.ar" },
+];
 export const REPO_URL = "https://github.com/facuarregui77/rosario-accesible";

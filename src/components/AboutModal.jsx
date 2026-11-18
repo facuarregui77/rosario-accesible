@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Info, X, Accessibility, Lightbulb, MessageSquare, Contrast, Github, Mail, Share2 } from "lucide-react";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import { CONTACT_EMAIL, CONTACT_WHATSAPP, REPO_URL } from "../data/constants";
-import { WhatsAppMenu } from "./ContactButtons";
+import { WhatsAppMenu, MailMenu } from "./ContactButtons";
 
 // "Acerca de": qué es el proyecto, de dónde salen los datos, cómo colaborar y ajustes de accesibilidad.
 export default function AboutModal({ onClose, stats, highContrast, onToggleContrast }) {
@@ -56,7 +56,7 @@ export default function AboutModal({ onClose, stats, highContrast, onToggleContr
             </ul>
             <div className="flex flex-wrap gap-2 mt-2">
               <button onClick={share} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium"><Share2 size={13} /> Compartir el mapa</button>
-              {CONTACT_EMAIL && <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-sky-300 text-sky-700 hover:bg-sky-50 text-xs font-medium"><Mail size={13} /> Escribinos</a>}
+              {CONTACT_EMAIL && <MailMenu tamIcono={13} texto="Escribinos" arriba claseBoton="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-sky-300 text-sky-700 hover:bg-sky-50 text-xs font-medium" />}
               {CONTACT_WHATSAPP && (
                 <WhatsAppMenu tamIcono={13} texto="WhatsApp" arriba
                   claseBoton="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-medium" />
