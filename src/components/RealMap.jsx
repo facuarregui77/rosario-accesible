@@ -154,7 +154,11 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
     // Mapa de fondo con estilo parecido a Google Maps: OpenFreeMap, estilo "Liberty" (gratis, sin clave y sin
     // límite de uso). Se dibuja con MapLibre, que se carga aparte para no demorar la apertura de la página.
     // Si algo falla (sin WebGL, un bloqueador, el servicio caído o no termina de dibujar), queda el de respaldo.
-    (async () => {
+    // Si hay una clave de Google Maps cargada (VITE_GOOGLE_MAPS_KEY), el fondo es el mapa OFICIAL de Google, con
+    // su API (gratis hasta 10.000 cargas de mapa por mes; con el tope diario configurado en Google no cobra nunca).
+    // Sin clave, o si Google falla, se usa OpenFreeMap como hasta ahora.
+    const CLAVE_GOOGLE = (import.meta.env.VITE_GOOGLE_MAPS_KEY || "").trim();
+    const cargarOpenFreeMap = async () => {
       let fondo = null;
       const volverAlRespaldo = (motivo) => {
         console.warn("Mapa de estilo no disponible, uso el de respaldo:", motivo);
@@ -202,6 +206,42 @@ export default function RealMap({ places, selected, onSelect, avgRating, ramps, 
       } catch (e) {
         volverAlRespaldo(e && e.message);
       }
+    };
+    const cargarGoogle = async () => {
+      // Carga la librería oficial de Google Maps y la dibuja como fondo de Leaflet (nuestros pines van arriba)
+      await new Promise((ok, mal) => {
+        window.gm_authFailure = () => mal(new Error("clave de Google no válida o sin habilitar"));
+        if (window.google && window.google.maps) return ok();
+        window.__googleListo = ok;
+        const sc = document.createElement("script");
+        sc.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(CLAVE_GOOGLE)}&language=es&region=AR&loading=async&callback=__googleListo`;
+        sc.async = true; sc.onerror = () => mal(new Error("no cargó Google Maps"));
+        document.head.appendChild(sc);
+        setTimeout(() => mal(new Error("Google Maps tardó demasiado")), 12000);
+      });
+      const { default: GoogleMutant } = await import("leaflet.gridlayer.googlemutant");
+      if (mapRef.current !== map) return;
+      const google = new GoogleMutant({
+        type: "roadmap",
+        maxZoom: 21,
+        // sin los íconos de comercios y paradas del propio Google: así los únicos pines son los de la app
+        styles: [
+          { featureType: "poi", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+          { featureType: "poi.business", stylers: [{ visibility: "off" }] },
+          { featureType: "transit.station.bus", stylers: [{ visibility: "off" }] },
+        ],
+      }).addTo(map);
+      google.bringToBack();
+      // si después la clave falla (por ejemplo, se llegó al tope del día), vuelve el mapa gratuito
+      window.gm_authFailure = () => { if (map.hasLayer(google)) google.remove(); cargarOpenFreeMap(); };
+      setTimeout(() => { if (mapRef.current === map && map.hasLayer(google)) respaldo.remove(); }, 2500);
+    };
+    (async () => {
+      if (CLAVE_GOOGLE) {
+        try { await cargarGoogle(); return; }
+        catch (e) { console.warn("Google Maps no disponible, uso OpenFreeMap:", e && e.message); }
+      }
+      await cargarOpenFreeMap();
     })();
     mapRef.current = map;
     map.zoomControl.setPosition("bottomright"); // abajo-derecha: no choca con el panel ni el header
